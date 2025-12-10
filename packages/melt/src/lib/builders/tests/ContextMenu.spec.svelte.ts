@@ -110,7 +110,7 @@ testWithEffect("ContextMenu: content has correct attributes", () => {
 
 	expect(content.id).toBe(menu.ids.content);
 	expect(content.role).toBe("menu");
-	expect(content.tabindex).toBe(-1);
+	expect(content.tabindex).toBe(0);
 	expect(content.popover).toBe("manual");
 	expect(content["data-state"]).toBe("closed");
 });
@@ -125,14 +125,15 @@ testWithEffect("ContextMenu: content data-state updates with state", () => {
 	expect(menu.content["data-state"]).toBe("open");
 });
 
-testWithEffect("ContextMenu: getItem returns correct attributes", () => {
+testWithEffect("ContextMenu: getItem returns item with attrs", () => {
 	const menu = new ContextMenu();
 
 	const item = menu.getItem({});
 
-	expect(item.role).toBe("menuitem");
-	expect(typeof item.onclick).toBe("function");
-	expect(typeof item.onpointermove).toBe("function");
+	// getItem now returns a class instance with attrs
+	expect(item.attrs.role).toBe("menuitem");
+	expect(typeof item.attrs.onclick).toBe("function");
+	expect(typeof item.attrs.onpointermove).toBe("function");
 });
 
 testWithEffect("ContextMenu: getItem disabled state", () => {
@@ -140,7 +141,7 @@ testWithEffect("ContextMenu: getItem disabled state", () => {
 
 	const item = menu.getItem({ disabled: true });
 
-	expect(item["data-disabled"]).toBe("");
+	expect(item.attrs["data-disabled"]).toBe("");
 });
 
 testWithEffect("ContextMenu: separator has correct attributes", () => {
@@ -216,25 +217,28 @@ testWithEffect("ContextMenuSub: trigger has correct attributes", () => {
 	const menu = new ContextMenu();
 	const sub = menu.createSub();
 
+	// trigger is now a class instance with attrs
 	const trigger = sub.trigger;
 
-	expect(trigger.role).toBe("menuitem");
-	expect(trigger["aria-haspopup"]).toBe("menu");
-	expect(trigger["aria-expanded"]).toBe(false);
-	expect(trigger["data-state"]).toBe("closed");
+	expect(trigger.attrs.role).toBe("menuitem");
+	expect(trigger.attrs["aria-haspopup"]).toBe("menu");
+	expect(trigger.attrs["aria-expanded"]).toBe(false);
+	expect(trigger.attrs["data-state"]).toBe("closed");
 });
 
 testWithEffect("ContextMenuSub: trigger aria-expanded updates with state", () => {
 	const menu = new ContextMenu();
 	const sub = menu.createSub();
 
-	expect(sub.trigger["aria-expanded"]).toBe(false);
-	expect(sub.trigger["data-state"]).toBe("closed");
+	// trigger is now a class instance with attrs
+	expect(sub.trigger.attrs["aria-expanded"]).toBe(false);
+	expect(sub.trigger.attrs["data-state"]).toBe("closed");
 
 	sub.open = true;
 
-	expect(sub.trigger["aria-expanded"]).toBe(true);
-	expect(sub.trigger["data-state"]).toBe("open");
+	// Need to get a fresh trigger since attrs is derived
+	expect(sub.trigger.attrs["aria-expanded"]).toBe(true);
+	expect(sub.trigger.attrs["data-state"]).toBe("open");
 });
 
 testWithEffect("ContextMenuSub: content has correct attributes", () => {
@@ -249,13 +253,14 @@ testWithEffect("ContextMenuSub: content has correct attributes", () => {
 	expect(content.popover).toBe("manual");
 });
 
-testWithEffect("ContextMenuSub: getItem returns correct attributes", () => {
+testWithEffect("ContextMenuSub: getItem returns item with attrs", () => {
 	const menu = new ContextMenu();
 	const sub = menu.createSub();
 
 	const item = sub.getItem({});
 
-	expect(item.role).toBe("menuitem");
+	// getItem now returns a class instance with attrs
+	expect(item.attrs.role).toBe("menuitem");
 });
 
 testWithEffect("ContextMenuSub: separator has correct attributes", () => {

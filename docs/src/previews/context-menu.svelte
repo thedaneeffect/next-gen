@@ -28,6 +28,25 @@
 	function handleSelect(action: string) {
 		console.log("Selected:", action);
 	}
+
+	// Create item instances
+	const cutItem = menu.getItem({ onSelect: () => handleSelect("cut") });
+	const copyItem = menu.getItem({ onSelect: () => handleSelect("copy") });
+	const pasteItem = menu.getItem({ onSelect: () => handleSelect("paste") });
+	const deleteItem = menu.getItem({ onSelect: () => handleSelect("delete") });
+
+	// Share submenu items
+	const copyLinkItem = shareSubmenu.getItem({ onSelect: () => handleSelect("copy-link") });
+	const emailItem = shareSubmenu.getItem({ onSelect: () => handleSelect("email") });
+
+	// Social submenu items
+	const twitterItem = socialSubmenu.getItem({ onSelect: () => handleSelect("twitter") });
+	const facebookItem = socialSubmenu.getItem({ onSelect: () => handleSelect("facebook") });
+	const linkedinItem = socialSubmenu.getItem({ onSelect: () => handleSelect("linkedin") });
+
+	// Sub-triggers
+	const shareTrigger = shareSubmenu.trigger;
+	const socialTrigger = socialSubmenu.trigger;
 </script>
 
 <Preview>
@@ -44,25 +63,25 @@
 		class="menu-content min-w-48 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
 		{...menu.content}
 	>
-		<button class="menu-item" {...menu.getItem({ onSelect: () => handleSelect("cut") })}>
+		<button class="menu-item" {...cutItem.attrs}>
 			Cut
-			<span class="ml-auto text-xs opacity-50">⌘X</span>
+			<span class="ml-auto text-xs opacity-50">&#8984;X</span>
 		</button>
-		<button class="menu-item" {...menu.getItem({ onSelect: () => handleSelect("copy") })}>
+		<button class="menu-item" {...copyItem.attrs}>
 			Copy
-			<span class="ml-auto text-xs opacity-50">⌘C</span>
+			<span class="ml-auto text-xs opacity-50">&#8984;C</span>
 		</button>
-		<button class="menu-item" {...menu.getItem({ onSelect: () => handleSelect("paste") })}>
+		<button class="menu-item" {...pasteItem.attrs}>
 			Paste
-			<span class="ml-auto text-xs opacity-50">⌘V</span>
+			<span class="ml-auto text-xs opacity-50">&#8984;V</span>
 		</button>
 
 		<hr class="my-1.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
 
 		<!-- Share Submenu Trigger -->
-		<button class="menu-item justify-between" {...shareSubmenu.trigger}>
+		<button class="menu-item justify-between" {...shareTrigger.attrs}>
 			Share
-			<span class="opacity-50">›</span>
+			<span class="opacity-50">&#8250;</span>
 		</button>
 
 		<hr class="my-1.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
@@ -71,10 +90,10 @@
 		<button
 			class="menu-item text-red-600 data-[highlighted]:bg-red-100 dark:text-red-400
 				dark:data-[highlighted]:bg-red-900/30"
-			{...menu.getItem({ onSelect: () => handleSelect("delete") })}
+			{...deleteItem.attrs}
 		>
 			Delete
-			<span class="ml-auto text-xs opacity-50">⌘⌫</span>
+			<span class="ml-auto text-xs opacity-50">&#8984;&#9003;</span>
 		</button>
 	</div>
 
@@ -83,20 +102,13 @@
 		class="menu-content min-w-40 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
 		{...shareSubmenu.content}
 	>
-		<button
-			class="menu-item"
-			{...shareSubmenu.getItem({ onSelect: () => handleSelect("copy-link") })}
-		>
-			Copy Link
-		</button>
-		<button class="menu-item" {...shareSubmenu.getItem({ onSelect: () => handleSelect("email") })}>
-			Email
-		</button>
+		<button class="menu-item" {...copyLinkItem.attrs}> Copy Link </button>
+		<button class="menu-item" {...emailItem.attrs}> Email </button>
 
 		<!-- Social Submenu Trigger -->
-		<button class="menu-item justify-between" {...socialSubmenu.trigger}>
+		<button class="menu-item justify-between" {...socialTrigger.attrs}>
 			Social
-			<span class="opacity-50">›</span>
+			<span class="opacity-50">&#8250;</span>
 		</button>
 	</div>
 
@@ -105,24 +117,9 @@
 		class="menu-content min-w-36 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
 		{...socialSubmenu.content}
 	>
-		<button
-			class="menu-item"
-			{...socialSubmenu.getItem({ onSelect: () => handleSelect("twitter") })}
-		>
-			Twitter
-		</button>
-		<button
-			class="menu-item"
-			{...socialSubmenu.getItem({ onSelect: () => handleSelect("facebook") })}
-		>
-			Facebook
-		</button>
-		<button
-			class="menu-item"
-			{...socialSubmenu.getItem({ onSelect: () => handleSelect("linkedin") })}
-		>
-			LinkedIn
-		</button>
+		<button class="menu-item" {...twitterItem.attrs}> Twitter </button>
+		<button class="menu-item" {...facebookItem.attrs}> Facebook </button>
+		<button class="menu-item" {...linkedinItem.attrs}> LinkedIn </button>
 	</div>
 </Preview>
 

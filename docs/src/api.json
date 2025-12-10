@@ -1611,6 +1611,13 @@
         "optional": true
       },
       {
+        "name": "loop",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether keyboard navigation should loop at boundaries.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
         "name": "floatingConfig",
         "type": "UseFloatingConfig | undefined",
         "description": "Floating UI configuration for positioning.",
@@ -1619,19 +1626,59 @@
     ],
     "methods": [
       {
+        "name": "registerItem",
+        "type": "(item: ContextMenuItem) => void",
+        "description": ""
+      },
+      {
+        "name": "unregisterItem",
+        "type": "(item: ContextMenuItem) => void",
+        "description": ""
+      },
+      {
+        "name": "registerSubTrigger",
+        "type": "(trigger: ContextMenuSubTrigger) => void",
+        "description": ""
+      },
+      {
+        "name": "unregisterSubTrigger",
+        "type": "(trigger: ContextMenuSubTrigger) => void",
+        "description": ""
+      },
+      {
+        "name": "highlightFirst",
+        "type": "() => void",
+        "description": ""
+      },
+      {
+        "name": "highlightLast",
+        "type": "() => void",
+        "description": ""
+      },
+      {
+        "name": "highlightNext",
+        "type": "() => void",
+        "description": ""
+      },
+      {
+        "name": "highlightPrev",
+        "type": "() => void",
+        "description": ""
+      },
+      {
         "name": "close",
         "type": "() => void",
-        "description": "Close the context menu."
+        "description": ""
       },
       {
         "name": "createSub",
         "type": "(props?: ContextMenuSubProps) => ContextMenuSub",
-        "description": "Create a submenu."
+        "description": ""
       },
       {
         "name": "getItem",
-        "type": "(props?: ContextMenuItemProps) => {\n  readonly \"data-melt-context-menu-item\": \"\"\n  readonly role: \"menuitem\"\n  readonly tabindex: -1\n  readonly \"data-disabled\": \"\" | undefined\n  readonly onclick: (e: MouseEvent) => void\n  readonly onpointermove: (e: PointerEvent) => void\n}",
-        "description": "Get the spread attributes for a menu item."
+        "type": "(props?: ContextMenuItemProps) => ContextMenuItem",
+        "description": ""
       }
     ],
     "properties": [
@@ -1646,37 +1693,47 @@
         "description": ""
       },
       {
+        "name": "loop",
+        "type": "boolean",
+        "description": ""
+      },
+      {
         "name": "ids",
         "type": "{\n  item: string\n  trigger: string\n  content: string\n  separator: string\n  label: string\n  \"sub-trigger\": string\n  \"sub-content\": string\n}",
         "description": ""
       },
       {
+        "name": "highlightedEl",
+        "type": "HTMLElement | null",
+        "description": ""
+      },
+      {
         "name": "open",
         "type": "boolean",
-        "description": "Whether the context menu is open."
+        "description": ""
       },
       {
         "name": "trigger",
         "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-context-menu-trigger\": \"\"\n  readonly \"aria-haspopup\": \"menu\"\n  readonly oncontextmenu: (e: MouseEvent) => void\n}",
-        "description": "The spread attributes for the trigger element."
+        "description": ""
       },
       {
         "name": "content",
         "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-context-menu-content\": \"\"\n  readonly id: string\n  readonly role: \"menu\"\n  readonly tabindex: 0\n  readonly popover: \"manual\"\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onkeydown: (e: KeyboardEvent) => void\n  readonly onpointermove: (e: PointerEvent) => void\n  readonly onpointerenter: () => void\n  readonly onpointerleave: () => void\n}",
-        "description": "The spread attributes for the content element."
+        "description": ""
       },
       {
         "name": "separator",
         "type": "{\n  readonly \"data-melt-context-menu-separator\": \"\"\n  readonly role: \"separator\"\n}",
-        "description": "The spread attributes for a separator element."
+        "description": ""
       },
       {
         "name": "label",
         "type": "{\n  readonly \"data-melt-context-menu-label\": \"\"\n  readonly role: \"group\"\n}",
-        "description": "The spread attributes for a label element."
+        "description": ""
       }
     ],
-    "propsAlt": "export type ContextMenuProps = {\n  /**\n   * Whether the context menu is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing Escape closes the menu.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking outside the menu closes it.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Floating UI configuration for positioning.\n   */\n  floatingConfig?: UseFloatingConfig;\n};"
+    "propsAlt": "export type ContextMenuProps = {\n  /**\n   * Whether the context menu is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing Escape closes the menu.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking outside the menu closes it.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether keyboard navigation should loop at boundaries.\n   *\n   * @default true\n   */\n  loop?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Floating UI configuration for positioning.\n   */\n  floatingConfig?: UseFloatingConfig;\n};"
   },
   "Combobox": {
     "constructorProps": [
