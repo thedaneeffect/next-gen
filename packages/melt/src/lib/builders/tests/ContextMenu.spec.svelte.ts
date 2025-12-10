@@ -132,7 +132,7 @@ testWithEffect("ContextMenu: getItem returns correct attributes", () => {
 
 	expect(item.role).toBe("menuitem");
 	expect(typeof item.onclick).toBe("function");
-	expect(typeof item.onpointerenter).toBe("function");
+	expect(typeof item.onpointermove).toBe("function");
 });
 
 testWithEffect("ContextMenu: getItem disabled state", () => {

@@ -164,12 +164,10 @@
 		background-color: transparent;
 	}
 
-	.menu-item:hover,
 	.menu-item[data-highlighted] {
 		background-color: rgb(0 0 0 / 0.1);
 	}
 
-	:global(.dark) .menu-item:hover,
 	:global(.dark) .menu-item[data-highlighted] {
 		background-color: rgb(255 255 255 / 0.15);
 	}

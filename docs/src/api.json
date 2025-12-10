@@ -1630,7 +1630,7 @@
       },
       {
         "name": "getItem",
-        "type": "(props?: ContextMenuItemProps) => {\n  readonly \"data-melt-context-menu-item\": \"\"\n  readonly role: \"menuitem\"\n  readonly tabindex: 0 | -1\n  readonly \"data-highlighted\": \"\" | undefined\n  readonly \"data-disabled\": \"\" | undefined\n  readonly onclick: (e: MouseEvent) => void\n  readonly onpointerenter: () => void\n}",
+        "type": "(props?: ContextMenuItemProps) => {\n  readonly \"data-melt-context-menu-item\": \"\"\n  readonly role: \"menuitem\"\n  readonly tabindex: -1\n  readonly \"data-disabled\": \"\" | undefined\n  readonly onclick: (e: MouseEvent) => void\n  readonly onpointermove: (e: PointerEvent) => void\n}",
         "description": "Get the spread attributes for a menu item."
       }
     ],
@@ -1662,7 +1662,7 @@
       },
       {
         "name": "content",
-        "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-context-menu-content\": \"\"\n  readonly id: string\n  readonly role: \"menu\"\n  readonly tabindex: -1\n  readonly popover: \"manual\"\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onkeydown: (e: KeyboardEvent) => void\n}",
+        "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-context-menu-content\": \"\"\n  readonly id: string\n  readonly role: \"menu\"\n  readonly tabindex: 0\n  readonly popover: \"manual\"\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onkeydown: (e: KeyboardEvent) => void\n  readonly onpointermove: (e: PointerEvent) => void\n  readonly onpointerenter: () => void\n  readonly onpointerleave: () => void\n}",
         "description": "The spread attributes for the content element."
       },
       {

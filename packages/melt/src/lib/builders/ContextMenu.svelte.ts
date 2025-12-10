@@ -9,6 +9,7 @@ import { createVirtualAnchor, MenuNavigation } from "$lib/utils/menu";
 import { computeConvexHullFromElements, type Point } from "$lib/utils/polygon";
 import { useFloating, type UseFloatingConfig } from "$lib/utils/use-floating.svelte";
 import type { VirtualElement } from "@floating-ui/dom";
+import { tick } from "svelte";
 import { on } from "svelte/events";
 import { createAttachmentKey, type Attachment } from "svelte/attachments";
 import type { HTMLAttributes } from "svelte/elements";
@@ -120,10 +121,12 @@ export class ContextMenu {
 	#virtualAnchor: VirtualElement | null = $state(null);
 	#contentEl: HTMLElement | null = $state(null);
 	#triggerEl: HTMLElement | null = $state(null);
-	#itemIndexMap = new Map<object, number>();
-	#itemCount = 0;
 	#children = new Set<ContextMenuSub>();
 	#closeTimeout: ReturnType<typeof setTimeout> | null = null;
+	#submenuByTrigger = new Map<HTMLElement, ContextMenuSub>();
+
+	/* Item index cache - lazily populated, cleared on close */
+	#itemIndices = new WeakMap<HTMLElement, number>();
 
 	/* Pointer direction tracking for grace intent */
 	#lastPointerX = 0;
@@ -157,7 +160,24 @@ export class ContextMenu {
 
 	#getItems(): HTMLElement[] {
 		if (!this.#contentEl) return [];
-		return [...this.#contentEl.querySelectorAll(dataSelectors.item)].filter(isHtmlElement);
+		return [
+			...this.#contentEl.querySelectorAll(`${dataSelectors.item}, ${dataSelectors["sub-trigger"]}`),
+		].filter(isHtmlElement);
+	}
+
+	/**
+	 * Get the index of an item element, with lazy caching.
+	 */
+	#getItemIndex(el: HTMLElement): number {
+		let index = this.#itemIndices.get(el);
+		if (index === undefined) {
+			const items = this.#getItems();
+			index = items.indexOf(el);
+			if (index !== -1) {
+				this.#itemIndices.set(el, index);
+			}
+		}
+		return index ?? -1;
 	}
 
 	/**
@@ -177,6 +197,8 @@ export class ContextMenu {
 			this.#navigation.reset();
 			this.#graceIntent = null;
 			this.#clearCloseTimeout();
+			// Clear item index cache
+			this.#itemIndices = new WeakMap();
 		}
 	}
 
@@ -221,7 +243,7 @@ export class ContextMenu {
 	 * Create a submenu.
 	 */
 	createSub(props: ContextMenuSubProps = {}): ContextMenuSub {
-		const sub = new ContextMenuSub(this, props);
+		const sub = new ContextMenuSub(this, props, this.#submenuByTrigger);
 		this.#children.add(sub);
 		return sub;
 	}
@@ -280,10 +302,29 @@ export class ContextMenu {
 				node.showPopover();
 				// Focus content when opened
 				node.focus();
-				// Highlight first item
-				this.#navigation.highlightFirst();
+				// Highlight first item after DOM updates
+				tick().then(() => this.#navigation.highlightFirst());
 			} else {
 				node.hidePopover();
+			}
+		});
+
+		// Update data-highlighted and aria-activedescendant when highlightedIndex changes
+		$effect(() => {
+			const items = this.#getItems();
+			const highlighted = this.#navigation.highlightedIndex;
+
+			// Update data-highlighted on all items
+			items.forEach((item, i) => {
+				item.toggleAttribute("data-highlighted", i === highlighted);
+			});
+
+			// Update aria-activedescendant on content
+			const highlightedId = items[highlighted]?.id;
+			if (highlightedId) {
+				node.setAttribute("aria-activedescendant", highlightedId);
+			} else {
+				node.removeAttribute("aria-activedescendant");
 			}
 		});
 
@@ -335,10 +376,26 @@ export class ContextMenu {
 			[dataAttrs.content]: "",
 			id: this.ids.content,
 			role: "menu",
-			tabindex: -1,
+			tabindex: 0,
 			popover: "manual",
 			"data-state": this.open ? "open" : "closed",
-			onkeydown: this.#navigation.handleKeydown,
+			onkeydown: (e: KeyboardEvent) => {
+				// Handle ArrowRight to open submenu
+				if (e.key === kbd.ARROW_RIGHT) {
+					const items = this.#getItems();
+					const highlighted = items[this.#navigation.highlightedIndex];
+					if (highlighted) {
+						const submenu = this.#submenuByTrigger.get(highlighted);
+						if (submenu) {
+							e.preventDefault();
+							submenu.open = true;
+							tick().then(() => submenu.focusFirstItem());
+							return;
+						}
+					}
+				}
+				this.#navigation.handleKeydown(e);
+			},
 			onpointermove: (e: PointerEvent) => {
 				// Track pointer direction for grace intent
 				if (e.pointerType !== "mouse") return;
@@ -354,10 +411,12 @@ export class ContextMenu {
 			},
 			onpointerleave: () => {
 				// Build grace intent if we have open children
-				const hasOpenChild = [...this.#children].some((child) => child.open);
-				if (hasOpenChild && this.#contentEl) {
+				const openChild = [...this.#children].find((child) => child.open);
+				if (openChild && this.#contentEl) {
 					const area = computeConvexHullFromElements([this.#contentEl]);
-					this.#graceIntent = { area, side: "right" };
+					// Use the child's content side
+					const side = openChild.contentSide;
+					this.#graceIntent = { area, side };
 				}
 				this.#scheduleClose();
 			},
@@ -369,20 +428,12 @@ export class ContextMenu {
 	 * Get the spread attributes for a menu item.
 	 */
 	getItem(props: ContextMenuItemProps = {}) {
-		// Use props object as key for stable index across re-renders
-		let index = this.#itemIndexMap.get(props);
-		if (index === undefined) {
-			index = this.#itemCount++;
-			this.#itemIndexMap.set(props, index);
-		}
-		const itemIndex = index;
 		const disabled = extract(props.disabled, false);
 
 		return {
 			[dataAttrs.item]: "",
 			role: "menuitem",
-			tabindex: this.#navigation.getTabIndex(itemIndex),
-			"data-highlighted": dataAttr(this.#navigation.highlightedIndex === itemIndex),
+			tabindex: -1,
 			"data-disabled": dataAttr(disabled),
 			onclick: (e: MouseEvent) => {
 				if (extract(props.disabled, false)) {
@@ -392,9 +443,12 @@ export class ContextMenu {
 				props.onSelect?.();
 				this.close();
 			},
-			onpointerenter: () => {
-				if (!extract(props.disabled, false)) {
-					this.#navigation.highlight(itemIndex, false);
+			onpointermove: (e: PointerEvent) => {
+				if (e.pointerType !== "mouse") return;
+				if (extract(props.disabled, false)) return;
+				const index = this.#getItemIndex(e.currentTarget as HTMLElement);
+				if (index !== -1) {
+					this.#navigation.highlight(index, false);
 				}
 			},
 		} as const satisfies HTMLAttributes<HTMLElement>;
@@ -431,11 +485,13 @@ export class ContextMenuSub {
 	#open: Synced<boolean>;
 	#contentEl: HTMLElement | null = $state(null);
 	#triggerEl: HTMLElement | null = $state(null);
-	#itemIndexMap = new Map<object, number>();
-	#itemCount = 0;
 	#children = new Set<ContextMenuSub>();
 	#openTimeout: ReturnType<typeof setTimeout> | null = null;
 	#closeTimeout: ReturnType<typeof setTimeout> | null = null;
+	#submenuByTrigger: Map<HTMLElement, ContextMenuSub>;
+
+	/* Item index cache - lazily populated, cleared on close */
+	#itemIndices = new WeakMap<HTMLElement, number>();
 
 	/* Pointer direction tracking for grace intent */
 	#lastPointerX = 0;
@@ -447,9 +503,14 @@ export class ContextMenuSub {
 	/* Navigation */
 	#navigation: MenuNavigation;
 
-	constructor(parent: ContextMenu | ContextMenuSub, props: ContextMenuSubProps = {}) {
+	constructor(
+		parent: ContextMenu | ContextMenuSub,
+		props: ContextMenuSubProps = {},
+		submenuByTrigger: Map<HTMLElement, ContextMenuSub>,
+	) {
 		this.#parent = parent;
 		this.#props = props;
+		this.#submenuByTrigger = submenuByTrigger;
 		this.#open = new Synced({
 			value: props.open,
 			onChange: props.onOpenChange,
@@ -472,7 +533,34 @@ export class ContextMenuSub {
 
 	#getItems(): HTMLElement[] {
 		if (!this.#contentEl) return [];
-		return [...this.#contentEl.querySelectorAll(dataSelectors.item)].filter(isHtmlElement);
+		return [
+			...this.#contentEl.querySelectorAll(`${dataSelectors.item}, ${dataSelectors["sub-trigger"]}`),
+		].filter(isHtmlElement);
+	}
+
+	/**
+	 * Get the index of an item element, with lazy caching.
+	 */
+	#getItemIndex(el: HTMLElement): number {
+		console.log("[ContextMenuSub.#getItemIndex] called with el:", el);
+		console.log("[ContextMenuSub.#getItemIndex] #contentEl:", this.#contentEl);
+
+		let index = this.#itemIndices.get(el);
+		console.log("[ContextMenuSub.#getItemIndex] cached index:", index);
+
+		if (index === undefined) {
+			const items = this.#getItems();
+			console.log("[ContextMenuSub.#getItemIndex] items from #getItems():", items);
+			console.log("[ContextMenuSub.#getItemIndex] items.length:", items.length);
+
+			index = items.indexOf(el);
+			console.log("[ContextMenuSub.#getItemIndex] indexOf result:", index);
+
+			if (index !== -1) {
+				this.#itemIndices.set(el, index);
+			}
+		}
+		return index ?? -1;
 	}
 
 	#closeToParent() {
@@ -499,6 +587,8 @@ export class ContextMenuSub {
 			}
 			this.#navigation.reset();
 			this.#graceIntent = null;
+			// Clear item index cache
+			this.#itemIndices = new WeakMap();
 		}
 	}
 
@@ -507,6 +597,14 @@ export class ContextMenuSub {
 	 */
 	close() {
 		this.open = false;
+	}
+
+	/**
+	 * Focus the first item in this submenu.
+	 */
+	focusFirstItem() {
+		this.#navigation.highlightFirst();
+		this.#contentEl?.focus();
 	}
 
 	/**
@@ -525,7 +623,7 @@ export class ContextMenuSub {
 	 * Create a nested submenu.
 	 */
 	createSub(props: ContextMenuSubProps = {}): ContextMenuSub {
-		const sub = new ContextMenuSub(this, props);
+		const sub = new ContextMenuSub(this, props, this.#submenuByTrigger);
 		this.#children.add(sub);
 		return sub;
 	}
@@ -571,11 +669,22 @@ export class ContextMenuSub {
 		return false;
 	}
 
+	/**
+	 * Get the actual side the submenu content is on (from Floating UI).
+	 */
+	get contentSide(): "left" | "right" {
+		const side = this.#contentEl?.dataset.side;
+		return side === "left" ? "left" : "right";
+	}
+
 	/* Trigger attachment */
 	#triggerAttachmentKey = createAttachmentKey();
 	#triggerAttachment: Attachment<HTMLElement> = (node) => {
 		this.#triggerEl = node;
+		this.#submenuByTrigger.set(node, this);
+
 		return () => {
+			this.#submenuByTrigger.delete(node);
 			if (this.#triggerEl === node) {
 				this.#triggerEl = null;
 			}
@@ -587,6 +696,7 @@ export class ContextMenuSub {
 	 */
 	get trigger() {
 		return {
+			id: `${this.ids.content}-trigger`,
 			[dataAttrs["sub-trigger"]]: "",
 			role: "menuitem",
 			"aria-haspopup": "menu",
@@ -596,14 +706,19 @@ export class ContextMenuSub {
 			onpointerenter: () => {
 				// Clear any pending close
 				this.#clearTimeouts();
-				this.#graceIntent = null;
+				// Only clear grace intent if submenu isn't open yet
+				// (when open, we need grace intent for moving to content)
+				if (!this.open) {
+					this.#graceIntent = null;
+				}
 				this.#scheduleOpen();
 			},
 			onpointerleave: () => {
 				// Build grace intent between trigger and content
 				if (this.open && this.#triggerEl && this.#contentEl) {
 					const area = computeConvexHullFromElements([this.#triggerEl, this.#contentEl]);
-					this.#graceIntent = { area, side: "right" };
+					const side = this.contentSide;
+					this.#graceIntent = { area, side };
 				}
 				this.#scheduleClose();
 			},
@@ -611,8 +726,8 @@ export class ContextMenuSub {
 				if (e.key === kbd.ARROW_RIGHT) {
 					e.preventDefault();
 					this.open = true;
-					// Focus first item in submenu after opening
-					setTimeout(() => {
+					// Focus first item in submenu after DOM updates
+					tick().then(() => {
 						this.#navigation.highlightFirst();
 						this.#contentEl?.focus();
 					});
@@ -655,6 +770,25 @@ export class ContextMenuSub {
 			}
 		});
 
+		// Update data-highlighted and aria-activedescendant when highlightedIndex changes
+		$effect(() => {
+			const items = this.#getItems();
+			const highlighted = this.#navigation.highlightedIndex;
+
+			// Update data-highlighted on all items
+			items.forEach((item, i) => {
+				item.toggleAttribute("data-highlighted", i === highlighted);
+			});
+
+			// Update aria-activedescendant on content
+			const highlightedId = items[highlighted]?.id;
+			if (highlightedId) {
+				node.setAttribute("aria-activedescendant", highlightedId);
+			} else {
+				node.removeAttribute("aria-activedescendant");
+			}
+		});
+
 		return () => {
 			if (this.#contentEl === node) {
 				this.#contentEl = null;
@@ -670,7 +804,7 @@ export class ContextMenuSub {
 			[dataAttrs["sub-content"]]: "",
 			id: this.ids.content,
 			role: "menu",
-			tabindex: -1,
+			tabindex: 0,
 			popover: "manual",
 			"data-state": this.open ? "open" : "closed",
 			onkeydown: (e: KeyboardEvent) => {
@@ -679,6 +813,20 @@ export class ContextMenuSub {
 					e.preventDefault();
 					this.#closeToParent();
 					return;
+				}
+				// ArrowRight opens nested submenu
+				if (e.key === kbd.ARROW_RIGHT) {
+					const items = this.#getItems();
+					const highlighted = items[this.#navigation.highlightedIndex];
+					if (highlighted) {
+						const submenu = this.#submenuByTrigger.get(highlighted);
+						if (submenu) {
+							e.preventDefault();
+							submenu.open = true;
+							tick().then(() => submenu.focusFirstItem());
+							return;
+						}
+					}
 				}
 				this.#navigation.handleKeydown(e);
 			},
@@ -697,10 +845,12 @@ export class ContextMenuSub {
 			},
 			onpointerleave: () => {
 				// Build grace intent if we have open children
-				const hasOpenChild = [...this.#children].some((child) => child.open);
-				if (hasOpenChild && this.#triggerEl && this.#contentEl) {
+				const openChild = [...this.#children].find((child) => child.open);
+				if (openChild && this.#triggerEl && this.#contentEl) {
 					const area = computeConvexHullFromElements([this.#triggerEl, this.#contentEl]);
-					this.#graceIntent = { area, side: "right" };
+					// Use the child's content side, not our own
+					const side = openChild.contentSide;
+					this.#graceIntent = { area, side };
 				}
 				this.#scheduleClose();
 			},
@@ -712,20 +862,12 @@ export class ContextMenuSub {
 	 * Get the spread attributes for a menu item.
 	 */
 	getItem(props: ContextMenuItemProps = {}) {
-		// Use props object as key for stable index across re-renders
-		let index = this.#itemIndexMap.get(props);
-		if (index === undefined) {
-			index = this.#itemCount++;
-			this.#itemIndexMap.set(props, index);
-		}
-		const itemIndex = index;
 		const disabled = extract(props.disabled, false);
 
 		return {
 			[dataAttrs.item]: "",
 			role: "menuitem",
-			tabindex: this.#navigation.getTabIndex(itemIndex),
-			"data-highlighted": dataAttr(this.#navigation.highlightedIndex === itemIndex),
+			tabindex: -1,
 			"data-disabled": dataAttr(disabled),
 			onclick: (e: MouseEvent) => {
 				if (extract(props.disabled, false)) {
@@ -736,9 +878,23 @@ export class ContextMenuSub {
 				// Close the entire menu tree
 				this.#closeRoot();
 			},
-			onpointerenter: () => {
-				if (!extract(props.disabled, false)) {
-					this.#navigation.highlight(itemIndex, false);
+			onpointermove: (e: PointerEvent) => {
+				console.log("[ContextMenuSub.getItem] onpointermove fired");
+				console.log("[ContextMenuSub.getItem] e.currentTarget:", e.currentTarget);
+				console.log("[ContextMenuSub.getItem] e.target:", e.target);
+
+				if (e.pointerType !== "mouse") return;
+				if (extract(props.disabled, false)) return;
+
+				const index = this.#getItemIndex(e.currentTarget as HTMLElement);
+				console.log("[ContextMenuSub.getItem] index from #getItemIndex:", index);
+
+				if (index !== -1) {
+					this.#navigation.highlight(index, false);
+					console.log(
+						"[ContextMenuSub.getItem] after highlight, highlightedIndex:",
+						this.#navigation.highlightedIndex,
+					);
 				}
 			},
 		} as const satisfies HTMLAttributes<HTMLElement>;

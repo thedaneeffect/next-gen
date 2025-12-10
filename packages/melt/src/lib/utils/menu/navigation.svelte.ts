@@ -59,7 +59,7 @@ export class MenuNavigation {
 	}
 
 	get loop() {
-		return this.#options.loop ?? true;
+		return this.#options.loop ?? false;
 	}
 
 	/**
