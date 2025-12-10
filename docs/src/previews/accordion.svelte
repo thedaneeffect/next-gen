@@ -53,24 +53,19 @@
 			{@const isLast = idx === items.length - 1}
 
 			<div class="overflow-hidden first:rounded-t-xl last:rounded-b-xl">
-				<h2 class="relative flex" {...item.heading}>
-					<div
-						class={[
-							"border-accent-400 focus-ring absolute inset-0 z-10 border transition-all",
-							isFirst && "rounded-t-xl",
-							isLast && !item.isExpanded && "rounded-b-xl",
-						]}
-						aria-hidden="true"
-					></div>
+				<h2 class="flex" {...item.heading}>
 					<button
 						{...item.trigger}
 						class={[
 							"flex flex-1 cursor-pointer items-center justify-between bg-gray-200 px-5 py-5 text-base font-medium leading-none text-gray-800 outline-none transition-colors",
+							"focus-visible:ring-accent-400 focus-visible:ring-1 focus-visible:ring-inset outline-none",
 							!item.isDisabled &&
 								"hover:bg-gray-300 dark:hover:bg-gray-500/50 dark:active:bg-gray-600/50",
 							"disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50",
 							"dark:bg-gray-800 dark:text-gray-200 ",
 							!isLast && "border-b border-neutral-200 dark:border-neutral-700",
+							isFirst && "rounded-t-xl",
+							isLast && !item.isExpanded && "rounded-b-xl",
 						]}
 					>
 						{item.item.title}
@@ -92,13 +87,3 @@
 		{/each}
 	</div>
 </Preview>
-
-<style>
-	.focus-ring {
-		display: none;
-	}
-
-	.focus-ring:has(+ button:focus-visible) {
-		display: block;
-	}
-</style>
