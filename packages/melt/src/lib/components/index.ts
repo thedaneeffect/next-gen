@@ -1,6 +1,8 @@
 export { default as Accordion } from "./Accordion.svelte";
+export { default as AlertDialog } from "./AlertDialog.svelte";
 export { default as Avatar } from "./Avatar.svelte";
 export { default as Collapsible } from "./Collapsible.svelte";
+export { default as Dialog } from "./Dialog.svelte";
 export { default as Combobox } from "./Combobox.svelte";
 export { default as FileUpload } from "./FileUpload.svelte";
 export { default as PinInput } from "./PinInput.svelte";

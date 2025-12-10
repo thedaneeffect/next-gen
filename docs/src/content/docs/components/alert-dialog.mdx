@@ -1,0 +1,164 @@
+---
+title: Alert Dialog
+description: A modal dialog that interrupts the user and expects a response.
+---
+import ApiTable from "@components/api-table.astro";
+import Preview from "@previews/alert-dialog.svelte";
+import Features from "@components/features.astro";
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Preview client:load />
+
+## Features
+
+<Features>
+- 🚨 Uses `role="alertdialog"` for screen reader announcement
+- 🔒 Cannot be dismissed with Escape key (requires explicit action)
+- 🔒 Cannot be dismissed by clicking outside
+- 🎯 Uses native `<dialog>` element for proper modal behavior
+- ♿ Full accessibility with ARIA attributes
+- 🎨 CSS animation support with `@starting-style`
+</Features>
+
+## Usage
+
+<Tabs>
+	<TabItem label="Builder">
+```svelte
+<script lang="ts">
+	import { AlertDialog } from "melt/builders";
+
+	const alertDialog = new AlertDialog();
+</script>
+
+<button {...alertDialog.trigger}>Delete Item</button>
+
+<dialog {...alertDialog.content}>
+	<h2 {...alertDialog.title}>Are you sure?</h2>
+	<p {...alertDialog.description}>
+		This action cannot be undone.
+	</p>
+	<button {...alertDialog.cancel}>Cancel</button>
+	<button {...alertDialog.action}>Delete</button>
+</dialog>
+```
+	</TabItem>
+
+	<TabItem label="Component">
+```svelte
+<script lang="ts">
+	import { AlertDialog } from "melt/components";
+</script>
+
+<AlertDialog>
+	{#snippet children(alertDialog)}
+		<button {...alertDialog.trigger}>Delete Item</button>
+
+		<dialog {...alertDialog.content}>
+			<h2 {...alertDialog.title}>Are you sure?</h2>
+			<p {...alertDialog.description}>
+				This action cannot be undone.
+			</p>
+			<button {...alertDialog.cancel}>Cancel</button>
+			<button {...alertDialog.action}>Delete</button>
+		</dialog>
+	{/snippet}
+</AlertDialog>
+```
+	</TabItem>
+</Tabs>
+
+## Dialog vs Alert Dialog
+
+| Feature | Dialog | Alert Dialog |
+|---------|--------|--------------|
+| Escape key closes | ✅ (configurable) | ❌ |
+| Click outside closes | ✅ (configurable) | ❌ |
+| ARIA role | `dialog` | `alertdialog` |
+| Use case | General modals | Destructive/important actions |
+
+Use `AlertDialog` when you need the user to explicitly acknowledge or respond to something important, such as:
+
+- Confirming a destructive action (delete, remove)
+- Displaying critical error messages
+- Requiring user input before proceeding
+
+## Handling Actions
+
+You can handle the action and cancel buttons to perform different operations:
+
+```svelte
+<script lang="ts">
+	import { AlertDialog } from "melt/builders";
+	import { mergeAttrs } from "melt";
+
+	const alertDialog = new AlertDialog();
+
+	function handleDelete() {
+		// Perform delete operation
+		console.log("Item deleted");
+	}
+</script>
+
+<button {...alertDialog.trigger}>Delete Item</button>
+
+<dialog {...alertDialog.content}>
+	<h2 {...alertDialog.title}>Delete this item?</h2>
+	<p {...alertDialog.description}>
+		This will permanently remove the item from your account.
+	</p>
+	<button {...alertDialog.cancel}>Keep it</button>
+	<button {...mergeAttrs(alertDialog.action, { onclick: handleDelete })}>
+		Yes, delete
+	</button>
+</dialog>
+```
+
+## Animating the Alert Dialog
+
+The same CSS animation techniques apply as with Dialog:
+
+```css
+/* Entry animation */
+dialog {
+	opacity: 0;
+	transform: scale(0.95);
+	transition:
+		opacity 0.2s ease-out,
+		transform 0.2s ease-out,
+		display 0.2s allow-discrete,
+		overlay 0.2s allow-discrete;
+}
+
+dialog[open] {
+	opacity: 1;
+	transform: scale(1);
+}
+
+@starting-style {
+	dialog[open] {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+}
+
+/* Backdrop animation */
+dialog::backdrop {
+	background: rgb(0 0 0 / 0);
+	transition: background 0.2s ease-out;
+}
+
+dialog[open]::backdrop {
+	background: rgb(0 0 0 / 0.5);
+}
+
+@starting-style {
+	dialog[open]::backdrop {
+		background: rgb(0 0 0 / 0);
+	}
+}
+```
+
+## API Reference
+
+<ApiTable entry="AlertDialog" />

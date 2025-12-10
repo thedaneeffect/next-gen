@@ -1472,6 +1472,115 @@
     ],
     "propsAlt": "export type FileUploadProps<Multiple extends boolean = false> = {\n  /**\n   * The currently selected files.\n   */\n  selected?: MaybeMultiple<File, Multiple>;\n\n  /**\n   * Callback fired when selected files change\n   */\n  onSelectedChange?: (files: Multiple extends true ? Set<File> : File | undefined) => void;\n\n  /**\n   * Whether to accept multiple files\n   * @default false\n   */\n  multiple?: MaybeGetter<Multiple | undefined>;\n\n  /**\n   * The accepted file types. Can be a MIME type, a MIME group, or a file extension.\n   * Separate multiple types with a comma.\n   * @example 'image/jpeg'\n   * @example 'image/*'\n   * @example '.png, .jpg, .jpeg'\n   */\n  accept?: MaybeGetter<string | undefined>;\n\n  /**\n   * Maximum file size in bytes\n   * @default undefined\n   */\n  maxSize?: MaybeGetter<number | undefined>;\n\n  /**\n   * Whether the file upload is disabled\n   * @default false\n   */\n  disabled?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Custom validate fn. Will be called together with the original validation,\n   * which takes into account the `accept` and `maxSize` props.\n   */\n  validate?: (file: File) => boolean;\n\n  /**\n   * Callback fired when a file fails validation\n   */\n  onError?: (error: FileUploadError) => void;\n\n  /**\n   * Callback fired when a file is accepted\n   */\n  onAccept?: (file: File) => void;\n\n  /**\n   * If true, checks the files contents to avoid duplicate.\n   * It's performance is not tested in large files, so by default its set to false.\n   *\n   * @default false\n   */\n  avoidDuplicates?: MaybeGetter<boolean | undefined>;\n};"
   },
+  "Dialog": {
+    "constructorProps": [
+      {
+        "name": "open",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether the dialog is open.\n\nWhen passing a getter, it will be used as source of truth,\nmeaning that the value only changes when the getter returns a new value.\n\nOtherwise, if passing a static value, it'll serve as the default value.",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void) | undefined",
+        "description": "Called when the open state changes.",
+        "optional": true
+      },
+      {
+        "name": "closeOnEscape",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether pressing the Escape key closes the dialog.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "closeOnOutsideClick",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether clicking the backdrop closes the dialog.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "preventScroll",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether to prevent body scrolling when the dialog is open.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "forceVisible",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Keep the dialog visible for exit animations.\nWhen true, the dialog remains in the DOM until CSS transitions complete.",
+        "defaultValue": "false",
+        "optional": true
+      }
+    ],
+    "methods": [],
+    "properties": [
+      {
+        "name": "closeOnEscape",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "closeOnOutsideClick",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "preventScroll",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "forceVisible",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "ids",
+        "type": "{\n  trigger: string\n  content: string\n  title: string\n  description: string\n  close: string\n}",
+        "description": ""
+      },
+      {
+        "name": "triggerEl",
+        "type": "HTMLElement | null",
+        "description": ""
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "description": "The open state of the dialog."
+      },
+      {
+        "name": "trigger",
+        "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-dialog-trigger\": \"\"\n  readonly \"aria-haspopup\": \"dialog\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-controls\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
+        "description": "The spread attributes for the trigger button."
+      },
+      {
+        "name": "content",
+        "type": "{\n  readonly [x: symbol]: Attachment<HTMLDialogElement>\n  readonly \"data-melt-dialog-content\": \"\"\n  readonly id: string\n  readonly role: \"dialog\"\n  readonly \"aria-modal\": true\n  readonly \"aria-labelledby\": string\n  readonly \"aria-describedby\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n}",
+        "description": "The spread attributes for the dialog content element.\nShould be used on a `<dialog>` element."
+      },
+      {
+        "name": "close",
+        "type": "{\n  readonly \"data-melt-dialog-close\": \"\"\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
+        "description": "The spread attributes for the close button."
+      },
+      {
+        "name": "title",
+        "type": "{ readonly \"data-melt-dialog-title\": \"\"; readonly id: string }",
+        "description": "The spread attributes for the dialog title.\nConnected to the dialog via `aria-labelledby`."
+      },
+      {
+        "name": "description",
+        "type": "{ readonly \"data-melt-dialog-description\": \"\"; readonly id: string }",
+        "description": "The spread attributes for the dialog description.\nConnected to the dialog via `aria-describedby`."
+      }
+    ],
+    "propsAlt": "export type DialogProps = {\n  /**\n   * Whether the dialog is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing the Escape key closes the dialog.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking the backdrop closes the dialog.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether to prevent body scrolling when the dialog is open.\n   *\n   * @default true\n   */\n  preventScroll?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Keep the dialog visible for exit animations.\n   * When true, the dialog remains in the DOM until CSS transitions complete.\n   *\n   * @default false\n   */\n  forceVisible?: MaybeGetter<boolean | undefined>;\n};"
+  },
   "Combobox": {
     "constructorProps": [
       {
@@ -1830,6 +1939,96 @@
       }
     ],
     "propsAlt": "export type AvatarProps = {\n  /**\n   * The source of the image to display.\n   */\n  src?: MaybeGetter<string | undefined>;\n\n  /**\n   * The amount of time in milliseconds to wait before displaying the image.\n   *\n   * @default 0\n   */\n  delayMs?: MaybeGetter<number | undefined>;\n\n  /**\n   * A callback invoked when the loading status store of the avatar changes.\n   */\n  onLoadingStatusChange?: (value: ImageLoadingStatus) => void | undefined;\n};"
+  },
+  "AlertDialog": {
+    "constructorProps": [
+      {
+        "name": "open",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether the alert dialog is open.\n\nWhen passing a getter, it will be used as source of truth,\nmeaning that the value only changes when the getter returns a new value.\n\nOtherwise, if passing a static value, it'll serve as the default value.",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void) | undefined",
+        "description": "Called when the open state changes.",
+        "optional": true
+      },
+      {
+        "name": "preventScroll",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether to prevent body scrolling when the dialog is open.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "forceVisible",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Keep the dialog visible for exit animations.\nWhen true, the dialog remains in the DOM until CSS transitions complete.",
+        "defaultValue": "false",
+        "optional": true
+      }
+    ],
+    "methods": [],
+    "properties": [
+      {
+        "name": "preventScroll",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "forceVisible",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "ids",
+        "type": "{\n  trigger: string\n  content: string\n  title: string\n  description: string\n  cancel: string\n  action: string\n}",
+        "description": ""
+      },
+      {
+        "name": "triggerEl",
+        "type": "HTMLElement | null",
+        "description": ""
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "description": "The open state of the alert dialog."
+      },
+      {
+        "name": "trigger",
+        "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-alert-dialog-trigger\": \"\"\n  readonly \"aria-haspopup\": \"dialog\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-controls\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
+        "description": "The spread attributes for the trigger button."
+      },
+      {
+        "name": "content",
+        "type": "{\n  readonly [x: symbol]: Attachment<HTMLDialogElement>\n  readonly \"data-melt-alert-dialog-content\": \"\"\n  readonly id: string\n  readonly role: \"alertdialog\"\n  readonly \"aria-modal\": true\n  readonly \"aria-labelledby\": string\n  readonly \"aria-describedby\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n}",
+        "description": "The spread attributes for the alert dialog content element.\nShould be used on a `<dialog>` element."
+      },
+      {
+        "name": "cancel",
+        "type": "{\n  readonly \"data-melt-alert-dialog-cancel\": \"\"\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
+        "description": "The spread attributes for the cancel button.\nCloses the dialog without taking action."
+      },
+      {
+        "name": "action",
+        "type": "{\n  readonly \"data-melt-alert-dialog-action\": \"\"\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
+        "description": "The spread attributes for the action button.\nConfirms the action and closes the dialog."
+      },
+      {
+        "name": "title",
+        "type": "{ readonly \"data-melt-alert-dialog-title\": \"\"; readonly id: string }",
+        "description": "The spread attributes for the alert dialog title.\nConnected to the dialog via `aria-labelledby`."
+      },
+      {
+        "name": "description",
+        "type": "{\n  readonly \"data-melt-alert-dialog-description\": \"\"\n  readonly id: string\n}",
+        "description": "The spread attributes for the alert dialog description.\nConnected to the dialog via `aria-describedby`."
+      }
+    ],
+    "propsAlt": "export type AlertDialogProps = {\n  /**\n   * Whether the alert dialog is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether to prevent body scrolling when the dialog is open.\n   *\n   * @default true\n   */\n  preventScroll?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Keep the dialog visible for exit animations.\n   * When true, the dialog remains in the DOM until CSS transitions complete.\n   *\n   * @default false\n   */\n  forceVisible?: MaybeGetter<boolean | undefined>;\n};"
   },
   "Accordion": {
     "constructorProps": [

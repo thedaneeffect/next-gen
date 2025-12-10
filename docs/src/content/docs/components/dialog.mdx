@@ -1,0 +1,178 @@
+---
+title: Dialog
+description: A modal dialog that interrupts the user with important content.
+---
+import ApiTable from "@components/api-table.astro";
+import Preview from "@previews/dialog.svelte";
+import Features from "@components/features.astro";
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Preview client:load />
+
+## Features
+
+<Features>
+- 🎯 Uses native `<dialog>` element for proper modal behavior
+- 🔒 Automatic focus trapping within the dialog (native)
+- ⌨️ Escape key closes the dialog (configurable)
+- 🖱️ Click outside to close (configurable)
+- 📜 Scroll lock on body when open (configurable)
+- ♿ Full accessibility with ARIA attributes
+- 🎨 CSS animation support with `@starting-style`
+</Features>
+
+## Usage
+
+<Tabs>
+	<TabItem label="Builder">
+```svelte
+<script lang="ts">
+	import { Dialog } from "melt/builders";
+
+	const dialog = new Dialog();
+</script>
+
+<button {...dialog.trigger}>Open Dialog</button>
+
+<dialog {...dialog.content}>
+	<h2 {...dialog.title}>Dialog Title</h2>
+	<p {...dialog.description}>This is the dialog content.</p>
+	<button {...dialog.close}>Close</button>
+</dialog>
+```
+	</TabItem>
+
+	<TabItem label="Component">
+```svelte
+<script lang="ts">
+	import { Dialog } from "melt/components";
+</script>
+
+<Dialog>
+	{#snippet children(dialog)}
+		<button {...dialog.trigger}>Open Dialog</button>
+
+		<dialog {...dialog.content}>
+			<h2 {...dialog.title}>Dialog Title</h2>
+			<p {...dialog.description}>This is the dialog content.</p>
+			<button {...dialog.close}>Close</button>
+		</dialog>
+	{/snippet}
+</Dialog>
+```
+	</TabItem>
+</Tabs>
+
+## Animating the Dialog
+
+The native `<dialog>` element supports CSS animations using `@starting-style` for entry animations and standard transitions for exit animations.
+
+```css
+/* Entry animation */
+dialog {
+	opacity: 0;
+	transform: scale(0.95);
+	transition:
+		opacity 0.2s ease-out,
+		transform 0.2s ease-out,
+		display 0.2s allow-discrete,
+		overlay 0.2s allow-discrete;
+}
+
+dialog[open] {
+	opacity: 1;
+	transform: scale(1);
+}
+
+@starting-style {
+	dialog[open] {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+}
+
+/* Backdrop animation */
+dialog::backdrop {
+	background: rgb(0 0 0 / 0);
+	transition: background 0.2s ease-out;
+}
+
+dialog[open]::backdrop {
+	background: rgb(0 0 0 / 0.5);
+}
+
+@starting-style {
+	dialog[open]::backdrop {
+		background: rgb(0 0 0 / 0);
+	}
+}
+```
+
+## Controlled State
+
+You can control the dialog's open state externally:
+
+```svelte
+<script lang="ts">
+	import { Dialog } from "melt/builders";
+
+	let isOpen = $state(false);
+
+	const dialog = new Dialog({
+		open: () => isOpen,
+		onOpenChange: (open) => (isOpen = open),
+	});
+</script>
+
+<button onclick={() => (isOpen = true)}>Open from outside</button>
+
+<dialog {...dialog.content}>
+	<p>Dialog is {isOpen ? 'open' : 'closed'}</p>
+	<button {...dialog.close}>Close</button>
+</dialog>
+```
+
+## Nested Dialogs
+
+The native `<dialog>` element supports stacking, so you can open a dialog from within another dialog:
+
+```svelte
+<script lang="ts">
+	import { Dialog } from "melt/builders";
+
+	const outerDialog = new Dialog();
+	const innerDialog = new Dialog();
+</script>
+
+<button {...outerDialog.trigger}>Open Outer</button>
+
+<dialog {...outerDialog.content}>
+	<h2 {...outerDialog.title}>Outer Dialog</h2>
+	<button {...innerDialog.trigger}>Open Inner</button>
+	<button {...outerDialog.close}>Close</button>
+
+	<dialog {...innerDialog.content}>
+		<h2 {...innerDialog.title}>Inner Dialog</h2>
+		<button {...innerDialog.close}>Close Inner</button>
+	</dialog>
+</dialog>
+```
+
+## Form Integration
+
+Dialogs work seamlessly with forms using `method="dialog"`:
+
+```svelte
+<dialog {...dialog.content}>
+	<form method="dialog">
+		<h2 {...dialog.title}>Confirm Action</h2>
+		<p {...dialog.description}>Are you sure you want to proceed?</p>
+		<button value="cancel">Cancel</button>
+		<button value="confirm">Confirm</button>
+	</form>
+</dialog>
+```
+
+## API Reference
+
+<ApiTable entry="Dialog" />

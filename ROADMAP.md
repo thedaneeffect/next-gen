@@ -14,7 +14,7 @@ This is a rough roadmap of planned features.
 - [ ] Command palette (?)
 - [ ] Context Menu with Dropdown and opening nested items on hover
 - [ ] Date Field & Picker (with ranges)
-- [ ] Dialog
+- [x] Dialog
 - [ ] Drawer (?)
 - [x] FileUpload
 - [ ] Hover preview
