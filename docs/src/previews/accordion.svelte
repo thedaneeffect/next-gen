@@ -56,7 +56,7 @@
 				<h2 class="relative flex" {...item.heading}>
 					<div
 						class={[
-							"border-accent-500 focus-ring absolute inset-0 z-10 border-4 transition-all",
+							"border-accent-400 focus-ring absolute inset-0 z-10 border transition-all",
 							isFirst && "rounded-t-xl",
 							isLast && !item.isExpanded && "rounded-b-xl",
 						]}

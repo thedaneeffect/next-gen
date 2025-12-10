@@ -123,15 +123,15 @@
 	{#each items as item (item.id)}
 		<li
 			{...item.attrs}
-			class="cursor-pointer rounded-sm !outline-none first:mt-0 [&:focus-visible>:first-child>div]:ring-4"
+			class="cursor-pointer rounded-sm !outline-none first:mt-0 [&:focus-visible>:first-child>div]:ring-1"
 		>
 			<div class="group py-1" style="padding-left: {depth * 1}rem">
 				<div
 					class="{item.selected
 						? '!bg-accent-500 dark:!bg-accent-200 dark:!text-accent-950 !text-white'
 						: ''}
-					ring-accent-500 dark:ring-accent-700 flex h-full w-full items-center gap-2 rounded-xl
-					px-3 py-1 ring-offset-white transition group-hover:bg-gray-200
+					ring-accent-400 flex h-full w-full items-center gap-2 rounded-xl
+					px-3 py-1 ring-offset-2 ring-offset-white transition group-hover:bg-gray-200
 					dark:ring-offset-black dark:group-hover:bg-gray-800"
 				>
 					{@render treeItemIcon(item)}

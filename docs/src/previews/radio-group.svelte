@@ -52,7 +52,7 @@
 			{#each items as i}
 				{@const item = group.getItem(i)}
 				<div
-					class="ring-accent-500 -ml-1 flex items-center gap-3 rounded p-1 outline-none focus-visible:ring
+					class="-ml-1 flex items-center gap-3 rounded p-1
 					data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50"
 					{...item.attrs}
 				>

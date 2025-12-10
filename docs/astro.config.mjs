@@ -15,7 +15,7 @@ export default defineConfig({
 		starlight({
 			title: "Melt UI",
 			expressiveCode: {
-				themes: ["vesper", "material-theme-lighter"],
+				themes: ["gruvbox-dark-medium", "gruvbox-light-medium"],
 				styleOverrides: {
 					borderWidth: "1px",
 					borderRadius: "0.5rem",
@@ -24,8 +24,8 @@ export default defineConfig({
 						shadowColor: "transparent",
 					},
 					textMarkers: {
-						markBackground: "#a4623333",
-						markBorderColor: "#a46233",
+						markBackground: "#d65d0e33",
+						markBorderColor: "#d65d0e",
 					},
 				},
 				minSyntaxHighlightingColorContrast: 10,

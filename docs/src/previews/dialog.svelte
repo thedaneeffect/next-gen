@@ -59,8 +59,8 @@
 					id="name"
 					type="text"
 					class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2
-						text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1
-						focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+						text-gray-900
+						dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
 					placeholder="Enter your name"
 				/>
 			</div>
@@ -72,8 +72,8 @@
 					id="email"
 					type="email"
 					class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2
-						text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1
-						focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+						text-gray-900
+						dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
 					placeholder="Enter your email"
 				/>
 			</div>
@@ -88,8 +88,8 @@
 				Cancel
 			</button>
 			<button
-				class="rounded-lg bg-blue-600 px-4 py-2 text-white transition
-					hover:bg-blue-700 active:bg-blue-800"
+				class="bg-accent-500 hover:bg-accent-600 active:bg-accent-700 rounded-lg px-4 py-2
+					text-white transition"
 				{...dialog.close}
 			>
 				Save changes
