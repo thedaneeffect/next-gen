@@ -28,9 +28,9 @@
 <Preview>
 	<div class="flex justify-center">
 		<button
-			class="focus-visible:ring-accent-400 relative size-16 rounded-xl bg-transparent
-				text-xl outline-none transition-all hover:cursor-pointer
-			  hover:bg-gray-300/25 focus-visible:ring-1 focus-visible:ring-offset-2 active:bg-gray-300/40 disabled:cursor-not-allowed
+			class="relative size-16 rounded-xl bg-transparent
+				text-xl transition-all hover:cursor-pointer
+			  hover:bg-gray-300/25 active:bg-gray-300/40 disabled:cursor-not-allowed
 				dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:disabled:bg-gray-900"
 			{...toggle.trigger}
 			aria-label="toggle favourite"

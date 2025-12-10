@@ -89,7 +89,7 @@
 						>
 							<div
 								class={[
-									"relative overflow-hidden rounded-md outline-2 outline-offset-2 transition-all",
+									"relative overflow-hidden rounded-md outline-1 outline-offset-1 transition-all",
 									item.highlighted ? "outline-accent-500 " : "!outline-transparent",
 									item.disabled ? "opacity-50" : "",
 								]}
