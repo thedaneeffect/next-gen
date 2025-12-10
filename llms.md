@@ -10,17 +10,17 @@
 
 ```svelte
 <script lang="ts">
-  import { Toggle } from "melt/builders";
+	import { Toggle } from "melt/builders";
 
-  let value = $state(false);
-  const toggle = new Toggle({
-    value: () => value,
-    onValueChange: (v) => (value = v),
-  });
+	let value = $state(false);
+	const toggle = new Toggle({
+		value: () => value,
+		onValueChange: (v) => (value = v),
+	});
 </script>
 
 <button {...toggle.trigger}>
-  {toggle.value ? "On" : "Off"}
+	{toggle.value ? "On" : "Off"}
 </button>
 ```
 
@@ -28,17 +28,17 @@
 
 ```svelte
 <script lang="ts">
-  import { Toggle } from "melt/components";
+	import { Toggle } from "melt/components";
 
-  let value = $state(false);
+	let value = $state(false);
 </script>
 
 <Toggle bind:value>
-  {#snippet children(toggle)}
-    <button {...toggle.trigger}>
-      {toggle.value ? "On" : "Off"}
-    </button>
-  {/snippet}
+	{#snippet children(toggle)}
+		<button {...toggle.trigger}>
+			{toggle.value ? "On" : "Off"}
+		</button>
+	{/snippet}
 </Toggle>
 ```
 
@@ -71,8 +71,8 @@ toggle.value; // managed internally
 ```ts
 let isEnabled = $state(false);
 const toggle = new Toggle({
-  value: () => isEnabled,
-  onValueChange: (v) => (isEnabled = v),
+	value: () => isEnabled,
+	onValueChange: (v) => (isEnabled = v),
 });
 ```
 
@@ -98,15 +98,21 @@ Components expose `data-melt-*` attributes and state attributes for CSS:
 
 ```css
 /* Target by component */
-[data-melt-toggle-trigger] { }
+[data-melt-toggle-trigger] {
+}
 
 /* Target by state */
-[data-melt-toggle-trigger][data-checked] { background: blue; }
-[data-melt-slider-root][data-dragging] { }
-[data-melt-collapsible-trigger][data-disabled] { }
+[data-melt-toggle-trigger][data-checked] {
+	background: blue;
+}
+[data-melt-slider-root][data-dragging] {
+}
+[data-melt-collapsible-trigger][data-disabled] {
+}
 ```
 
 CSS variables for positioning:
+
 - `--percentage` / `--percentage-inv` (Slider)
 - `--progress` / `--neg-progress` (Progress)
 - `--melt-invoker-width/height/x/y` (floating elements)
@@ -117,10 +123,10 @@ Popover, Tooltip, Select, and Combobox use Floating UI. Configure via `floatingC
 
 ```ts
 const popover = new Popover({
-  floatingConfig: {
-    placement: "bottom-start",
-    offset: 8,
-  },
+	floatingConfig: {
+		placement: "bottom-start",
+		offset: 8,
+	},
 });
 ```
 
@@ -134,28 +140,28 @@ Expandable/collapsible content sections with keyboard navigation.
 
 ```svelte
 <script lang="ts">
-  import { Accordion, type AccordionItem } from "melt/builders";
+	import { Accordion, type AccordionItem } from "melt/builders";
 
-  type Item = AccordionItem<{ title: string; description: string }>;
+	type Item = AccordionItem<{ title: string; description: string }>;
 
-  const items: Item[] = [
-    { id: "item-1", title: "What is it?", description: "A headless UI library" },
-    { id: "item-2", title: "Can I customize it?", description: "Yes, 100%" },
-  ];
+	const items: Item[] = [
+		{ id: "item-1", title: "What is it?", description: "A headless UI library" },
+		{ id: "item-2", title: "Can I customize it?", description: "Yes, 100%" },
+	];
 
-  const accordion = new Accordion();
+	const accordion = new Accordion();
 </script>
 
 <div {...accordion.root}>
-  {#each items as i}
-    {@const item = accordion.getItem(i)}
-    <h2 {...item.heading}>
-      <button {...item.trigger}>{item.item.title}</button>
-    </h2>
-    {#if item.isExpanded}
-      <div {...item.content}>{item.item.description}</div>
-    {/if}
-  {/each}
+	{#each items as i}
+		{@const item = accordion.getItem(i)}
+		<h2 {...item.heading}>
+			<button {...item.trigger}>{item.item.title}</button>
+		</h2>
+		{#if item.isExpanded}
+			<div {...item.content}>{item.item.description}</div>
+		{/if}
+	{/each}
 </div>
 ```
 
@@ -168,11 +174,13 @@ Expandable/collapsible content sections with keyboard navigation.
 | `onValueChange` | `(value) => void` | - | Called when expansion changes |
 
 **Methods:**
+
 - `getItem(item)` - Get item with spread attributes
 - `isExpanded(id)` - Check if item is expanded
 - `expand(id)` / `collapse(id)` / `toggleExpanded(id)` - Control expansion
 
 **Spread Attributes:**
+
 - `accordion.root` - Root container
 - `item.heading` - Heading wrapper (h2, h3, etc.)
 - `item.trigger` - Button to toggle
@@ -186,9 +194,9 @@ Image with fallback for representing users.
 
 ```svelte
 <script lang="ts">
-  import { Avatar } from "melt/builders";
+	import { Avatar } from "melt/builders";
 
-  const avatar = new Avatar({ src: "https://example.com/photo.jpg" });
+	const avatar = new Avatar({ src: "https://example.com/photo.jpg" });
 </script>
 
 <img {...avatar.image} alt="User avatar" />
@@ -203,9 +211,11 @@ Image with fallback for representing users.
 | `onLoadingStatusChange` | `(status) => void` | - | Called when loading status changes |
 
 **Properties:**
+
 - `loadingStatus` - `"loading" | "loaded" | "error"`
 
 **Spread Attributes:**
+
 - `avatar.image` - The img element (hidden until loaded)
 - `avatar.fallback` - Fallback content (hidden when image loads)
 
@@ -217,14 +227,14 @@ Simple expand/collapse panel.
 
 ```svelte
 <script lang="ts">
-  import { Collapsible } from "melt/builders";
+	import { Collapsible } from "melt/builders";
 
-  const collapsible = new Collapsible();
+	const collapsible = new Collapsible();
 </script>
 
 <button {...collapsible.trigger}>Toggle</button>
 {#if collapsible.open}
-  <div {...collapsible.content}>Content here</div>
+	<div {...collapsible.content}>Content here</div>
 {/if}
 ```
 
@@ -236,9 +246,11 @@ Simple expand/collapse panel.
 | `onOpenChange` | `(open: boolean) => void` | - | Called when open changes |
 
 **Properties:**
+
 - `open` - Current open state (readable/writable)
 
 **Spread Attributes:**
+
 - `collapsible.trigger` - Button to toggle
 - `collapsible.content` - Content panel
 
@@ -250,19 +262,19 @@ Filterable select with text input, supports multi-select.
 
 ```svelte
 <script lang="ts">
-  import { Combobox } from "melt/builders";
+	import { Combobox } from "melt/builders";
 
-  const options = ["Apple", "Banana", "Cherry"] as const;
-  type Option = (typeof options)[number];
+	const options = ["Apple", "Banana", "Cherry"] as const;
+	type Option = (typeof options)[number];
 
-  const combobox = new Combobox<Option>();
+	const combobox = new Combobox<Option>();
 
-  const filtered = $derived.by(() => {
-    if (!combobox.touched) return options;
-    return options.filter((o) =>
-      o.toLowerCase().includes(combobox.inputValue.trim().toLowerCase())
-    );
-  });
+	const filtered = $derived.by(() => {
+		if (!combobox.touched) return options;
+		return options.filter((o) =>
+			o.toLowerCase().includes(combobox.inputValue.trim().toLowerCase()),
+		);
+	});
 </script>
 
 <label {...combobox.label}>Fruit</label>
@@ -270,14 +282,14 @@ Filterable select with text input, supports multi-select.
 <button {...combobox.trigger}>Open</button>
 
 <div {...combobox.content}>
-  {#each filtered as option}
-    <div {...combobox.getOption(option)}>
-      {option}
-      {#if combobox.isSelected(option)}✓{/if}
-    </div>
-  {:else}
-    <span>No results</span>
-  {/each}
+	{#each filtered as option}
+		<div {...combobox.getOption(option)}>
+			{option}
+			{#if combobox.isSelected(option)}✓{/if}
+		</div>
+	{:else}
+		<span>No results</span>
+	{/each}
 </div>
 ```
 
@@ -300,12 +312,14 @@ Filterable select with text input, supports multi-select.
 | `onNavigate` | `(current, direction) => T` | - | Custom navigation (virtualization) |
 
 **Properties:**
+
 - `value` - Selected value(s)
 - `inputValue` - Current input text
 - `highlighted` - Currently highlighted option
 - `touched` - Whether input has been modified
 
 **Methods:**
+
 - `getOption(value, label?)` - Get option attributes
 - `isSelected(value)` - Check if option is selected
 - `select(value)` - Select an option
@@ -313,11 +327,85 @@ Filterable select with text input, supports multi-select.
 - `highlightNext()` / `highlightPrev()` / `highlightFirst()` / `highlightLast()`
 
 **Spread Attributes:**
+
 - `combobox.label` - Label element
 - `combobox.input` - Text input
 - `combobox.trigger` - Dropdown trigger button
 - `combobox.content` - Dropdown content
 - `combobox.getOption(value)` - Individual option
+
+---
+
+### Context Menu
+
+Right-click menu with nested submenus support.
+
+```svelte
+<script lang="ts">
+	import { ContextMenu } from "melt/builders";
+
+	const menu = new ContextMenu();
+	const shareSubmenu = menu.createSub();
+</script>
+
+<div {...menu.trigger}>Right-click here</div>
+
+<div {...menu.content}>
+	<button {...menu.getItem({ onSelect: () => console.log("copy") })}>Copy</button>
+	<button {...menu.getItem({ onSelect: () => console.log("paste") })}>Paste</button>
+	<hr {...menu.separator} />
+	<span {...menu.label}>Share</span>
+	<button {...shareSubmenu.trigger}>Share →</button>
+</div>
+
+<div {...shareSubmenu.content}>
+	<button {...shareSubmenu.getItem({ onSelect: () => console.log("email") })}>Email</button>
+	<button {...shareSubmenu.getItem({ onSelect: () => console.log("twitter") })}>Twitter</button>
+</div>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `open` | `MaybeGetter<boolean>` | `false` | Whether open |
+| `onOpenChange` | `(open: boolean) => void` | - | Called when open changes |
+| `closeOnEscape` | `MaybeGetter<boolean>` | `true` | Close on Escape key |
+| `closeOnOutsideClick` | `MaybeGetter<boolean>` | `true` | Close on outside click |
+| `floatingConfig` | `UseFloatingConfig` | - | Floating UI config |
+
+**Properties:**
+
+- `open` - Current open state (readable/writable)
+
+**Methods:**
+
+- `getItem({ onSelect?, disabled? })` - Get item attributes
+- `createSub(props?)` - Create a nested submenu
+- `close()` - Programmatically close
+
+**Spread Attributes:**
+
+- `menu.trigger` - Element to right-click on
+- `menu.content` - Menu content (uses native `popover`)
+- `menu.separator` - Visual separator
+- `menu.label` - Group label
+
+**Submenu (from `createSub()`):**
+
+- `submenu.trigger` - Submenu trigger item
+- `submenu.content` - Submenu content
+- `submenu.getItem()` / `separator` / `label` - Same as parent
+- `submenu.createSub()` - Nest further submenus
+
+**Keyboard Navigation:**
+
+- ArrowUp/Down - Move between items
+- ArrowRight - Open submenu
+- ArrowLeft - Close submenu
+- Home/End - Jump to first/last
+- Enter/Space - Select item
+- Escape - Close menu
+- Typing - Typeahead search
 
 ---
 
@@ -327,17 +415,17 @@ Modal dialog that interrupts the user with important content.
 
 ```svelte
 <script lang="ts">
-  import { Dialog } from "melt/builders";
+	import { Dialog } from "melt/builders";
 
-  const dialog = new Dialog();
+	const dialog = new Dialog();
 </script>
 
 <button {...dialog.trigger}>Open Dialog</button>
 
 <dialog {...dialog.content}>
-  <h2 {...dialog.title}>Dialog Title</h2>
-  <p {...dialog.description}>Dialog content here.</p>
-  <button {...dialog.close}>Close</button>
+	<h2 {...dialog.title}>Dialog Title</h2>
+	<p {...dialog.description}>Dialog content here.</p>
+	<button {...dialog.close}>Close</button>
 </dialog>
 ```
 
@@ -352,9 +440,11 @@ Modal dialog that interrupts the user with important content.
 | `forceVisible` | `MaybeGetter<boolean>` | `false` | Keep visible for exit animations |
 
 **Properties:**
+
 - `open` - Current open state (readable/writable)
 
 **Spread Attributes:**
+
 - `dialog.trigger` - Button to open
 - `dialog.content` - The `<dialog>` element
 - `dialog.close` - Button to close
@@ -369,18 +459,18 @@ Modal dialog for important actions that requires explicit user response. Cannot 
 
 ```svelte
 <script lang="ts">
-  import { AlertDialog } from "melt/builders";
+	import { AlertDialog } from "melt/builders";
 
-  const alertDialog = new AlertDialog();
+	const alertDialog = new AlertDialog();
 </script>
 
 <button {...alertDialog.trigger}>Delete</button>
 
 <dialog {...alertDialog.content}>
-  <h2 {...alertDialog.title}>Are you sure?</h2>
-  <p {...alertDialog.description}>This action cannot be undone.</p>
-  <button {...alertDialog.cancel}>Cancel</button>
-  <button {...alertDialog.action}>Delete</button>
+	<h2 {...alertDialog.title}>Are you sure?</h2>
+	<p {...alertDialog.description}>This action cannot be undone.</p>
+	<button {...alertDialog.cancel}>Cancel</button>
+	<button {...alertDialog.action}>Delete</button>
 </dialog>
 ```
 
@@ -393,9 +483,11 @@ Modal dialog for important actions that requires explicit user response. Cannot 
 | `forceVisible` | `MaybeGetter<boolean>` | `false` | Keep visible for exit animations |
 
 **Properties:**
+
 - `open` - Current open state (readable/writable)
 
 **Spread Attributes:**
+
 - `alertDialog.trigger` - Button to open
 - `alertDialog.content` - The `<dialog>` element (role="alertdialog")
 - `alertDialog.cancel` - Cancel button (closes without action)
@@ -411,28 +503,28 @@ Drag-and-drop file upload with validation.
 
 ```svelte
 <script lang="ts">
-  import { FileUpload } from "melt/builders";
+	import { FileUpload } from "melt/builders";
 
-  const fileUpload = new FileUpload({
-    accept: "image/*",
-    maxSize: 5 * 1024 * 1024, // 5MB
-    multiple: true,
-  });
+	const fileUpload = new FileUpload({
+		accept: "image/*",
+		maxSize: 5 * 1024 * 1024, // 5MB
+		multiple: true,
+	});
 </script>
 
 <input {...fileUpload.input} />
 <div {...fileUpload.dropzone}>
-  {#if fileUpload.isDragging}
-    Drop files here
-  {:else}
-    Click or drag files
-  {/if}
+	{#if fileUpload.isDragging}
+		Drop files here
+	{:else}
+		Click or drag files
+	{/if}
 </div>
 
 {#if fileUpload.selected}
-  {#each [...fileUpload.selected] as file}
-    <div>{file.name} <button onclick={() => fileUpload.remove(file)}>Remove</button></div>
-  {/each}
+	{#each [...fileUpload.selected] as file}
+		<div>{file.name} <button onclick={() => fileUpload.remove(file)}>Remove</button></div>
+	{/each}
 {/if}
 ```
 
@@ -451,15 +543,18 @@ Drag-and-drop file upload with validation.
 | `onError` | `(error) => void` | - | Called on validation error |
 
 **Properties:**
+
 - `selected` - Currently selected file(s)
 - `isDragging` - Whether file is being dragged over
 
 **Methods:**
+
 - `clear()` - Clear all selected files
 - `remove(file)` - Remove specific file
 - `has(file)` - Check if file is selected
 
 **Spread Attributes:**
+
 - `fileUpload.input` - Hidden file input
 - `fileUpload.dropzone` - Drop zone area
 - `fileUpload.trigger` - Optional trigger button
@@ -472,19 +567,19 @@ Sequence of single-character inputs for PINs/OTPs.
 
 ```svelte
 <script lang="ts">
-  import { PinInput } from "melt/builders";
+	import { PinInput } from "melt/builders";
 
-  const pinInput = new PinInput({
-    maxLength: 6,
-    type: "numeric",
-    onComplete: (value) => console.log("PIN:", value),
-  });
+	const pinInput = new PinInput({
+		maxLength: 6,
+		type: "numeric",
+		onComplete: (value) => console.log("PIN:", value),
+	});
 </script>
 
 <div {...pinInput.root}>
-  {#each pinInput.inputs as input}
-    <input {...input} />
-  {/each}
+	{#each pinInput.inputs as input}
+		<input {...input} />
+	{/each}
 </div>
 ```
 
@@ -504,10 +599,12 @@ Sequence of single-character inputs for PINs/OTPs.
 | `onError` | `(error) => void` | - | Called on validation error |
 
 **Properties:**
+
 - `value` - Current PIN string
 - `isFilled` - Whether all fields are filled
 
 **Spread Attributes:**
+
 - `pinInput.root` - Container element
 - `pinInput.inputs` - Array of input attributes (spread each)
 
@@ -519,15 +616,12 @@ Floating content anchored to a trigger.
 
 ```svelte
 <script lang="ts">
-  import { Popover } from "melt/builders";
+	import { Popover } from "melt/builders";
 
-  const popover = new Popover();
+	const popover = new Popover();
 </script>
 
-<button {...popover.trigger}>Open</button>
-<div {...popover.content}>
-  Popover content here
-</div>
+<button {...popover.trigger}>Open</button><div {...popover.content}>Popover content here</div>
 ```
 
 **Props:**
@@ -542,9 +636,11 @@ Floating content anchored to a trigger.
 | `onOpenChange` | `(open: boolean) => void` | - | Called when open changes |
 
 **Properties:**
+
 - `open` - Current open state
 
 **Spread Attributes:**
+
 - `popover.trigger` - Button to toggle
 - `popover.content` - Floating content (uses native `popover` attribute)
 
@@ -556,19 +652,19 @@ Progress bar with accessibility support.
 
 ```svelte
 <script lang="ts">
-  import { Progress } from "melt/builders";
+	import { Progress } from "melt/builders";
 
-  const progress = new Progress({ value: 50 });
+	const progress = new Progress({ value: 50 });
 </script>
 
 <div {...progress.root}>
-  <div {...progress.progress} />
+	<div {...progress.progress} />
 </div>
 
 <style>
-  [data-melt-progress-progress] {
-    transform: translateX(calc(var(--progress) * -1));
-  }
+	[data-melt-progress-progress] {
+		transform: translateX(calc(var(--progress) * -1));
+	}
 </style>
 ```
 
@@ -580,13 +676,16 @@ Progress bar with accessibility support.
 | `onValueChange` | `(value: number) => void` | - | Called when value changes |
 
 **Properties:**
+
 - `value` - Current progress value
 
 **CSS Variables:**
+
 - `--progress` - Percentage as CSS value (e.g., "50%")
 - `--neg-progress` - Negative percentage
 
 **Spread Attributes:**
+
 - `progress.root` - Container with ARIA attributes
 - `progress.progress` - Progress indicator element
 
@@ -598,22 +697,22 @@ Single-select radio button group.
 
 ```svelte
 <script lang="ts">
-  import { RadioGroup } from "melt/builders";
+	import { RadioGroup } from "melt/builders";
 
-  const group = new RadioGroup();
-  const options = ["small", "medium", "large"];
+	const group = new RadioGroup();
+	const options = ["small", "medium", "large"];
 </script>
 
 <div {...group.root}>
-  <label {...group.label}>Size</label>
-  {#each options as option}
-    {@const item = group.getItem(option)}
-    <div {...item.attrs}>
-      {#if item.checked}✓{/if}
-      {option}
-    </div>
-  {/each}
-  <input {...group.hiddenInput} />
+	<label {...group.label}>Size</label>
+	{#each options as option}
+		{@const item = group.getItem(option)}
+		<div {...item.attrs}>
+			{#if item.checked}✓{/if}
+			{option}
+		</div>
+	{/each}
+	<input {...group.hiddenInput} />
 </div>
 ```
 
@@ -630,10 +729,12 @@ Single-select radio button group.
 | `onValueChange` | `(value: string) => void` | - | Called when value changes |
 
 **Methods:**
+
 - `getItem(value)` - Get item with `{ attrs, checked }`
 - `select(value)` - Select an item
 
 **Spread Attributes:**
+
 - `group.root` - Container
 - `group.label` - Label element
 - `item.attrs` - Individual radio item
@@ -647,24 +748,24 @@ Dropdown selection with typeahead.
 
 ```svelte
 <script lang="ts">
-  import { Select } from "melt/builders";
+	import { Select } from "melt/builders";
 
-  const options = ["Apple", "Banana", "Cherry"];
-  const select = new Select<string>();
+	const options = ["Apple", "Banana", "Cherry"];
+	const select = new Select<string>();
 </script>
 
 <label {...select.label}>Fruit</label>
 <button {...select.trigger}>
-  {select.value ?? "Select..."}
+	{select.value ?? "Select..."}
 </button>
 
 <div {...select.content}>
-  {#each options as option}
-    <div {...select.getOption(option)}>
-      {option}
-      {#if select.isSelected(option)}✓{/if}
-    </div>
-  {/each}
+	{#each options as option}
+		<div {...select.getOption(option)}>
+			{option}
+			{#if select.isSelected(option)}✓{/if}
+		</div>
+	{/each}
 </div>
 ```
 
@@ -686,16 +787,19 @@ Dropdown selection with typeahead.
 | `onNavigate` | `(current, direction) => T` | - | Custom navigation |
 
 **Properties:**
+
 - `value` - Selected value(s)
 - `highlighted` - Currently highlighted option
 - `valueAsString` - Value as display string
 
 **Methods:**
+
 - `getOption(value, label?)` - Get option attributes
 - `isSelected(value)` - Check if selected
 - `select(value)` - Select an option
 
 **Spread Attributes:**
+
 - `select.label` - Label element
 - `select.trigger` - Dropdown trigger
 - `select.content` - Dropdown content
@@ -709,16 +813,16 @@ Draggable numeric input.
 
 ```svelte
 <script lang="ts">
-  import { Slider } from "melt/builders";
+	import { Slider } from "melt/builders";
 
-  const slider = new Slider({ value: 50 });
+	const slider = new Slider({ value: 50 });
 </script>
 
 <div {...slider.root}>
-  <div class="track">
-    <div class="range" style="right: var(--percentage-inv)"></div>
-    <div {...slider.thumb} style="left: var(--percentage)"></div>
-  </div>
+	<div class="track">
+		<div class="range" style="right: var(--percentage-inv)"></div>
+		<div {...slider.thumb} style="left: var(--percentage)"></div>
+	</div>
 </div>
 ```
 
@@ -733,16 +837,20 @@ Draggable numeric input.
 | `onValueChange` | `(value: number) => void` | - | Called when value changes |
 
 **Properties:**
+
 - `value` - Current slider value
 
 **CSS Variables:**
+
 - `--percentage` - Value as percentage (e.g., "50%")
 - `--percentage-inv` - Inverse percentage (e.g., "50%")
 
 **Data Attributes:**
+
 - `[data-dragging]` - Present while dragging
 
 **Spread Attributes:**
+
 - `slider.root` - Track element (captures pointer)
 - `slider.thumb` - Draggable thumb
 
@@ -754,22 +862,22 @@ Tabbed content organization.
 
 ```svelte
 <script lang="ts">
-  import { Tabs } from "melt/builders";
+	import { Tabs } from "melt/builders";
 
-  const tabs = new Tabs({ value: "tab1" });
-  const tabIds = ["tab1", "tab2", "tab3"];
+	const tabs = new Tabs({ value: "tab1" });
+	const tabIds = ["tab1", "tab2", "tab3"];
 </script>
 
 <div {...tabs.triggerList}>
-  {#each tabIds as id}
-    <button {...tabs.getTrigger(id)}>{id}</button>
-  {/each}
+	{#each tabIds as id}
+		<button {...tabs.getTrigger(id)}>{id}</button>
+	{/each}
 </div>
 
 {#each tabIds as id}
-  <div {...tabs.getContent(id)}>
-    Content for {id}
-  </div>
+	<div {...tabs.getContent(id)}>
+		Content for {id}
+	</div>
 {/each}
 ```
 
@@ -783,13 +891,16 @@ Tabbed content organization.
 | `onValueChange` | `(value: string) => void` | - | Called when tab changes |
 
 **Properties:**
+
 - `value` - Currently active tab
 
 **Methods:**
+
 - `getTrigger(id)` - Get trigger button attributes
 - `getContent(id)` - Get content panel attributes
 
 **Spread Attributes:**
+
 - `tabs.triggerList` - Container for tab buttons
 - `tabs.getTrigger(id)` - Individual tab button
 - `tabs.getContent(id)` - Tab content panel
@@ -803,38 +914,38 @@ Toast notifications with auto-close.
 ```svelte
 <!-- Toaster.svelte -->
 <script lang="ts" module>
-  import { Toaster } from "melt/builders";
+	import { Toaster } from "melt/builders";
 
-  type ToastData = { title: string; description: string };
-  const toaster = new Toaster<ToastData>();
+	type ToastData = { title: string; description: string };
+	const toaster = new Toaster<ToastData>();
 
-  export const addToast = toaster.addToast;
+	export const addToast = toaster.addToast;
 </script>
 
 <script lang="ts">
 </script>
 
 <div {...toaster.root}>
-  {#each toaster.toasts as toast (toast.id)}
-    <div {...toast.content}>
-      <h3 {...toast.title}>{toast.data.title}</h3>
-      <p {...toast.description}>{toast.data.description}</p>
-      <button {...toast.close}>×</button>
-    </div>
-  {/each}
+	{#each toaster.toasts as toast (toast.id)}
+		<div {...toast.content}>
+			<h3 {...toast.title}>{toast.data.title}</h3>
+			<p {...toast.description}>{toast.data.description}</p>
+			<button {...toast.close}>×</button>
+		</div>
+	{/each}
 </div>
 ```
 
 ```svelte
 <!-- Usage anywhere -->
 <script>
-  import { addToast } from "./Toaster.svelte";
+	import { addToast } from "./Toaster.svelte";
 
-  function notify() {
-    addToast({
-      data: { title: "Success", description: "Item saved!" },
-    });
-  }
+	function notify() {
+		addToast({
+			data: { title: "Success", description: "Item saved!" },
+		});
+	}
 </script>
 ```
 
@@ -847,15 +958,18 @@ Toast notifications with auto-close.
 | `tabHidden` | `MaybeGetter<"pause-all" \| null>` | `"pause-all"` | Pause when tab hidden |
 
 **Properties:**
+
 - `toasts` - Array of active toasts
 
 **Methods:**
+
 - `addToast({ data, ...options })` - Add a toast, returns Toast instance
 - `removeToast(id)` - Remove toast by ID
 - `updateToast({ id, data })` - Update toast data
 - `pauseAll()` / `resumeAll()` - Pause/resume all countdowns
 
 **Toast Properties:**
+
 - `toast.content` - Toast container
 - `toast.title` - Title element
 - `toast.description` - Description element
@@ -869,13 +983,13 @@ On/off toggle button.
 
 ```svelte
 <script lang="ts">
-  import { Toggle } from "melt/builders";
+	import { Toggle } from "melt/builders";
 
-  const toggle = new Toggle();
+	const toggle = new Toggle();
 </script>
 
 <button {...toggle.trigger} aria-label="Toggle feature">
-  {toggle.value ? "On" : "Off"}
+	{toggle.value ? "On" : "Off"}
 </button>
 ```
 
@@ -887,12 +1001,15 @@ On/off toggle button.
 | `onValueChange` | `(value: boolean) => void` | - | Called when value changes |
 
 **Properties:**
+
 - `value` - Current boolean state (readable/writable)
 
 **Data Attributes:**
+
 - `[data-checked]` - Present when value is true
 
 **Spread Attributes:**
+
 - `toggle.trigger` - Button element
 - `toggle.hiddenInput` - Hidden input for forms
 
@@ -904,15 +1021,15 @@ Hover/focus-triggered popup.
 
 ```svelte
 <script lang="ts">
-  import { Tooltip } from "melt/builders";
+	import { Tooltip } from "melt/builders";
 
-  const tooltip = new Tooltip();
+	const tooltip = new Tooltip();
 </script>
 
 <button {...tooltip.trigger}>Hover me</button>
 <div {...tooltip.content}>
-  <div {...tooltip.arrow}></div>
-  Tooltip content
+	<div {...tooltip.arrow}></div>
+	Tooltip content
 </div>
 ```
 
@@ -929,10 +1046,12 @@ Hover/focus-triggered popup.
 | `onOpenChange` | `(open: boolean) => void` | - | Called when open changes |
 
 **Properties:**
+
 - `open` - Current visibility state
 - `isVisible` - Whether content is visible
 
 **Spread Attributes:**
+
 - `tooltip.trigger` - Element that triggers tooltip
 - `tooltip.content` - Tooltip content
 - `tooltip.arrow` - Optional arrow element
@@ -945,41 +1064,41 @@ Hierarchical tree view with expand/collapse.
 
 ```svelte
 <script lang="ts">
-  import { Tree, type TreeItem } from "melt/builders";
+	import { Tree, type TreeItem } from "melt/builders";
 
-  const items: TreeItem[] = [
-    {
-      id: "1",
-      value: "Folder 1",
-      children: [
-        { id: "1-1", value: "File 1.1" },
-        { id: "1-2", value: "File 1.2" },
-      ],
-    },
-    { id: "2", value: "File 2" },
-  ];
+	const items: TreeItem[] = [
+		{
+			id: "1",
+			value: "Folder 1",
+			children: [
+				{ id: "1-1", value: "File 1.1" },
+				{ id: "1-2", value: "File 1.2" },
+			],
+		},
+		{ id: "2", value: "File 2" },
+	];
 
-  const tree = new Tree({ items });
+	const tree = new Tree({ items });
 </script>
 
 {#snippet treeItems(children, depth = 0)}
-  {#each children as child}
-    <div {...child.attrs} style="padding-left: {depth * 16}px">
-      {#if child.children?.length}
-        <button onclick={() => tree.toggleExpand(child.id)}>
-          {tree.isExpanded(child.id) ? "▼" : "▶"}
-        </button>
-      {/if}
-      {child.item.value}
-      {#if child.children?.length && tree.isExpanded(child.id)}
-        {@render treeItems(child.children, depth + 1)}
-      {/if}
-    </div>
-  {/each}
+	{#each children as child}
+		<div {...child.attrs} style="padding-left: {depth * 16}px">
+			{#if child.children?.length}
+				<button onclick={() => tree.toggleExpand(child.id)}>
+					{tree.isExpanded(child.id) ? "▼" : "▶"}
+				</button>
+			{/if}
+			{child.item.value}
+			{#if child.children?.length && tree.isExpanded(child.id)}
+				{@render treeItems(child.children, depth + 1)}
+			{/if}
+		</div>
+	{/each}
 {/snippet}
 
 <div {...tree.root}>
-  {@render treeItems(tree.children)}
+	{@render treeItems(tree.children)}
 </div>
 ```
 
@@ -996,11 +1115,13 @@ Hierarchical tree view with expand/collapse.
 | `onExpandedChange` | `(value: Set<string>) => void` | - | Called when expansion changes |
 
 **Properties:**
+
 - `children` - Array of Child instances
 - `selected` - Selected item ID(s)
 - `expanded` - Set of expanded IDs
 
 **Methods:**
+
 - `isSelected(id)` / `isExpanded(id)` - Check state
 - `select(id)` / `deselect(id)` / `toggleSelect(id)` / `clearSelection()` / `selectAll()`
 - `expand(id)` / `collapse(id)` / `toggleExpand(id)` / `expandAll()` / `collapseAll()`
@@ -1008,6 +1129,7 @@ Hierarchical tree view with expand/collapse.
 - `selectUntil(id)` - Range selection
 
 **Spread Attributes:**
+
 - `tree.root` - Root container
 - `tree.group` - Group container
 - `child.attrs` - Individual tree item
@@ -1022,8 +1144,8 @@ type MaybeGetter<T> = T | (() => T);
 
 // For components supporting multiple selection
 type MaybeMultiple<T, Multiple extends boolean> = Multiple extends true
-  ? IterableProp<T>
-  : MaybeGetter<T>;
+	? IterableProp<T>
+	: MaybeGetter<T>;
 
 // Iterable that can be controlled
 type IterableProp<T> = SvelteSet<T> | MaybeGetter<Iterable<T>>;

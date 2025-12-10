@@ -2,6 +2,7 @@ export * from "./Accordion.svelte";
 export * from "./AlertDialog.svelte";
 export * from "./Avatar.svelte";
 export * from "./Collapsible.svelte";
+export * from "./ContextMenu.svelte";
 export * from "./Dialog.svelte";
 export * from "./Combobox.svelte";
 export * from "./FileUpload.svelte";

@@ -12,7 +12,7 @@ This is a rough roadmap of planned features.
 - [ ] Color Picker
 - [x] Combobox
 - [ ] Command palette (?)
-- [ ] Context Menu with Dropdown and opening nested items on hover
+- [x] Context Menu with Dropdown and opening nested items on hover
 - [ ] Date Field & Picker (with ranges)
 - [x] Dialog
 - [ ] Drawer (?)

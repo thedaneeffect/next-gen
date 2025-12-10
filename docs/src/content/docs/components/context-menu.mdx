@@ -1,0 +1,216 @@
+---
+title: Context Menu
+description: A menu that appears on right-click, with support for nested submenus.
+---
+import ApiTable from "@components/api-table.astro";
+import Preview from "@previews/context-menu.svelte";
+import Features from "@components/features.astro";
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Preview client:load />
+
+## Features
+
+<Features>
+- 🖱️ Opens on right-click at cursor position
+- ⌨️ Full keyboard navigation (Arrow keys, Home, End, Enter, Space)
+- 🔤 Typeahead search - jump to items by typing
+- 📁 Multi-level nested submenus via `createSub()`
+- 🎯 Smart pointer tracking with safe polygon zones
+- ⏱️ 100ms hover delay for submenus
+- ♿ Full ARIA menu semantics
+- 🎨 CSS animation support with `@starting-style`
+</Features>
+
+## Usage
+
+<Tabs>
+	<TabItem label="Builder">
+```svelte
+<script lang="ts">
+	import { ContextMenu } from "melt/builders";
+
+	const menu = new ContextMenu();
+</script>
+
+<div {...menu.trigger}>Right-click here</div>
+
+<div {...menu.content}>
+	<button {...menu.getItem({ onSelect: () => console.log('copy') })}>
+		Copy
+	</button>
+	<button {...menu.getItem({ onSelect: () => console.log('paste') })}>
+		Paste
+	</button>
+	<hr {...menu.separator} />
+	<span {...menu.label}>Actions</span>
+	<button {...menu.getItem({ onSelect: () => console.log('delete') })}>
+		Delete
+	</button>
+</div>
+```
+	</TabItem>
+
+	<TabItem label="Component">
+```svelte
+<script lang="ts">
+	import { ContextMenu } from "melt/components";
+</script>
+
+<ContextMenu>
+	{#snippet children(menu)}
+		<div {...menu.trigger}>Right-click here</div>
+
+		<div {...menu.content}>
+			<button {...menu.getItem({ onSelect: () => console.log('copy') })}>
+				Copy
+			</button>
+			<button {...menu.getItem({ onSelect: () => console.log('paste') })}>
+				Paste
+			</button>
+		</div>
+	{/snippet}
+</ContextMenu>
+```
+	</TabItem>
+</Tabs>
+
+## Submenus
+
+Create nested submenus using `menu.createSub()`:
+
+```svelte
+<script lang="ts">
+	import { ContextMenu } from "melt/builders";
+
+	const menu = new ContextMenu();
+	const shareSubmenu = menu.createSub();
+	const socialSubmenu = shareSubmenu.createSub(); // Nested submenu
+</script>
+
+<div {...menu.trigger}>Right-click here</div>
+
+<!-- Main Menu -->
+<div {...menu.content}>
+	<button {...menu.getItem({ onSelect: handleCopy })}>Copy</button>
+	
+	<!-- Submenu trigger (inside main menu) -->
+	<button {...shareSubmenu.trigger}>
+		Share
+		<span>›</span>
+	</button>
+</div>
+
+<!-- Share Submenu -->
+<div {...shareSubmenu.content}>
+	<button {...shareSubmenu.getItem({ onSelect: handleEmail })}>Email</button>
+	
+	<!-- Nested submenu trigger -->
+	<button {...socialSubmenu.trigger}>
+		Social
+		<span>›</span>
+	</button>
+</div>
+
+<!-- Social Submenu (nested inside Share) -->
+<div {...socialSubmenu.content}>
+	<button {...socialSubmenu.getItem({ onSelect: handleTwitter })}>Twitter</button>
+	<button {...socialSubmenu.getItem({ onSelect: handleFacebook })}>Facebook</button>
+</div>
+```
+
+## Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `ArrowDown` | Move to next item |
+| `ArrowUp` | Move to previous item |
+| `ArrowRight` | Open submenu (when on submenu trigger) |
+| `ArrowLeft` | Close submenu, return to parent |
+| `Home` | Move to first item |
+| `End` | Move to last item |
+| `Enter` / `Space` | Select highlighted item |
+| `Escape` | Close menu |
+| `a-z` | Typeahead - jump to matching item |
+
+## Disabled Items
+
+Pass `disabled` to `getItem()` to disable an item:
+
+```svelte
+<button {...menu.getItem({ 
+	onSelect: handlePaste,
+	disabled: !hasClipboardContent 
+})}>
+	Paste
+</button>
+```
+
+Disabled items:
+- Receive `data-disabled` attribute for styling
+- Are skipped during keyboard navigation
+- Cannot be selected
+
+## Animating the Menu
+
+Use CSS transitions with `@starting-style` for smooth animations:
+
+```css
+.menu-content {
+	opacity: 0;
+	transform: scale(0.95);
+	transition:
+		opacity 0.15s ease-out,
+		transform 0.15s ease-out,
+		display 0.15s allow-discrete,
+		overlay 0.15s allow-discrete;
+}
+
+.menu-content:popover-open {
+	opacity: 1;
+	transform: scale(1);
+}
+
+@starting-style {
+	.menu-content:popover-open {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+}
+```
+
+## Styling Highlighted Items
+
+The currently highlighted item receives `data-highlighted`:
+
+```css
+.menu-item[data-highlighted] {
+	background-color: rgb(243 244 246);
+}
+```
+
+## Controlled State
+
+Control the open state externally:
+
+```svelte
+<script lang="ts">
+	import { ContextMenu } from "melt/builders";
+
+	let isOpen = $state(false);
+
+	const menu = new ContextMenu({
+		open: () => isOpen,
+		onOpenChange: (open) => (isOpen = open),
+	});
+</script>
+
+<p>Menu is {isOpen ? 'open' : 'closed'}</p>
+
+<div {...menu.trigger}>Right-click here</div>
+<div {...menu.content}>...</div>
+```
+
+## API Reference
+
+<ApiTable entry="ContextMenu" />
