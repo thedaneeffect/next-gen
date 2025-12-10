@@ -33,7 +33,7 @@
 <Preview>
 	<div
 		class="mx-auto flex h-48 w-80 items-center justify-center rounded-xl border-2 border-dashed
-			border-gray-300 text-gray-500 dark:border-gray-600 dark:text-gray-400"
+			border-gray-500 text-gray-500 dark:border-gray-600 dark:text-gray-400"
 		{...menu.trigger}
 	>
 		Right-click here
@@ -41,48 +41,46 @@
 
 	<!-- Main Menu Content -->
 	<div
-		class="menu-content min-w-48 rounded-lg bg-white p-1 shadow-lg ring-1 ring-black/5
-			dark:bg-gray-800 dark:ring-white/10"
+		class="menu-content min-w-48 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
 		{...menu.content}
 	>
 		<button class="menu-item" {...menu.getItem({ onSelect: () => handleSelect("cut") })}>
 			Cut
-			<span class="ml-auto text-xs text-gray-400">⌘X</span>
+			<span class="ml-auto text-xs opacity-50">⌘X</span>
 		</button>
 		<button class="menu-item" {...menu.getItem({ onSelect: () => handleSelect("copy") })}>
 			Copy
-			<span class="ml-auto text-xs text-gray-400">⌘C</span>
+			<span class="ml-auto text-xs opacity-50">⌘C</span>
 		</button>
 		<button class="menu-item" {...menu.getItem({ onSelect: () => handleSelect("paste") })}>
 			Paste
-			<span class="ml-auto text-xs text-gray-400">⌘V</span>
+			<span class="ml-auto text-xs opacity-50">⌘V</span>
 		</button>
 
-		<hr class="my-1 border-gray-200 dark:border-gray-700" {...menu.separator} />
+		<hr class="my-1.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
 
 		<!-- Share Submenu Trigger -->
 		<button class="menu-item justify-between" {...shareSubmenu.trigger}>
 			Share
-			<span class="text-gray-400">›</span>
+			<span class="opacity-50">›</span>
 		</button>
 
-		<hr class="my-1 border-gray-200 dark:border-gray-700" {...menu.separator} />
+		<hr class="my-1.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
 
-		<span class="menu-label" {...menu.label}>Danger Zone</span>
+		<span class="menu-label">Danger Zone</span>
 		<button
-			class="menu-item text-red-600 data-[highlighted]:bg-red-50 dark:text-red-400
-				dark:data-[highlighted]:bg-red-900/20"
+			class="menu-item text-red-600 data-[highlighted]:bg-red-100 dark:text-red-400
+				dark:data-[highlighted]:bg-red-900/30"
 			{...menu.getItem({ onSelect: () => handleSelect("delete") })}
 		>
 			Delete
-			<span class="ml-auto text-xs text-red-400">⌘⌫</span>
+			<span class="ml-auto text-xs opacity-50">⌘⌫</span>
 		</button>
 	</div>
 
 	<!-- Share Submenu Content -->
 	<div
-		class="menu-content min-w-40 rounded-lg bg-white p-1 shadow-lg ring-1 ring-black/5
-			dark:bg-gray-800 dark:ring-white/10"
+		class="menu-content min-w-40 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
 		{...shareSubmenu.content}
 	>
 		<button
@@ -98,14 +96,13 @@
 		<!-- Social Submenu Trigger -->
 		<button class="menu-item justify-between" {...socialSubmenu.trigger}>
 			Social
-			<span class="text-gray-400">›</span>
+			<span class="opacity-50">›</span>
 		</button>
 	</div>
 
 	<!-- Social Submenu Content (nested) -->
 	<div
-		class="menu-content min-w-36 rounded-lg bg-white p-1 shadow-lg ring-1 ring-black/5
-			dark:bg-gray-800 dark:ring-white/10"
+		class="menu-content min-w-36 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
 		{...socialSubmenu.content}
 	>
 		<button
@@ -158,18 +155,23 @@
 		width: 100%;
 		align-items: center;
 		gap: 0.5rem;
-		border-radius: 0.375rem;
-		padding: 0.375rem 0.5rem;
+		border-radius: 0.5rem;
+		padding: 0.5rem 0.625rem;
 		font-size: 0.875rem;
-		color: rgb(55 65 81); /* gray-700 */
 		cursor: pointer;
+		outline: none;
 		transition: background-color 0.1s;
+		background-color: transparent;
 	}
 
 	.menu-item:hover,
 	.menu-item[data-highlighted] {
-		background-color: rgb(243 244 246); /* gray-100 */
-		outline: none;
+		background-color: rgb(0 0 0 / 0.1);
+	}
+
+	:global(.dark) .menu-item:hover,
+	:global(.dark) .menu-item[data-highlighted] {
+		background-color: rgb(255 255 255 / 0.15);
 	}
 
 	.menu-item[data-disabled] {
@@ -177,20 +179,11 @@
 		cursor: not-allowed;
 	}
 
-	:global(.dark) .menu-item {
-		color: rgb(229 231 235); /* gray-200 */
-	}
-
-	:global(.dark) .menu-item:hover,
-	:global(.dark) .menu-item[data-highlighted] {
-		background-color: rgb(55 65 81); /* gray-700 */
-	}
-
 	.menu-label {
 		display: block;
-		padding: 0.375rem 0.5rem;
+		padding: 0.375rem 0.625rem;
 		font-size: 0.75rem;
 		font-weight: 500;
-		color: rgb(156 163 175); /* gray-400 */
+		opacity: 0.5;
 	}
 </style>

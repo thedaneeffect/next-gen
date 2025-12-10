@@ -6,7 +6,7 @@ import { createBuilderMetadata } from "$lib/utils/identifiers";
 import { isHtmlElement } from "$lib/utils/is";
 import { kbd } from "$lib/utils/keyboard";
 import { createVirtualAnchor, MenuNavigation } from "$lib/utils/menu";
-import { pointInPolygon, computeConvexHullFromElements, type Point } from "$lib/utils/polygon";
+import { computeConvexHullFromElements, type Point } from "$lib/utils/polygon";
 import { useFloating, type UseFloatingConfig } from "$lib/utils/use-floating.svelte";
 import type { VirtualElement } from "@floating-ui/dom";
 import { on } from "svelte/events";
@@ -25,7 +25,7 @@ const { dataAttrs, dataSelectors, createIds } = createBuilderMetadata("context-m
 
 // Submenu hover delay in ms
 const SUBMENU_OPEN_DELAY = 100;
-const SUBMENU_CLOSE_DELAY = 100;
+const SUBMENU_CLOSE_DELAY = 300;
 
 export type ContextMenuProps = {
 	/**
@@ -123,6 +123,12 @@ export class ContextMenu {
 	#itemIndexMap = new Map<object, number>();
 	#itemCount = 0;
 	#children = new Set<ContextMenuSub>();
+	#closeTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	/* Pointer direction tracking for grace intent */
+	#lastPointerX = 0;
+	#pointerDir: "left" | "right" = "right";
+	#graceIntent: { area: Point[]; side: "left" | "right" } | null = null;
 
 	/* Navigation */
 	#navigation: MenuNavigation;
@@ -169,6 +175,8 @@ export class ContextMenu {
 				child.open = false;
 			}
 			this.#navigation.reset();
+			this.#graceIntent = null;
+			this.#clearCloseTimeout();
 		}
 	}
 
@@ -177,6 +185,36 @@ export class ContextMenu {
 	 */
 	close() {
 		this.open = false;
+	}
+
+	#clearCloseTimeout() {
+		if (this.#closeTimeout) {
+			clearTimeout(this.#closeTimeout);
+			this.#closeTimeout = null;
+		}
+	}
+
+	#scheduleClose() {
+		this.#clearCloseTimeout();
+		this.#closeTimeout = setTimeout(() => {
+			// Don't close if pointer is moving toward an open child submenu
+			if (this.#isMovingTowardChild()) {
+				this.#scheduleClose(); // Reschedule check
+				return;
+			}
+			this.close();
+		}, SUBMENU_CLOSE_DELAY);
+	}
+
+	#isMovingTowardChild(): boolean {
+		if (!this.#graceIntent) return false;
+		// Check if any child submenu is open and pointer is moving toward it
+		for (const child of this.#children) {
+			if (child.open) {
+				return this.#pointerDir === this.#graceIntent.side;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -301,6 +339,28 @@ export class ContextMenu {
 			popover: "manual",
 			"data-state": this.open ? "open" : "closed",
 			onkeydown: this.#navigation.handleKeydown,
+			onpointermove: (e: PointerEvent) => {
+				// Track pointer direction for grace intent
+				if (e.pointerType !== "mouse") return;
+				if (e.clientX !== this.#lastPointerX) {
+					this.#pointerDir = e.clientX > this.#lastPointerX ? "right" : "left";
+					this.#lastPointerX = e.clientX;
+				}
+			},
+			onpointerenter: () => {
+				// Cancel any pending close when entering content
+				this.#clearCloseTimeout();
+				this.#graceIntent = null;
+			},
+			onpointerleave: () => {
+				// Build grace intent if we have open children
+				const hasOpenChild = [...this.#children].some((child) => child.open);
+				if (hasOpenChild && this.#contentEl) {
+					const area = computeConvexHullFromElements([this.#contentEl]);
+					this.#graceIntent = { area, side: "right" };
+				}
+				this.#scheduleClose();
+			},
 			[this.#contentAttachmentKey]: this.#contentAttachment,
 		} as const satisfies HTMLAttributes<HTMLElement>;
 	}
@@ -376,7 +436,11 @@ export class ContextMenuSub {
 	#children = new Set<ContextMenuSub>();
 	#openTimeout: ReturnType<typeof setTimeout> | null = null;
 	#closeTimeout: ReturnType<typeof setTimeout> | null = null;
-	#pointerGraceArea: Point[] | null = $state(null);
+
+	/* Pointer direction tracking for grace intent */
+	#lastPointerX = 0;
+	#pointerDir: "left" | "right" = "right";
+	#graceIntent: { area: Point[]; side: "left" | "right" } | null = null;
 
 	ids = $state(createIds());
 
@@ -434,7 +498,7 @@ export class ContextMenuSub {
 				child.open = false;
 			}
 			this.#navigation.reset();
-			this.#pointerGraceArea = null;
+			this.#graceIntent = null;
 		}
 	}
 
@@ -487,8 +551,24 @@ export class ContextMenuSub {
 	#scheduleClose() {
 		this.#clearTimeouts();
 		this.#closeTimeout = setTimeout(() => {
+			// Don't close if pointer is moving toward an open child submenu
+			if (this.#isMovingTowardChild()) {
+				this.#scheduleClose(); // Reschedule check
+				return;
+			}
 			this.open = false;
 		}, SUBMENU_CLOSE_DELAY);
+	}
+
+	#isMovingTowardChild(): boolean {
+		if (!this.#graceIntent) return false;
+		// Check if any child submenu is open and pointer is moving toward it
+		for (const child of this.#children) {
+			if (child.open) {
+				return this.#pointerDir === this.#graceIntent.side;
+			}
+		}
+		return false;
 	}
 
 	/* Trigger attachment */
@@ -513,29 +593,19 @@ export class ContextMenuSub {
 			"aria-expanded": this.open,
 			"data-state": this.open ? "open" : "closed",
 			tabindex: -1,
-			onpointerenter: (e: PointerEvent) => {
+			onpointerenter: () => {
 				// Clear any pending close
 				this.#clearTimeouts();
+				this.#graceIntent = null;
 				this.#scheduleOpen();
 			},
-			onpointerleave: (e: PointerEvent) => {
-				// Build safe polygon between trigger and content
+			onpointerleave: () => {
+				// Build grace intent between trigger and content
 				if (this.open && this.#triggerEl && this.#contentEl) {
-					this.#pointerGraceArea = computeConvexHullFromElements([
-						this.#triggerEl,
-						this.#contentEl,
-					]);
+					const area = computeConvexHullFromElements([this.#triggerEl, this.#contentEl]);
+					this.#graceIntent = { area, side: "right" };
 				}
 				this.#scheduleClose();
-			},
-			onpointermove: (e: PointerEvent) => {
-				// If we're in the grace area, cancel close
-				if (this.#pointerGraceArea) {
-					const point = { x: e.clientX, y: e.clientY };
-					if (pointInPolygon(point, this.#pointerGraceArea)) {
-						this.#clearTimeouts();
-					}
-				}
 			},
 			onkeydown: (e: KeyboardEvent) => {
 				if (e.key === kbd.ARROW_RIGHT) {
@@ -612,18 +682,25 @@ export class ContextMenuSub {
 				}
 				this.#navigation.handleKeydown(e);
 			},
+			onpointermove: (e: PointerEvent) => {
+				// Track pointer direction for grace intent
+				if (e.pointerType !== "mouse") return;
+				if (e.clientX !== this.#lastPointerX) {
+					this.#pointerDir = e.clientX > this.#lastPointerX ? "right" : "left";
+					this.#lastPointerX = e.clientX;
+				}
+			},
 			onpointerenter: () => {
 				// Cancel any pending close when entering content
 				this.#clearTimeouts();
-				this.#pointerGraceArea = null;
+				this.#graceIntent = null;
 			},
-			onpointerleave: (e: PointerEvent) => {
-				// Build safe polygon between trigger and content
-				if (this.#triggerEl && this.#contentEl) {
-					this.#pointerGraceArea = computeConvexHullFromElements([
-						this.#triggerEl,
-						this.#contentEl,
-					]);
+			onpointerleave: () => {
+				// Build grace intent if we have open children
+				const hasOpenChild = [...this.#children].some((child) => child.open);
+				if (hasOpenChild && this.#triggerEl && this.#contentEl) {
+					const area = computeConvexHullFromElements([this.#triggerEl, this.#contentEl]);
+					this.#graceIntent = { area, side: "right" };
 				}
 				this.#scheduleClose();
 			},
