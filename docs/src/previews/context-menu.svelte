@@ -51,7 +51,7 @@
 
 <Preview>
 	<div
-		class="mx-auto flex h-48 w-80 items-center justify-center rounded-xl border-2 border-dashed
+		class="mx-auto flex h-48 w-80 items-center justify-center rounded-md border-2 border-dashed
 			border-gray-500 text-gray-500 dark:border-gray-600 dark:text-gray-400"
 		{...menu.trigger}
 	>
@@ -60,23 +60,23 @@
 
 	<!-- Main Menu Content -->
 	<div
-		class="menu-content min-w-48 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
+		class="menu-content min-w-40 rounded-md border border-gray-500 bg-gray-100 p-0.5 shadow-lg outline-none dark:bg-gray-800"
 		{...menu.content}
 	>
 		<button class="menu-item" {...cutItem.attrs}>
 			Cut
-			<span class="ml-auto text-xs opacity-50">&#8984;X</span>
+			<span class="ml-auto text-[10px] opacity-50">&#8984;X</span>
 		</button>
 		<button class="menu-item" {...copyItem.attrs}>
 			Copy
-			<span class="ml-auto text-xs opacity-50">&#8984;C</span>
+			<span class="ml-auto text-[10px] opacity-50">&#8984;C</span>
 		</button>
 		<button class="menu-item" {...pasteItem.attrs}>
 			Paste
-			<span class="ml-auto text-xs opacity-50">&#8984;V</span>
+			<span class="ml-auto text-[10px] opacity-50">&#8984;V</span>
 		</button>
 
-		<hr class="my-1.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
+		<hr class="my-0.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
 
 		<!-- Share Submenu Trigger -->
 		<button class="menu-item justify-between" {...shareTrigger.attrs}>
@@ -84,7 +84,7 @@
 			<span class="opacity-50">&#8250;</span>
 		</button>
 
-		<hr class="my-1.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
+		<hr class="my-0.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
 
 		<span class="menu-label">Danger Zone</span>
 		<button
@@ -93,13 +93,13 @@
 			{...deleteItem.attrs}
 		>
 			Delete
-			<span class="ml-auto text-xs opacity-50">&#8984;&#9003;</span>
+			<span class="ml-auto text-[10px] opacity-50">&#8984;&#9003;</span>
 		</button>
 	</div>
 
 	<!-- Share Submenu Content -->
 	<div
-		class="menu-content min-w-40 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
+		class="menu-content min-w-36 rounded-md border border-gray-500 bg-gray-100 p-0.5 shadow-lg outline-none dark:bg-gray-800"
 		{...shareSubmenu.content}
 	>
 		<button class="menu-item" {...copyLinkItem.attrs}> Copy Link </button>
@@ -114,7 +114,7 @@
 
 	<!-- Social Submenu Content (nested) -->
 	<div
-		class="menu-content min-w-36 rounded-xl border border-gray-500 bg-gray-100 p-1.5 shadow-lg outline-none dark:bg-gray-800"
+		class="menu-content min-w-32 rounded-md border border-gray-500 bg-gray-100 p-0.5 shadow-lg outline-none dark:bg-gray-800"
 		{...socialSubmenu.content}
 	>
 		<button class="menu-item" {...twitterItem.attrs}> Twitter </button>
@@ -151,10 +151,10 @@
 		display: flex;
 		width: 100%;
 		align-items: center;
-		gap: 0.5rem;
-		border-radius: 0.5rem;
-		padding: 0.5rem 0.625rem;
-		font-size: 0.875rem;
+		gap: 0.125rem;
+		border-radius: 0.125rem;
+		padding: 0.125rem 0.25rem;
+		font-size: 0.75rem;
 		cursor: pointer;
 		outline: none;
 		transition: background-color 0.1s;
@@ -176,8 +176,8 @@
 
 	.menu-label {
 		display: block;
-		padding: 0.375rem 0.625rem;
-		font-size: 0.75rem;
+		padding: 0.0625rem 0.25rem;
+		font-size: 0.625rem;
 		font-weight: 500;
 		opacity: 0.5;
 	}

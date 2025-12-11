@@ -3,7 +3,6 @@ import type { MaybeGetter } from "$lib/types";
 import { dataAttr } from "$lib/utils/attribute";
 import { extract } from "$lib/utils/extract";
 import { createBuilderMetadata } from "$lib/utils/identifiers";
-import { isHtmlElement } from "$lib/utils/is";
 import { kbd } from "$lib/utils/keyboard";
 import { createVirtualAnchor } from "$lib/utils/menu";
 import { computeConvexHullFromElements, type Point } from "$lib/utils/polygon";
@@ -16,7 +15,7 @@ import { createAttachmentKey, type Attachment } from "svelte/attachments";
 import type { HTMLAttributes } from "svelte/elements";
 import { on } from "svelte/events";
 
-const { dataAttrs, dataSelectors, createIds } = createBuilderMetadata("context-menu", [
+const { dataAttrs, createIds } = createBuilderMetadata("context-menu", [
 	"trigger",
 	"content",
 	"item",
@@ -346,7 +345,7 @@ export class ContextMenu {
 	#lastPointerX = 0;
 	#pointerDir: "left" | "right" = "right";
 	#graceIntent: { area: Point[]; side: "left" | "right" } | null = null;
-	#hasEnteredContent = false;
+	#hasEnteredContent = $state(false);
 	#pointerMoveAccumulator = 0;
 
 	/* Typeahead */
@@ -781,6 +780,10 @@ export class ContextMenu {
 				// Check if outside grace area AND moving away
 				const outsideLeft = e.clientX < rect.left - MENU_GRACE_AREA;
 				const outsideRight = e.clientX > rect.right + MENU_GRACE_AREA;
+
+				// Don't close if a submenu is open - let grace intent handle it
+				const hasOpenChild = [...this.#children].some((child) => child.open);
+				if (hasOpenChild) return;
 
 				if (
 					(outsideLeft && this.#pointerDir === "left") ||
