@@ -26,9 +26,11 @@ const { dataAttrs, dataSelectors, createIds } = createBuilderMetadata("context-m
 	"sub-content",
 ]);
 
-// Submenu hover delay in ms
+// Menu timing constants
 const SUBMENU_OPEN_DELAY = 100;
-const SUBMENU_CLOSE_DELAY = 300;
+const MENU_CLOSE_DELAY = 300;
+const POINTER_MOVE_THRESHOLD = 8;
+const MENU_GRACE_AREA = 16;
 
 // Typeahead timeout
 const TYPEAHEAD_TIMEOUT = 500;
@@ -262,6 +264,7 @@ class ContextMenuSubTrigger {
 			this.#subMenu.scheduleOpen();
 		},
 		onpointerleave: () => {
+			this.#parentMenu.highlightedEl = null;
 			this.#subMenu.buildGraceIntent();
 			this.#subMenu.scheduleClose();
 		},
@@ -337,11 +340,14 @@ export class ContextMenu {
 	#items: ContextMenuItem[] = [];
 	#subTriggers: ContextMenuSubTrigger[] = [];
 	#highlightedEl: HTMLElement | null = $state(null);
+	#autoOpenTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	/* Pointer direction tracking for grace intent */
+	/* Pointer tracking */
 	#lastPointerX = 0;
 	#pointerDir: "left" | "right" = "right";
 	#graceIntent: { area: Point[]; side: "left" | "right" } | null = null;
+	#hasEnteredContent = false;
+	#pointerMoveAccumulator = 0;
 
 	/* Typeahead */
 	#typeaheadValue = $state("");
@@ -423,19 +429,59 @@ export class ContextMenu {
 		return this.#getAllNavigableEls().filter((el) => !el.hasAttribute("data-disabled"));
 	}
 
+	#clearAutoOpenTimeout() {
+		if (this.#autoOpenTimeout) {
+			clearTimeout(this.#autoOpenTimeout);
+			this.#autoOpenTimeout = null;
+		}
+	}
+
+	#openSubmenu(subTrigger: ContextMenuSubTrigger) {
+		this.#clearAutoOpenTimeout();
+		subTrigger.subMenu.open = true;
+		tick().then(() => {
+			subTrigger.subMenu.highlightFirst();
+			subTrigger.subMenu.focusContent();
+		});
+	}
+
+	#handleHighlightChange(prevEl: HTMLElement | null, newEl: HTMLElement | null) {
+		this.#clearAutoOpenTimeout();
+
+		// Close submenu if we navigated away from its trigger
+		const prevSubTrigger = this.#subTriggers.find((t) => t.el === prevEl);
+		if (prevSubTrigger && prevSubTrigger.subMenu.open) {
+			prevSubTrigger.subMenu.open = false;
+		}
+
+		// Schedule submenu open if we navigated to its trigger (just show, don't enter)
+		const newSubTrigger = this.#subTriggers.find((t) => t.el === newEl);
+		if (newSubTrigger) {
+			this.#autoOpenTimeout = setTimeout(() => {
+				if (this.#highlightedEl === newEl) {
+					newSubTrigger.subMenu.open = true;
+				}
+			}, SUBMENU_OPEN_DELAY);
+		}
+	}
+
 	highlightFirst() {
 		const els = this.#getEnabledEls();
 		if (els.length > 0) {
+			const prevEl = this.#highlightedEl;
 			this.#highlightedEl = els[0]!;
 			els[0]!.scrollIntoView({ block: "nearest" });
+			this.#handleHighlightChange(prevEl, this.#highlightedEl);
 		}
 	}
 
 	highlightLast() {
 		const els = this.#getEnabledEls();
 		if (els.length > 0) {
+			const prevEl = this.#highlightedEl;
 			this.#highlightedEl = els[els.length - 1]!;
 			els[els.length - 1]!.scrollIntoView({ block: "nearest" });
+			this.#handleHighlightChange(prevEl, this.#highlightedEl);
 		}
 	}
 
@@ -454,8 +500,10 @@ export class ContextMenu {
 			nextIdx = currentIdx + 1;
 		}
 
+		const prevEl = this.#highlightedEl;
 		this.#highlightedEl = els[nextIdx]!;
 		els[nextIdx]!.scrollIntoView({ block: "nearest" });
+		this.#handleHighlightChange(prevEl, this.#highlightedEl);
 	}
 
 	highlightPrev() {
@@ -473,8 +521,10 @@ export class ContextMenu {
 			prevIdx = currentIdx - 1;
 		}
 
+		const prevEl = this.#highlightedEl;
 		this.#highlightedEl = els[prevIdx]!;
 		els[prevIdx]!.scrollIntoView({ block: "nearest" });
+		this.#handleHighlightChange(prevEl, this.#highlightedEl);
 	}
 
 	#handleTypeahead(char: string) {
@@ -500,8 +550,10 @@ export class ContextMenu {
 
 		for (const item of orderedItems) {
 			if (item.text.startsWith(this.#typeaheadValue)) {
+				const prevEl = this.#highlightedEl;
 				this.#highlightedEl = item.el;
 				item.el.scrollIntoView({ block: "nearest" });
+				this.#handleHighlightChange(prevEl, this.#highlightedEl);
 				return;
 			}
 		}
@@ -534,11 +586,7 @@ export class ContextMenu {
 				const subTrigger = this.#subTriggers.find((t) => t.el === this.#highlightedEl);
 				if (subTrigger) {
 					e.preventDefault();
-					subTrigger.subMenu.open = true;
-					tick().then(() => {
-						subTrigger.subMenu.highlightFirst();
-						subTrigger.subMenu.focusContent();
-					});
+					this.#openSubmenu(subTrigger);
 				}
 				break;
 			}
@@ -546,7 +594,13 @@ export class ContextMenu {
 			case kbd.SPACE: {
 				e.preventDefault();
 				if (this.#highlightedEl && !this.#highlightedEl.hasAttribute("data-disabled")) {
-					this.#highlightedEl.click();
+					// Check if it's a submenu trigger
+					const subTrigger = this.#subTriggers.find((t) => t.el === this.#highlightedEl);
+					if (subTrigger) {
+						this.#openSubmenu(subTrigger);
+					} else {
+						this.#highlightedEl.click();
+					}
 				}
 				break;
 			}
@@ -581,7 +635,10 @@ export class ContextMenu {
 			this.#highlightedEl = null;
 			this.#graceIntent = null;
 			this.#clearCloseTimeout();
+			this.#clearAutoOpenTimeout();
 			this.#typeaheadValue = "";
+			this.#hasEnteredContent = false;
+			this.#pointerMoveAccumulator = 0;
 		}
 	}
 
@@ -604,7 +661,7 @@ export class ContextMenu {
 				return;
 			}
 			this.close();
-		}, SUBMENU_CLOSE_DELAY);
+		}, MENU_CLOSE_DELAY);
 	}
 
 	#isMovingTowardChild(): boolean {
@@ -683,7 +740,6 @@ export class ContextMenu {
 			if (this.open) {
 				node.showPopover();
 				node.focus();
-				tick().then(() => this.highlightFirst());
 			} else {
 				node.hidePopover();
 			}
@@ -697,6 +753,45 @@ export class ContextMenu {
 			} else {
 				node.removeAttribute("aria-activedescendant");
 			}
+		});
+
+		// Close menu if pointer moves away before entering content
+		$effect(() => {
+			if (!this.open || this.#hasEnteredContent) return;
+
+			const handler = (e: PointerEvent) => {
+				if (e.pointerType !== "mouse") return;
+
+				const deltaX = e.clientX - this.#lastPointerX;
+				this.#pointerMoveAccumulator += Math.abs(deltaX);
+
+				// Update direction
+				if (deltaX !== 0) {
+					this.#pointerDir = deltaX > 0 ? "right" : "left";
+				}
+				this.#lastPointerX = e.clientX;
+
+				// Only check after threshold movement
+				if (this.#pointerMoveAccumulator < POINTER_MOVE_THRESHOLD) return;
+				this.#pointerMoveAccumulator = 0;
+
+				if (!this.#contentEl) return;
+				const rect = this.#contentEl.getBoundingClientRect();
+
+				// Check if outside grace area AND moving away
+				const outsideLeft = e.clientX < rect.left - MENU_GRACE_AREA;
+				const outsideRight = e.clientX > rect.right + MENU_GRACE_AREA;
+
+				if (
+					(outsideLeft && this.#pointerDir === "left") ||
+					(outsideRight && this.#pointerDir === "right")
+				) {
+					this.#scheduleClose();
+				}
+			};
+
+			document.addEventListener("pointermove", handler);
+			return () => document.removeEventListener("pointermove", handler);
 		});
 
 		// Event listeners
@@ -753,10 +848,13 @@ export class ContextMenu {
 				}
 			},
 			onpointerenter: () => {
+				this.#hasEnteredContent = true;
 				this.#clearCloseTimeout();
 				this.#graceIntent = null;
+				this.#contentEl?.focus();
 			},
 			onpointerleave: () => {
+				this.#highlightedEl = null;
 				const openChild = [...this.#children].find((child) => child.open);
 				if (openChild && this.#contentEl) {
 					const area = computeConvexHullFromElements([this.#contentEl]);
@@ -814,6 +912,7 @@ export class ContextMenuSub {
 	#items: ContextMenuSubItem[] = [];
 	#subTriggers: ContextMenuSubTrigger[] = [];
 	#highlightedEl: HTMLElement | null = $state(null);
+	#autoOpenTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	/* Pointer direction tracking for grace intent */
 	#lastPointerX = 0;
@@ -902,19 +1001,59 @@ export class ContextMenuSub {
 		return this.#getAllNavigableEls().filter((el) => !el.hasAttribute("data-disabled"));
 	}
 
+	#clearAutoOpenTimeout() {
+		if (this.#autoOpenTimeout) {
+			clearTimeout(this.#autoOpenTimeout);
+			this.#autoOpenTimeout = null;
+		}
+	}
+
+	#openSubmenu(subTrigger: ContextMenuSubTrigger) {
+		this.#clearAutoOpenTimeout();
+		subTrigger.subMenu.open = true;
+		tick().then(() => {
+			subTrigger.subMenu.highlightFirst();
+			subTrigger.subMenu.focusContent();
+		});
+	}
+
+	#handleHighlightChange(prevEl: HTMLElement | null, newEl: HTMLElement | null) {
+		this.#clearAutoOpenTimeout();
+
+		// Close submenu if we navigated away from its trigger
+		const prevSubTrigger = this.#subTriggers.find((t) => t.el === prevEl);
+		if (prevSubTrigger && prevSubTrigger.subMenu.open) {
+			prevSubTrigger.subMenu.open = false;
+		}
+
+		// Schedule submenu open if we navigated to its trigger (just show, don't enter)
+		const newSubTrigger = this.#subTriggers.find((t) => t.el === newEl);
+		if (newSubTrigger) {
+			this.#autoOpenTimeout = setTimeout(() => {
+				if (this.#highlightedEl === newEl) {
+					newSubTrigger.subMenu.open = true;
+				}
+			}, SUBMENU_OPEN_DELAY);
+		}
+	}
+
 	highlightFirst() {
 		const els = this.#getEnabledEls();
 		if (els.length > 0) {
+			const prevEl = this.#highlightedEl;
 			this.#highlightedEl = els[0]!;
 			els[0]!.scrollIntoView({ block: "nearest" });
+			this.#handleHighlightChange(prevEl, this.#highlightedEl);
 		}
 	}
 
 	highlightLast() {
 		const els = this.#getEnabledEls();
 		if (els.length > 0) {
+			const prevEl = this.#highlightedEl;
 			this.#highlightedEl = els[els.length - 1]!;
 			els[els.length - 1]!.scrollIntoView({ block: "nearest" });
+			this.#handleHighlightChange(prevEl, this.#highlightedEl);
 		}
 	}
 
@@ -934,8 +1073,10 @@ export class ContextMenuSub {
 			nextIdx = currentIdx + 1;
 		}
 
+		const prevEl = this.#highlightedEl;
 		this.#highlightedEl = els[nextIdx]!;
 		els[nextIdx]!.scrollIntoView({ block: "nearest" });
+		this.#handleHighlightChange(prevEl, this.#highlightedEl);
 	}
 
 	highlightPrev() {
@@ -954,8 +1095,10 @@ export class ContextMenuSub {
 			prevIdx = currentIdx - 1;
 		}
 
+		const prevEl = this.#highlightedEl;
 		this.#highlightedEl = els[prevIdx]!;
 		els[prevIdx]!.scrollIntoView({ block: "nearest" });
+		this.#handleHighlightChange(prevEl, this.#highlightedEl);
 	}
 
 	#handleTypeahead(char: string) {
@@ -981,8 +1124,10 @@ export class ContextMenuSub {
 
 		for (const item of orderedItems) {
 			if (item.text.startsWith(this.#typeaheadValue)) {
+				const prevEl = this.#highlightedEl;
 				this.#highlightedEl = item.el;
 				item.el.scrollIntoView({ block: "nearest" });
+				this.#handleHighlightChange(prevEl, this.#highlightedEl);
 				return;
 			}
 		}
@@ -1019,11 +1164,7 @@ export class ContextMenuSub {
 				const subTrigger = this.#subTriggers.find((t) => t.el === this.#highlightedEl);
 				if (subTrigger) {
 					e.preventDefault();
-					subTrigger.subMenu.open = true;
-					tick().then(() => {
-						subTrigger.subMenu.highlightFirst();
-						subTrigger.subMenu.focusContent();
-					});
+					this.#openSubmenu(subTrigger);
 				}
 				break;
 			}
@@ -1031,7 +1172,13 @@ export class ContextMenuSub {
 			case kbd.SPACE: {
 				e.preventDefault();
 				if (this.#highlightedEl && !this.#highlightedEl.hasAttribute("data-disabled")) {
-					this.#highlightedEl.click();
+					// Check if it's a submenu trigger
+					const subTrigger = this.#subTriggers.find((t) => t.el === this.#highlightedEl);
+					if (subTrigger) {
+						this.#openSubmenu(subTrigger);
+					} else {
+						this.#highlightedEl.click();
+					}
 				}
 				break;
 			}
@@ -1065,6 +1212,7 @@ export class ContextMenuSub {
 			}
 			this.#highlightedEl = null;
 			this.#graceIntent = null;
+			this.#clearAutoOpenTimeout();
 			this.#typeaheadValue = "";
 		}
 	}
@@ -1135,7 +1283,7 @@ export class ContextMenuSub {
 				return;
 			}
 			this.open = false;
-		}, SUBMENU_CLOSE_DELAY);
+		}, MENU_CLOSE_DELAY);
 	}
 
 	#isMovingTowardChild(): boolean {
@@ -1260,8 +1408,10 @@ export class ContextMenuSub {
 			onpointerenter: () => {
 				this.clearTimeouts();
 				this.#graceIntent = null;
+				this.#contentEl?.focus();
 			},
 			onpointerleave: () => {
+				this.#highlightedEl = null;
 				const openChild = [...this.#children].find((child) => child.open);
 				if (openChild && this.#triggerEl && this.#contentEl) {
 					const area = computeConvexHullFromElements([this.#triggerEl, this.#contentEl]);
