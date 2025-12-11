@@ -1622,6 +1622,20 @@
         "type": "UseFloatingConfig | undefined",
         "description": "Floating UI configuration for positioning.",
         "optional": true
+      },
+      {
+        "name": "preventScroll",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether page scrolling is prevented when the menu is open.\nScrolling inside the menu content is still allowed.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "closeOnPointerLeave",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "Whether the menu closes when the pointer leaves the content area.\nWhen false (default), the menu stays open until explicitly closed.\nThe \"close on moving away before entering\" behavior is unaffected.",
+        "defaultValue": "false",
+        "optional": true
       }
     ],
     "methods": [
@@ -1698,6 +1712,16 @@
         "description": ""
       },
       {
+        "name": "preventScroll",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "closeOnPointerLeave",
+        "type": "boolean",
+        "description": ""
+      },
+      {
         "name": "ids",
         "type": "{\n  item: string\n  trigger: string\n  content: string\n  separator: string\n  label: string\n  \"sub-trigger\": string\n  \"sub-content\": string\n}",
         "description": ""
@@ -1733,7 +1757,7 @@
         "description": ""
       }
     ],
-    "propsAlt": "export type ContextMenuProps = {\n  /**\n   * Whether the context menu is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing Escape closes the menu.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking outside the menu closes it.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether keyboard navigation should loop at boundaries.\n   *\n   * @default true\n   */\n  loop?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Floating UI configuration for positioning.\n   */\n  floatingConfig?: UseFloatingConfig;\n};"
+    "propsAlt": "export type ContextMenuProps = {\n  /**\n   * Whether the context menu is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing Escape closes the menu.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking outside the menu closes it.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether keyboard navigation should loop at boundaries.\n   *\n   * @default true\n   */\n  loop?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Floating UI configuration for positioning.\n   */\n  floatingConfig?: UseFloatingConfig;\n\n  /**\n   * Whether page scrolling is prevented when the menu is open.\n   * Scrolling inside the menu content is still allowed.\n   *\n   * @default true\n   */\n  preventScroll?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether the menu closes when the pointer leaves the content area.\n   * When false (default), the menu stays open until explicitly closed.\n   * The \"close on moving away before entering\" behavior is unaffected.\n   *\n   * @default false\n   */\n  closeOnPointerLeave?: MaybeGetter<boolean | undefined>;\n};"
   },
   "Combobox": {
     "constructorProps": [

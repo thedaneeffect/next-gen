@@ -77,6 +77,23 @@ export type ContextMenuProps = {
 	 * Floating UI configuration for positioning.
 	 */
 	floatingConfig?: UseFloatingConfig;
+
+	/**
+	 * Whether page scrolling is prevented when the menu is open.
+	 * Scrolling inside the menu content is still allowed.
+	 *
+	 * @default true
+	 */
+	preventScroll?: MaybeGetter<boolean | undefined>;
+
+	/**
+	 * Whether the menu closes when the pointer leaves the content area.
+	 * When false (default), the menu stays open until explicitly closed.
+	 * The "close on moving away before entering" behavior is unaffected.
+	 *
+	 * @default false
+	 */
+	closeOnPointerLeave?: MaybeGetter<boolean | undefined>;
 };
 
 export type ContextMenuItemProps = {
@@ -325,6 +342,8 @@ export class ContextMenu {
 	readonly closeOnEscape = $derived(extract(this.#props.closeOnEscape, true));
 	readonly closeOnOutsideClick = $derived(extract(this.#props.closeOnOutsideClick, true));
 	readonly loop = $derived(extract(this.#props.loop, true));
+	readonly preventScroll = $derived(extract(this.#props.preventScroll, true));
+	readonly closeOnPointerLeave = $derived(extract(this.#props.closeOnPointerLeave, false));
 
 	/* State */
 	#open: Synced<boolean>;
@@ -633,11 +652,15 @@ export class ContextMenu {
 			}
 			this.#highlightedEl = null;
 			this.#graceIntent = null;
+			this.#virtualAnchor = null;
 			this.#clearCloseTimeout();
 			this.#clearAutoOpenTimeout();
 			this.#typeaheadValue = "";
 			this.#hasEnteredContent = false;
 			this.#pointerMoveAccumulator = 0;
+			if (this.#contentEl) {
+				this.#contentEl.scrollTop = 0;
+			}
 		}
 	}
 
@@ -744,6 +767,21 @@ export class ContextMenu {
 			}
 		});
 
+		// Set data-scrollable attribute when content is scrollable
+		$effect(() => {
+			if (!this.open) return;
+
+			// Use requestAnimationFrame to ensure layout is complete
+			requestAnimationFrame(() => {
+				const isScrollable = node.scrollHeight > node.clientHeight;
+				if (isScrollable) {
+					node.setAttribute("data-scrollable", "");
+				} else {
+					node.removeAttribute("data-scrollable");
+				}
+			});
+		});
+
 		// Update aria-activedescendant when highlighted element changes
 		$effect(() => {
 			const highlightedId = this.#highlightedEl?.id;
@@ -797,6 +835,71 @@ export class ContextMenu {
 			return () => document.removeEventListener("pointermove", handler);
 		});
 
+		// Prevent page scroll when open, but allow scrolling inside menu content
+		$effect(() => {
+			if (!this.open || !this.preventScroll) return;
+
+			const handleScroll = (e: WheelEvent | TouchEvent) => {
+				if (!this.open) return;
+
+				// Always prevent default - we control all scrolling
+				e.preventDefault();
+
+				// If target is inside menu content, manually scroll it
+				if (e instanceof WheelEvent) {
+					const target = e.target as Node;
+					const menuContent = this.#contentEl?.contains(target)
+						? this.#contentEl
+						: this.#findSubmenuContent(target);
+
+					if (menuContent) {
+						menuContent.scrollTop += e.deltaY;
+
+						// Only close submenus if the menu is actually scrollable
+						const isScrollable = menuContent.scrollHeight > menuContent.clientHeight;
+						if (isScrollable) {
+							// Close submenus of the scrolled menu
+							if (menuContent === this.#contentEl) {
+								// Scrolling main menu - close its children
+								for (const child of this.#children) {
+									if (child.open) {
+										child.open = false;
+									}
+								}
+							} else {
+								// Scrolling a submenu - find it and close its children
+								const scrolledSubmenu = this.#findSubmenuByContent(target);
+								if (scrolledSubmenu) {
+									scrolledSubmenu.closeChildren();
+								}
+							}
+						}
+
+						// Dispatch synthetic pointermove to update highlight
+						const elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
+						if (elementUnderCursor) {
+							elementUnderCursor.dispatchEvent(
+								new PointerEvent("pointermove", {
+									clientX: e.clientX,
+									clientY: e.clientY,
+									bubbles: true,
+									pointerType: "mouse",
+								}),
+							);
+						}
+					}
+				}
+			};
+
+			document.addEventListener("wheel", handleScroll, { passive: false });
+			document.addEventListener("touchmove", handleScroll, { passive: false });
+
+			return () => {
+				document.removeEventListener("wheel", handleScroll);
+				document.removeEventListener("touchmove", handleScroll);
+			};
+		});
+
 		// Event listeners
 		const offs = [
 			on(document, "keydown", (e) => {
@@ -834,6 +937,22 @@ export class ContextMenu {
 		return false;
 	}
 
+	#findSubmenuContent(target: Node): HTMLElement | null {
+		for (const child of this.#children) {
+			const el = child.findContentContaining(target);
+			if (el) return el;
+		}
+		return null;
+	}
+
+	#findSubmenuByContent(target: Node): ContextMenuSub | null {
+		for (const child of this.#children) {
+			const sub = child.findSubmenuContaining(target);
+			if (sub) return sub;
+		}
+		return null;
+	}
+
 	get content() {
 		return {
 			[dataAttrs.content]: "",
@@ -858,6 +977,7 @@ export class ContextMenu {
 			},
 			onpointerleave: () => {
 				this.#highlightedEl = null;
+				if (!this.closeOnPointerLeave) return;
 				const openChild = [...this.#children].find((child) => child.open);
 				if (openChild && this.#contentEl) {
 					const area = computeConvexHullFromElements([this.#contentEl]);
@@ -1217,6 +1337,9 @@ export class ContextMenuSub {
 			this.#graceIntent = null;
 			this.#clearAutoOpenTimeout();
 			this.#typeaheadValue = "";
+			if (this.#contentEl) {
+				this.#contentEl.scrollTop = 0;
+			}
 		}
 	}
 
@@ -1236,11 +1359,15 @@ export class ContextMenuSub {
 	}
 
 	closeRoot() {
-		let current: ContextMenu | ContextMenuSub = this;
+		this.#getRootMenu().close();
+	}
+
+	#getRootMenu(): ContextMenu {
+		let current: ContextMenu | ContextMenuSub = this.#parent;
 		while (current instanceof ContextMenuSub) {
 			current = current.#parent;
 		}
-		current.close();
+		return current;
 	}
 
 	focusContent() {
@@ -1254,6 +1381,32 @@ export class ContextMenuSub {
 			if (child.containsTarget(target)) return true;
 		}
 		return false;
+	}
+
+	findContentContaining(target: Node): HTMLElement | null {
+		if (this.#contentEl?.contains(target)) return this.#contentEl;
+		for (const child of this.#children) {
+			const el = child.findContentContaining(target);
+			if (el) return el;
+		}
+		return null;
+	}
+
+	findSubmenuContaining(target: Node): ContextMenuSub | null {
+		if (this.#contentEl?.contains(target)) return this;
+		for (const child of this.#children) {
+			const sub = child.findSubmenuContaining(target);
+			if (sub) return sub;
+		}
+		return null;
+	}
+
+	closeChildren() {
+		for (const child of this.#children) {
+			if (child.open) {
+				child.open = false;
+			}
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -1375,6 +1528,21 @@ export class ContextMenuSub {
 			}
 		});
 
+		// Set data-scrollable attribute when content is scrollable
+		$effect(() => {
+			if (!this.open) return;
+
+			// Use requestAnimationFrame to ensure layout is complete
+			requestAnimationFrame(() => {
+				const isScrollable = node.scrollHeight > node.clientHeight;
+				if (isScrollable) {
+					node.setAttribute("data-scrollable", "");
+				} else {
+					node.removeAttribute("data-scrollable");
+				}
+			});
+		});
+
 		// Update aria-activedescendant
 		$effect(() => {
 			const highlightedId = this.#highlightedEl?.id;
@@ -1415,6 +1583,7 @@ export class ContextMenuSub {
 			},
 			onpointerleave: () => {
 				this.#highlightedEl = null;
+				if (!this.#getRootMenu().closeOnPointerLeave) return;
 				const openChild = [...this.#children].find((child) => child.open);
 				if (openChild && this.#triggerEl && this.#contentEl) {
 					const area = computeConvexHullFromElements([this.#triggerEl, this.#contentEl]);

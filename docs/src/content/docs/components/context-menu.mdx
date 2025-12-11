@@ -31,22 +31,20 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 	import { ContextMenu } from "melt/builders";
 
 	const menu = new ContextMenu();
+
+	const copyItem = menu.getItem({ onSelect: () => console.log('copy') });
+	const pasteItem = menu.getItem({ onSelect: () => console.log('paste') });
+	const deleteItem = menu.getItem({ onSelect: () => console.log('delete') });
 </script>
 
 <div {...menu.trigger}>Right-click here</div>
 
 <div {...menu.content}>
-	<button {...menu.getItem({ onSelect: () => console.log('copy') })}>
-		Copy
-	</button>
-	<button {...menu.getItem({ onSelect: () => console.log('paste') })}>
-		Paste
-	</button>
+	<button {...copyItem.attrs}>Copy</button>
+	<button {...pasteItem.attrs}>Paste</button>
 	<hr {...menu.separator} />
 	<span {...menu.label}>Actions</span>
-	<button {...menu.getItem({ onSelect: () => console.log('delete') })}>
-		Delete
-	</button>
+	<button {...deleteItem.attrs}>Delete</button>
 </div>
 ```
 	</TabItem>
@@ -59,15 +57,14 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 <ContextMenu>
 	{#snippet children(menu)}
+		{@const copyItem = menu.getItem({ onSelect: () => console.log('copy') })}
+		{@const pasteItem = menu.getItem({ onSelect: () => console.log('paste') })}
+
 		<div {...menu.trigger}>Right-click here</div>
 
 		<div {...menu.content}>
-			<button {...menu.getItem({ onSelect: () => console.log('copy') })}>
-				Copy
-			</button>
-			<button {...menu.getItem({ onSelect: () => console.log('paste') })}>
-				Paste
-			</button>
+			<button {...copyItem.attrs}>Copy</button>
+			<button {...pasteItem.attrs}>Paste</button>
 		</div>
 	{/snippet}
 </ContextMenu>
@@ -86,16 +83,28 @@ Create nested submenus using `menu.createSub()`:
 	const menu = new ContextMenu();
 	const shareSubmenu = menu.createSub();
 	const socialSubmenu = shareSubmenu.createSub(); // Nested submenu
+
+	// Main menu items
+	const copyItem = menu.getItem({ onSelect: handleCopy });
+
+	// Share submenu items and trigger
+	const shareTrigger = shareSubmenu.trigger;
+	const emailItem = shareSubmenu.getItem({ onSelect: handleEmail });
+
+	// Social submenu items and trigger
+	const socialTrigger = socialSubmenu.trigger;
+	const twitterItem = socialSubmenu.getItem({ onSelect: handleTwitter });
+	const facebookItem = socialSubmenu.getItem({ onSelect: handleFacebook });
 </script>
 
 <div {...menu.trigger}>Right-click here</div>
 
 <!-- Main Menu -->
 <div {...menu.content}>
-	<button {...menu.getItem({ onSelect: handleCopy })}>Copy</button>
+	<button {...copyItem.attrs}>Copy</button>
 	
 	<!-- Submenu trigger (inside main menu) -->
-	<button {...shareSubmenu.trigger}>
+	<button {...shareTrigger.attrs}>
 		Share
 		<span>›</span>
 	</button>
@@ -103,10 +112,10 @@ Create nested submenus using `menu.createSub()`:
 
 <!-- Share Submenu -->
 <div {...shareSubmenu.content}>
-	<button {...shareSubmenu.getItem({ onSelect: handleEmail })}>Email</button>
+	<button {...emailItem.attrs}>Email</button>
 	
 	<!-- Nested submenu trigger -->
-	<button {...socialSubmenu.trigger}>
+	<button {...socialTrigger.attrs}>
 		Social
 		<span>›</span>
 	</button>
@@ -114,8 +123,8 @@ Create nested submenus using `menu.createSub()`:
 
 <!-- Social Submenu (nested inside Share) -->
 <div {...socialSubmenu.content}>
-	<button {...socialSubmenu.getItem({ onSelect: handleTwitter })}>Twitter</button>
-	<button {...socialSubmenu.getItem({ onSelect: handleFacebook })}>Facebook</button>
+	<button {...twitterItem.attrs}>Twitter</button>
+	<button {...facebookItem.attrs}>Facebook</button>
 </div>
 ```
 
@@ -138,12 +147,11 @@ Create nested submenus using `menu.createSub()`:
 Pass `disabled` to `getItem()` to disable an item:
 
 ```svelte
-<button {...menu.getItem({ 
+{@const pasteItem = menu.getItem({ 
 	onSelect: handlePaste,
 	disabled: !hasClipboardContent 
-})}>
-	Paste
-</button>
+})}
+<button {...pasteItem.attrs}>Paste</button>
 ```
 
 Disabled items:
