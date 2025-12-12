@@ -69,7 +69,7 @@
 
 	<!-- Main Menu Content -->
 	<div
-		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-md border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
 		{...menu.content}
 	>
 		<button class="menu-item" {...undoItem.attrs}>
@@ -133,7 +133,7 @@
 
 	<!-- Share Submenu Content -->
 	<div
-		class="menu-content max-h-24 min-w-36 overflow-y-auto rounded-md border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content max-h-24 min-w-36 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
 		{...shareSubmenu.content}
 	>
 		<button class="menu-item" {...copyLinkItem.attrs}> Copy Link </button>
@@ -152,7 +152,7 @@
 
 	<!-- Social Submenu Content (nested) -->
 	<div
-		class="menu-content min-w-32 rounded-md border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content min-w-32 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
 		{...socialSubmenu.content}
 	>
 		<button class="menu-item" {...twitterItem.attrs}> Twitter </button>
@@ -164,6 +164,7 @@
 <style>
 	.menu-content {
 		--scrollbar-width: 0.375rem;
+		--scrollbar-padding: 0.5625rem;
 
 		position: fixed;
 		opacity: 0;
@@ -181,7 +182,8 @@
 
 	/* Reserve space for scrollbar only when content is scrollable */
 	.menu-content[data-scrollable] {
-		padding-right: var(--scrollbar-width);
+		padding-right: var(--scrollbar-padding);
+		box-shadow: inset calc(var(--scrollbar-padding) * -1) 0 0 0 rgb(0 0 0 / 0.1);
 	}
 
 	/* WebKit scrollbar (Chrome, Safari, Edge) */
