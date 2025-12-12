@@ -6,6 +6,7 @@ import { createBuilderMetadata } from "$lib/utils/identifiers";
 import { kbd } from "$lib/utils/keyboard";
 import { createVirtualAnchor } from "$lib/utils/menu";
 import { computeConvexHullFromElements, type Point } from "$lib/utils/polygon";
+import { canScrollVertically, findScrollableAncestor } from "$lib/utils/scroll";
 import { letterRegex } from "$lib/utils/typeahead.svelte";
 import { useFloating, type UseFloatingConfig } from "$lib/utils/use-floating.svelte";
 import type { VirtualElement } from "@floating-ui/dom";
@@ -79,12 +80,16 @@ export type ContextMenuProps = {
 	floatingConfig?: UseFloatingConfig;
 
 	/**
-	 * Whether page scrolling is prevented when the menu is open.
-	 * Scrolling inside the menu content is still allowed.
+	 * Behavior when scrolling while the menu is open.
+	 * - `'close'`: Closes the menu when scrolling outside of it (default)
+	 * - `'prevent'`: Prevents page scroll when scrolling outside of it
+	 * - `'allow'`: Allows normal page scrolling (no intervention)
 	 *
-	 * @default true
+	 * Scrolling inside the menu content is always allowed.
+	 *
+	 * @default 'close'
 	 */
-	preventScroll?: MaybeGetter<boolean | undefined>;
+	scrollBehavior?: MaybeGetter<"close" | "prevent" | "allow" | undefined>;
 
 	/**
 	 * Whether the menu closes when the pointer leaves the content area.
@@ -342,7 +347,7 @@ export class ContextMenu {
 	readonly closeOnEscape = $derived(extract(this.#props.closeOnEscape, true));
 	readonly closeOnOutsideClick = $derived(extract(this.#props.closeOnOutsideClick, true));
 	readonly loop = $derived(extract(this.#props.loop, true));
-	readonly preventScroll = $derived(extract(this.#props.preventScroll, true));
+	readonly scrollBehavior = $derived(extract(this.#props.scrollBehavior, "close" as const));
 	readonly closeOnPointerLeave = $derived(extract(this.#props.closeOnPointerLeave, false));
 
 	/* State */
@@ -835,47 +840,47 @@ export class ContextMenu {
 			return () => document.removeEventListener("pointermove", handler);
 		});
 
-		// Prevent page scroll when open, but allow scrolling inside menu content
+		// Handle scroll behavior when menu is open
 		$effect(() => {
-			if (!this.open || !this.preventScroll) return;
+			if (!this.open || this.scrollBehavior === "allow") return;
 
-			const handleScroll = (e: WheelEvent | TouchEvent) => {
-				if (!this.open) return;
+			const handleWheel = (e: WheelEvent) => {
+				const target = e.target as HTMLElement;
 
-				// Always prevent default - we control all scrolling
-				e.preventDefault();
+				// Find which menu content (main or submenu) contains the target
+				const menuContent = this.#contentEl?.contains(target)
+					? this.#contentEl
+					: this.#findSubmenuContent(target);
 
-				// If target is inside menu content, manually scroll it
-				if (e instanceof WheelEvent) {
-					const target = e.target as Node;
-					const menuContent = this.#contentEl?.contains(target)
-						? this.#contentEl
-						: this.#findSubmenuContent(target);
+				if (!menuContent) {
+					// Outside all menus
+					if (this.scrollBehavior === "close") {
+						this.close();
+					} else {
+						e.preventDefault();
+					}
+					return;
+				}
 
-					if (menuContent) {
-						menuContent.scrollTop += e.deltaY;
+				// Inside a menu - check if scrollable
+				const scrollableEl = findScrollableAncestor(target, menuContent);
 
-						// Only close submenus if the menu is actually scrollable
-						const isScrollable = menuContent.scrollHeight > menuContent.clientHeight;
-						if (isScrollable) {
-							// Close submenus of the scrolled menu
-							if (menuContent === this.#contentEl) {
-								// Scrolling main menu - close its children
-								for (const child of this.#children) {
-									if (child.open) {
-										child.open = false;
-									}
-								}
-							} else {
-								// Scrolling a submenu - find it and close its children
-								const scrolledSubmenu = this.#findSubmenuByContent(target);
-								if (scrolledSubmenu) {
-									scrolledSubmenu.closeChildren();
-								}
-							}
+				if (!scrollableEl || !canScrollVertically(scrollableEl, e.deltaY)) {
+					// Can't scroll - prevent page scroll
+					e.preventDefault();
+				} else {
+					// Can scroll - close submenus of the scrolled menu
+					if (menuContent === this.#contentEl) {
+						for (const child of this.#children) {
+							if (child.open) child.open = false;
 						}
+					} else {
+						const scrolledSubmenu = this.#findSubmenuByContent(target);
+						if (scrolledSubmenu) scrolledSubmenu.closeChildren();
+					}
 
-						// Dispatch synthetic pointermove to update highlight
+					// Update highlight for element under cursor after scroll completes
+					requestAnimationFrame(() => {
 						const elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
 						if (elementUnderCursor) {
 							elementUnderCursor.dispatchEvent(
@@ -887,16 +892,42 @@ export class ContextMenu {
 								}),
 							);
 						}
-					}
+					});
 				}
 			};
 
-			document.addEventListener("wheel", handleScroll, { passive: false });
-			document.addEventListener("touchmove", handleScroll, { passive: false });
+			const handleTouchMove = (e: TouchEvent) => {
+				const target = e.target as HTMLElement;
+
+				const menuContent = this.#contentEl?.contains(target)
+					? this.#contentEl
+					: this.#findSubmenuContent(target);
+
+				if (!menuContent) {
+					// Outside all menus
+					if (this.scrollBehavior === "close") {
+						this.close();
+					} else {
+						e.preventDefault();
+					}
+					return;
+				}
+
+				// Inside a menu - check if scrollable at all
+				const scrollableEl = findScrollableAncestor(target, menuContent);
+
+				if (!scrollableEl) {
+					e.preventDefault();
+				}
+				// else: let native touch scrolling work (no submenu closing for touch)
+			};
+
+			document.addEventListener("wheel", handleWheel, { passive: false });
+			document.addEventListener("touchmove", handleTouchMove, { passive: false });
 
 			return () => {
-				document.removeEventListener("wheel", handleScroll);
-				document.removeEventListener("touchmove", handleScroll);
+				document.removeEventListener("wheel", handleWheel);
+				document.removeEventListener("touchmove", handleTouchMove);
 			};
 		});
 
@@ -956,6 +987,7 @@ export class ContextMenu {
 			role: "menu",
 			tabindex: 0,
 			popover: "manual",
+			style: "overscroll-behavior: contain",
 			"data-state": this.open ? "open" : "closed",
 			onkeydown: this.#handleKeydown,
 			onpointermove: (e: PointerEvent) => {
@@ -1563,6 +1595,7 @@ export class ContextMenuSub {
 			role: "menu",
 			tabindex: 0,
 			popover: "manual",
+			style: "overscroll-behavior: contain",
 			"data-state": this.open ? "open" : "closed",
 			onkeydown: this.#handleKeydown,
 			onpointermove: (e: PointerEvent) => {

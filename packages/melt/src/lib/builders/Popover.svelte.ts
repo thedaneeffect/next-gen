@@ -260,6 +260,7 @@ export class BasePopover {
 				"--melt-invoker-y": `${this.invokerRect?.y ?? 0}px`,
 				"--melt-popover-available-width": `${this.availableWidth ?? 0}px`,
 				"--melt-popover-available-height": `${this.availableHeight ?? 0}px`,
+				"overscroll-behavior": "contain",
 			}),
 		} satisfies HTMLAttributes<HTMLElement>;
 	}

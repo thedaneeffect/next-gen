@@ -1638,10 +1638,10 @@
         "optional": true
       },
       {
-        "name": "preventScroll",
-        "type": "MaybeGetter<boolean | undefined>",
-        "description": "Whether page scrolling is prevented when the menu is open.\nScrolling inside the menu content is still allowed.",
-        "defaultValue": "true",
+        "name": "scrollBehavior",
+        "type": "MaybeGetter<\"close\" | \"prevent\" | \"allow\" | undefined>",
+        "description": "Behavior when scrolling while the menu is open.\n- `'close'`: Closes the menu when scrolling outside of it (default)\n- `'prevent'`: Prevents page scroll when scrolling outside of it\n- `'allow'`: Allows normal page scrolling (no intervention)\n\nScrolling inside the menu content is always allowed.",
+        "defaultValue": "'close'",
         "optional": true
       },
       {
@@ -1726,8 +1726,8 @@
         "description": ""
       },
       {
-        "name": "preventScroll",
-        "type": "boolean",
+        "name": "scrollBehavior",
+        "type": "\"close\" | \"prevent\" | \"allow\"",
         "description": ""
       },
       {
@@ -1757,7 +1757,7 @@
       },
       {
         "name": "content",
-        "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-context-menu-content\": \"\"\n  readonly id: string\n  readonly role: \"menu\"\n  readonly tabindex: 0\n  readonly popover: \"manual\"\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onkeydown: (e: KeyboardEvent) => void\n  readonly onpointermove: (e: PointerEvent) => void\n  readonly onpointerenter: () => void\n  readonly onpointerleave: () => void\n}",
+        "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-context-menu-content\": \"\"\n  readonly id: string\n  readonly role: \"menu\"\n  readonly tabindex: 0\n  readonly popover: \"manual\"\n  readonly style: \"overscroll-behavior: contain\"\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onkeydown: (e: KeyboardEvent) => void\n  readonly onpointermove: (e: PointerEvent) => void\n  readonly onpointerenter: () => void\n  readonly onpointerleave: () => void\n}",
         "description": ""
       },
       {
@@ -1771,7 +1771,7 @@
         "description": ""
       }
     ],
-    "propsAlt": "export type ContextMenuProps = {\n  /**\n   * Whether the context menu is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing Escape closes the menu.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking outside the menu closes it.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether keyboard navigation should loop at boundaries.\n   *\n   * @default true\n   */\n  loop?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Floating UI configuration for positioning.\n   */\n  floatingConfig?: UseFloatingConfig;\n\n  /**\n   * Whether page scrolling is prevented when the menu is open.\n   * Scrolling inside the menu content is still allowed.\n   *\n   * @default true\n   */\n  preventScroll?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether the menu closes when the pointer leaves the content area.\n   * When false (default), the menu stays open until explicitly closed.\n   * The \"close on moving away before entering\" behavior is unaffected.\n   *\n   * @default false\n   */\n  closeOnPointerLeave?: MaybeGetter<boolean | undefined>;\n};"
+    "propsAlt": "export type ContextMenuProps = {\n  /**\n   * Whether the context menu is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing Escape closes the menu.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking outside the menu closes it.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether keyboard navigation should loop at boundaries.\n   *\n   * @default true\n   */\n  loop?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Floating UI configuration for positioning.\n   */\n  floatingConfig?: UseFloatingConfig;\n\n  /**\n   * Behavior when scrolling while the menu is open.\n   * - `'close'`: Closes the menu when scrolling outside of it (default)\n   * - `'prevent'`: Prevents page scroll when scrolling outside of it\n   * - `'allow'`: Allows normal page scrolling (no intervention)\n   *\n   * Scrolling inside the menu content is always allowed.\n   *\n   * @default 'close'\n   */\n  scrollBehavior?: MaybeGetter<\"close\" | \"prevent\" | \"allow\" | undefined>;\n\n  /**\n   * Whether the menu closes when the pointer leaves the content area.\n   * When false (default), the menu stays open until explicitly closed.\n   * The \"close on moving away before entering\" behavior is unaffected.\n   *\n   * @default false\n   */\n  closeOnPointerLeave?: MaybeGetter<boolean | undefined>;\n};"
   },
   "Combobox": {
     "constructorProps": [
