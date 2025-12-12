@@ -21,10 +21,7 @@
 			<div class="mx-auto w-[18rem] max-w-full sm:w-[25rem]">
 				<button
 					{...collapsible.trigger}
-					class="relative z-10 mx-auto flex w-full items-center justify-between rounded-xl bg-gray-200
-				px-4 py-2 text-gray-800 transition-all hover:cursor-pointer hover:bg-gray-300
-				active:bg-gray-400 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50
-				dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-500/50 dark:active:bg-gray-600/50"
+					class="btn btn-secondary relative z-10 mx-auto flex w-full items-center justify-between"
 					class:shadow-md={collapsible.open}
 					aria-label="Toggle"
 				>
@@ -39,13 +36,13 @@
 				{#if collapsible.open}
 					<div
 						{...collapsible.content}
-						class="mx-auto flex w-[calc(100%-32px)] flex-col gap-2 rounded-b-xl bg-white p-4 dark:bg-gray-900 dark:text-white/80"
+						class="mx-auto flex w-[calc(100%-32px)] flex-col gap-2 rounded-b-xl bg-[var(--bg)] p-4 text-[var(--text-subtle)]"
 						transition:slide
 					>
 						<span>melt-ui/melt-ui</span>
-						<hr class="border-b border-gray-700" />
+						<hr class="border-b border-[var(--border-subtle)]" />
 						<span>sveltejs/svelte</span>
-						<hr class="border-b border-gray-700" />
+						<hr class="border-b border-[var(--border-subtle)]" />
 						<span>sveltejs/kit</span>
 					</div>
 				{/if}

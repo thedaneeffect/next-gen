@@ -50,9 +50,11 @@
 		class="h-140 mx-auto flex flex-col items-center gap-3 overflow-hidden p-2"
 		{...spatialMenu.root}
 	>
-		<label class="focus-within:border-accent-500 w-64 border-b-2 border-gray-800 transition">
+		<label
+			class="w-64 border-b-2 border-[var(--border)] transition focus-within:border-[var(--orange)]"
+		>
 			<input
-				class="w-full bg-transparent !outline-none"
+				class="w-full bg-transparent text-[var(--text)] !outline-none"
 				bind:value={search}
 				placeholder="Search for movies"
 				{...spatialMenu.input}
@@ -90,7 +92,7 @@
 							<div
 								class={[
 									"relative overflow-hidden rounded-md outline-1 outline-offset-1 transition-all",
-									item.highlighted ? "outline-accent-500 " : "!outline-transparent",
+									item.highlighted ? "outline-[var(--orange)]" : "!outline-transparent",
 									item.disabled ? "opacity-50" : "",
 								]}
 							>
@@ -120,9 +122,7 @@
 							<span
 								class={[
 									"text-center text-xs font-medium transition",
-									item.highlighted
-										? "text-accent-500 dark:text-accent-200"
-										: "text-gray-800 dark:text-gray-200",
+									item.highlighted ? "text-[var(--orange)]" : "text-[var(--text)]",
 								]}>{movie.title}</span
 							>
 						</div>
@@ -132,8 +132,10 @@
 		{:else}
 			<!-- empty state -->
 			<div class="mt-4 flex flex-col items-center justify-center gap-1 p-2">
-				<div class="text-center text-sm font-medium">No movies found</div>
-				<div class="text-center text-xs text-gray-500">Try adjusting your search terms</div>
+				<div class="text-center text-sm font-medium text-[var(--text)]">No movies found</div>
+				<div class="text-center text-xs text-[var(--text-muted)]">
+					Try adjusting your search terms
+				</div>
 			</div>
 		{/if}
 	</div>

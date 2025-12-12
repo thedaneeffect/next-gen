@@ -50,9 +50,8 @@
 	<div {...pinInput.root} class="flex items-center justify-center gap-2 font-mono">
 		{#each pinInput.inputs as input}
 			<input
-				class="focus:border-accent-500 size-12 rounded-xl border-2 border-gray-300 bg-white text-center
-				outline-none transition hover:border-gray-400 disabled:cursor-not-allowed
-				dark:border-gray-400/50 dark:bg-gray-900 dark:hover:border-gray-400 dark:focus:border-gray-300"
+				class="size-12 rounded-xl border-2 border-[var(--border)] bg-[var(--bg)] text-center text-[var(--text)] outline-none
+				transition hover:border-[var(--border-subtle)] focus:border-[var(--orange)] disabled:cursor-not-allowed"
 				{...input}
 			/>
 		{/each}

@@ -6,42 +6,23 @@
 </script>
 
 <Preview>
-	<button
-		class="mx-auto block rounded-xl bg-red-600 px-4 py-2 font-semibold text-white
-			transition-all hover:cursor-pointer hover:bg-red-700
-			active:bg-red-800 disabled:cursor-not-allowed disabled:opacity-50"
-		{...alertDialog.trigger}
-	>
-		Delete account
-	</button>
+	<button class="btn btn-destructive" {...alertDialog.trigger}> Delete account </button>
 
 	<dialog
-		class="m-auto max-w-md rounded-2xl bg-white p-6 shadow-2xl backdrop:bg-black/50 dark:bg-gray-800"
+		class="m-auto max-w-md rounded-2xl bg-[var(--surface)] p-6 shadow-2xl backdrop:bg-black/50"
 		{...alertDialog.content}
 	>
-		<h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" {...alertDialog.title}>
+		<h2 class="text-xl font-bold text-[var(--text)]" {...alertDialog.title}>
 			Are you absolutely sure?
 		</h2>
-		<p class="mt-2 text-gray-600 dark:text-gray-400" {...alertDialog.description}>
+		<p class="mt-2 text-[var(--text-muted)]" {...alertDialog.description}>
 			This action cannot be undone. This will permanently delete your account and remove your data
 			from our servers.
 		</p>
 
 		<div class="mt-6 flex justify-end gap-3">
-			<button
-				class="rounded-lg px-4 py-2 text-gray-700 transition hover:bg-gray-100
-					dark:text-gray-300 dark:hover:bg-gray-700"
-				{...alertDialog.cancel}
-			>
-				Cancel
-			</button>
-			<button
-				class="rounded-lg bg-red-600 px-4 py-2 text-white transition
-					hover:bg-red-700 active:bg-red-800"
-				{...alertDialog.action}
-			>
-				Yes, delete account
-			</button>
+			<button class="btn btn-ghost" {...alertDialog.cancel}> Cancel </button>
+			<button class="btn btn-destructive" {...alertDialog.action}> Yes, delete account </button>
 		</div>
 	</dialog>
 </Preview>

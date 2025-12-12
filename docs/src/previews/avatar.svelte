@@ -49,7 +49,7 @@
 	<div class="flex flex-col items-center">
 		<div class="flex w-full items-center justify-center gap-6">
 			<div
-				class="relative flex size-32 items-center justify-center overflow-hidden rounded-full bg-neutral-300 dark:bg-neutral-100"
+				class="relative flex size-32 items-center justify-center overflow-hidden rounded-full bg-[var(--fg2)]"
 			>
 				<img
 					{...mergeAttrs(avatar.image, {
@@ -63,23 +63,23 @@
 						avatar.loadingStatus === "loaded" ? "fade-in" : "invisible",
 					]}
 				/>
-				<span {...avatar.fallback} class="!block text-4xl font-medium text-neutral-700"
+				<span {...avatar.fallback} class="!block text-4xl font-medium text-[var(--bg)]"
 					>{initials}</span
 				>
 			</div>
 		</div>
-		<label for="gh" class="mt-4"> GitHub username </label>
+		<label for="gh" class="mt-4 text-[var(--text)]"> GitHub username </label>
 		<span
 			contenteditable
 			id="gh"
-			class="focus:border-accent-200 w-auto border-b-2 border-neutral-600 bg-transparent px-1 pb-1 text-center text-2xl
-			font-light placeholder-neutral-500 outline-none transition dark:text-white"
+			class="w-auto border-b-2 border-[var(--border)] bg-transparent px-1 pb-1 text-center text-2xl font-light
+			text-[var(--text)] placeholder-[var(--text-muted)] outline-none transition focus:border-[var(--orange)]"
 			bind:innerText={username}
 			spellcheck="false"
 		></span>
 		<span
 			class={[
-				"mt-2 text-red-300",
+				"mt-2 text-[var(--red)]",
 				avatar.loadingStatus !== "error" && "pointer-events-none opacity-0",
 			]}
 		>

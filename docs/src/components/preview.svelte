@@ -57,8 +57,8 @@
 </script>
 
 <div
-	class="not-content relative grid min-h-[500px] place-items-center overflow-clip rounded-2xl border
-	bg-gray-100 dark:border-gray-700 dark:bg-gray-950 {className}"
+	class="not-content relative grid min-h-[500px] place-items-center overflow-clip rounded-2xl
+	border border-[var(--border-subtle)] bg-[var(--bg)] {className}"
 >
 	<div class="w-full min-w-0 overflow-clip p-4">
 		{@render children()}
@@ -66,8 +66,8 @@
 
 	{#if !open && values}
 		<button
-			class="absolute bottom-4 left-4 z-10 cursor-pointer rounded-lg bg-gray-500 px-2 py-1
-		text-sm text-white transition hover:bg-gray-700 active:bg-gray-800"
+			class="absolute bottom-4 left-4 z-10 cursor-pointer rounded-lg bg-[var(--gray)] px-2 py-1
+			text-sm text-[var(--bg)] transition hover:bg-[var(--surface-active)] active:bg-[var(--surface-hover)]"
 			onclick={() => (open = !open)}
 			in:fix={(el) => fade(el, { delay: 300, duration: 200 })}
 			out:fade={{ duration: 100 }}
@@ -78,35 +78,37 @@
 
 	{#if values}
 		<div
-			class="absolute bottom-2 left-2 top-2 z-50 w-[200px] rounded-xl border border-gray-300 bg-gray-100
-		p-3 shadow-xl backdrop-blur-xl dark:border-none dark:bg-gray-800/80"
+			class="bg-[var(--surface)]/80 absolute bottom-2 left-2 top-2 z-50 w-[200px] rounded-xl border
+			border-[var(--border-subtle)] p-3 shadow-xl backdrop-blur-xl"
 			data-preview
 			data-open={open}
 		>
 			<div class="flex items-center justify-between">
-				<p class="text-xl font-bold text-black dark:text-white">Props</p>
+				<p class="text-xl font-bold text-[var(--text)]">Props</p>
 				<button
-					class="cursor-pointer rounded-lg bg-gray-500 px-2 py-1 text-sm
-				text-white transition hover:bg-gray-600 active:bg-gray-700"
+					class="cursor-pointer rounded-lg bg-[var(--gray)] px-2 py-1 text-sm
+					text-[var(--bg)] transition hover:bg-[var(--surface-active)] active:bg-[var(--surface-hover)]"
 					onclick={() => (open = !open)}
 				>
 					Close
 				</button>
 			</div>
 
-			<hr class="mt-2 block h-[2px] rounded-full bg-gray-300/50 dark:bg-gray-600" />
+			<hr class="mt-2 block h-[2px] rounded-full bg-[var(--border-subtle)]" />
 
 			<div class="mt-2 flex flex-col gap-2">
 				{#each Object.keys(values ?? {}) as key}
 					{@const control = schema[key]}
-					<label class="flex w-full flex-col items-start gap-1 text-sm font-medium">
+					<label
+						class="flex w-full flex-col items-start gap-1 text-sm font-medium text-[var(--text)]"
+					>
 						{control.label}
 						{#if control.type === "boolean"}
 							<input type="checkbox" bind:checked={values[key] as boolean} />
 						{:else if control.type === "select"}
 							<select
 								bind:value={values[key] as string}
-								class="self-stretch rounded-md px-1 py-0.5 dark:bg-gray-900"
+								class="self-stretch rounded-md bg-[var(--input-bg)] px-1 py-0.5 text-[var(--text)]"
 							>
 								{#each control.options as option}
 									<option value={option}>{option}</option>
@@ -128,13 +130,13 @@
 							}}
 								min={control.min}
 								max={control.max}
-								class="self-stretch rounded-md px-1 py-0.5 dark:bg-gray-900"
+								class="self-stretch rounded-md bg-[var(--input-bg)] px-1 py-0.5 text-[var(--text)]"
 							/>
 						{:else if control.type === "string"}
 							<input
 								type="text"
 								bind:value={values[key] as string}
-								class="self-stretch rounded-md px-1 py-0.5 dark:bg-gray-900"
+								class="self-stretch rounded-md bg-[var(--input-bg)] px-1 py-0.5 text-[var(--text)]"
 							/>
 						{/if}
 					</label>

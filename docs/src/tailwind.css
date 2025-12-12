@@ -148,3 +148,59 @@
 	top: 50%;
 	@apply -translate-y-1/2;
 }
+
+/* =========================================
+ * Button Component Classes
+ * ========================================= */
+
+@layer components {
+	.btn {
+		@apply rounded-xl px-4 py-2 font-semibold transition-all;
+		@apply hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50;
+	}
+
+	.btn-primary {
+		background: var(--orange);
+		color: var(--bg);
+		&:hover {
+			background: var(--orange-dim);
+		}
+		&:active {
+			background: var(--orange-muted);
+		}
+	}
+
+	.btn-secondary {
+		background: var(--surface);
+		color: var(--text);
+		&:hover {
+			background: var(--surface-hover);
+		}
+		&:active {
+			background: var(--surface-active);
+		}
+	}
+
+	.btn-ghost {
+		background: transparent;
+		color: var(--text-muted);
+		&:hover {
+			background: var(--surface);
+			color: var(--text);
+		}
+		&:active {
+			background: var(--surface-hover);
+		}
+	}
+
+	.btn-destructive {
+		background: var(--red);
+		color: var(--bg);
+		&:hover {
+			background: var(--red-dim);
+		}
+		&:active {
+			background: var(--red-muted);
+		}
+	}
+}

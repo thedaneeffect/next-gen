@@ -85,18 +85,17 @@
 <Preview>
 	<div class="mx-auto flex w-[300px] flex-col gap-1">
 		<label {...combobox.label}>Favorite Character</label>
-		<div class="relative text-left text-gray-800 transition dark:text-gray-200">
+		<div class="relative text-left text-[var(--text)] transition">
 			<AlphabetJapanese class="abs-y-center absolute left-3 shrink-0" />
 			<input
 				{...combobox.input}
-				class="w-full rounded-xl border border-gray-500 bg-gray-100 py-2 pl-9 text-left
-					disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50
-					dark:bg-gray-900"
+				class="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] py-2 pl-9 text-left
+					disabled:cursor-not-allowed disabled:opacity-50"
 				type="text"
 			/>
 			<button
 				class="abs-y-center absolute right-3 grid shrink-0 place-items-center rounded-md
-					dark:bg-gray-700 dark:hover:bg-gray-500 dark:active:bg-gray-600"
+					bg-[var(--surface-hover)] hover:bg-[var(--surface-active)] active:bg-[var(--border)]"
 				{...combobox.trigger}
 			>
 				<ChevronDown />
@@ -113,20 +112,20 @@
 
 		<div
 			{...combobox.content}
-			class="flex max-h-96 flex-col rounded-xl border border-gray-500 bg-gray-100 p-2 shadow dark:bg-gray-800"
+			class="flex max-h-96 flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow"
 		>
 			{#each filtered as option (option)}
 				<div
 					{...combobox.getOption(option)}
 					class={[
 						"relative flex scroll-m-2 items-center justify-between rounded-xl py-2 pl-8 pr-2",
-						combobox.highlighted === option && "bg-gray-700",
+						combobox.highlighted === option && "bg-[var(--surface-hover)]",
 						combobox.value === option && "font-semibold",
 					]}
 				>
 					<span>{option}</span>
 					{#if combobox.isSelected(option)}
-						<Check class="text-accent-300 font-bold" />
+						<Check class="font-bold text-[var(--orange)]" />
 					{/if}
 				</div>
 			{:else}

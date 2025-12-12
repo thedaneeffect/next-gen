@@ -127,12 +127,9 @@
 		>
 			<div class="group py-1" style="padding-left: {depth * 1}rem">
 				<div
-					class="{item.selected
-						? '!bg-accent-500 dark:!bg-accent-200 dark:!text-accent-950 !text-white'
-						: ''}
-					ring-accent-400 flex h-full w-full items-center gap-2 rounded-xl
-					px-3 py-1 ring-offset-2 ring-offset-white transition group-hover:bg-gray-200
-					dark:ring-offset-black dark:group-hover:bg-gray-800"
+					class="{item.selected ? 'bg-[var(--orange)] text-[var(--bg)]' : ''}
+					flex h-full w-full items-center gap-2 rounded-xl px-3
+					py-1 ring-[var(--orange)] ring-offset-2 ring-offset-[var(--bg)] transition group-hover:bg-[var(--surface)]"
 				>
 					{@render treeItemIcon(item)}
 					<span class="select-none">
@@ -161,7 +158,7 @@
 					class="relative list-none p-0 {!item.expanded ? 'pointer-events-none' : ''} origin-left"
 				>
 					<div
-						class="absolute bottom-2 top-2 w-px bg-gray-200 dark:bg-gray-700"
+						class="absolute bottom-2 top-2 w-px bg-[var(--border-subtle)]"
 						style="left: {0.5 + depth * 1}rem"
 					></div>
 					{@render treeItems(item.children, depth + 1)}
@@ -172,12 +169,7 @@
 {/snippet}
 
 {#snippet button(props: {onclick: () => void, text: string})}
-	<button
-		class="rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-800
-			transition-all hover:cursor-pointer hover:bg-gray-200
-			active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50
-			dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-500/50 dark:active:bg-gray-600/50"
-		onclick={props.onclick}>{props.text}</button
+	<button class="btn btn-secondary px-3 py-1.5 text-xs" onclick={props.onclick}>{props.text}</button
 	>
 {/snippet}
 

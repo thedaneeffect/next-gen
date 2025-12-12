@@ -60,8 +60,8 @@
 
 	const lightClr = $derived(`hsl(${light.h}, ${light.s()}%, ${light.l()}%)`);
 
-	const clrClasses = "text-(--light) dark:text-(--dark)";
-	const bgClasses = "bg-(--light) dark:bg-(--dark)";
+	const clrClasses = "text-(--dark)";
+	const bgClasses = "bg-(--dark)";
 	const clrStyle = $derived(`--light: ${lightClr}; --dark: ${darkClr};`);
 </script>
 
@@ -72,7 +72,7 @@
 		</span>
 		<div
 			{...progress.root}
-			class="relative w-[300px] overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700"
+			class="relative w-[300px] overflow-hidden rounded-full bg-[var(--surface-hover)]"
 			style:height={`${scaleConvert(value, [0, 100], [8, 24])}px`}
 		>
 			<div

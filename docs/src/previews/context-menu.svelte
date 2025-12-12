@@ -61,7 +61,7 @@
 <Preview>
 	<div
 		class="mx-auto flex h-48 w-80 items-center justify-center rounded-md border-2 border-dashed
-			border-gray-500 text-gray-500 dark:border-gray-600 dark:text-gray-400"
+			border-[var(--border)] text-[var(--text-muted)]"
 		{...menu.trigger}
 	>
 		Right-click here
@@ -69,7 +69,7 @@
 
 	<!-- Main Menu Content -->
 	<div
-		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-md border border-gray-500 bg-gray-100 p-0.5 shadow-lg outline-none dark:bg-gray-800"
+		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-md border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
 		{...menu.content}
 	>
 		<button class="menu-item" {...undoItem.attrs}>
@@ -81,7 +81,7 @@
 			<span class="ml-auto text-[10px] opacity-50">&#8984;&#8679;Z</span>
 		</button>
 
-		<hr class="my-0.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
+		<hr class="my-0.5 border-[var(--border-subtle)]" {...menu.separator} />
 
 		<button class="menu-item" {...cutItem.attrs}>
 			Cut
@@ -100,7 +100,7 @@
 			<span class="ml-auto text-[10px] opacity-50">&#8984;A</span>
 		</button>
 
-		<hr class="my-0.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
+		<hr class="my-0.5 border-[var(--border-subtle)]" {...menu.separator} />
 
 		<button class="menu-item" {...findItem.attrs}>
 			Find
@@ -111,7 +111,7 @@
 			<span class="ml-auto text-[10px] opacity-50">&#8984;H</span>
 		</button>
 
-		<hr class="my-0.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
+		<hr class="my-0.5 border-[var(--border-subtle)]" {...menu.separator} />
 
 		<!-- Share Submenu Trigger -->
 		<button class="menu-item justify-between" {...shareTrigger.attrs}>
@@ -119,12 +119,11 @@
 			<span class="opacity-50">&#8250;</span>
 		</button>
 
-		<hr class="my-0.5 border-gray-300 dark:border-gray-600" {...menu.separator} />
+		<hr class="my-0.5 border-[var(--border-subtle)]" {...menu.separator} />
 
 		<span class="menu-label">Danger Zone</span>
 		<button
-			class="menu-item text-red-600 data-[highlighted]:bg-red-100 dark:text-red-400
-				dark:data-[highlighted]:bg-red-900/30"
+			class="menu-item text-[var(--red)] data-[highlighted]:bg-[var(--red-subtle)]"
 			{...deleteItem.attrs}
 		>
 			Delete
@@ -134,7 +133,7 @@
 
 	<!-- Share Submenu Content -->
 	<div
-		class="menu-content max-h-24 min-w-36 overflow-y-auto rounded-md border border-gray-500 bg-gray-100 p-0.5 shadow-lg outline-none dark:bg-gray-800"
+		class="menu-content max-h-24 min-w-36 overflow-y-auto rounded-md border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
 		{...shareSubmenu.content}
 	>
 		<button class="menu-item" {...copyLinkItem.attrs}> Copy Link </button>
@@ -153,7 +152,7 @@
 
 	<!-- Social Submenu Content (nested) -->
 	<div
-		class="menu-content min-w-32 rounded-md border border-gray-500 bg-gray-100 p-0.5 shadow-lg outline-none dark:bg-gray-800"
+		class="menu-content min-w-32 rounded-md border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
 		{...socialSubmenu.content}
 	>
 		<button class="menu-item" {...twitterItem.attrs}> Twitter </button>
@@ -177,16 +176,12 @@
 
 		/* Firefox scrollbar */
 		scrollbar-width: thin;
-		scrollbar-color: rgb(0 0 0 / 0.2) transparent;
+		scrollbar-color: rgb(255 255 255 / 0.2) transparent;
 	}
 
 	/* Reserve space for scrollbar only when content is scrollable */
 	.menu-content[data-scrollable] {
 		padding-right: var(--scrollbar-width);
-	}
-
-	:global(.dark) .menu-content {
-		scrollbar-color: rgb(255 255 255 / 0.2) transparent;
 	}
 
 	/* WebKit scrollbar (Chrome, Safari, Edge) */
@@ -199,19 +194,11 @@
 	}
 
 	.menu-content::-webkit-scrollbar-thumb {
-		background-color: rgb(0 0 0 / 0.2);
+		background-color: rgb(255 255 255 / 0.2);
 		border-radius: calc(var(--scrollbar-width) / 2);
 	}
 
 	.menu-content::-webkit-scrollbar-thumb:hover {
-		background-color: rgb(0 0 0 / 0.35);
-	}
-
-	:global(.dark) .menu-content::-webkit-scrollbar-thumb {
-		background-color: rgb(255 255 255 / 0.2);
-	}
-
-	:global(.dark) .menu-content::-webkit-scrollbar-thumb:hover {
 		background-color: rgb(255 255 255 / 0.35);
 	}
 
@@ -242,10 +229,6 @@
 	}
 
 	.menu-item[data-highlighted] {
-		background-color: rgb(0 0 0 / 0.1);
-	}
-
-	:global(.dark) .menu-item[data-highlighted] {
 		background-color: rgb(255 255 255 / 0.15);
 	}
 

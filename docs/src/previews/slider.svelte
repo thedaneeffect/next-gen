@@ -29,20 +29,19 @@
 		{...slider.root}
 	>
 		<div
-			class="absolute rounded-full bg-gray-500
+			class="absolute rounded-full bg-[var(--border)]
 					{slider.orientation === 'horizontal'
 				? 'left-0 right-0 top-1/2 h-2 -translate-y-1/2'
 				: 'bottom-0 left-1/2 top-0 w-2 -translate-x-1/2'}"
 		>
 			<div
-				class="bg-accent-400 absolute inset-0 rounded-full transition-all group-data-[dragging]:transition-none
+				class="absolute inset-0 rounded-full bg-[var(--orange)] transition-all group-data-[dragging]:transition-none
 						{slider.orientation === 'horizontal' ? 'right-[var(--percentage-inv)]' : 'top-[var(--percentage)]'}"
 			></div>
 		</div>
 		<div
-			class="focus-visible:ring-accent-400 border-accent-400 absolute size-6 rounded-md border bg-white outline-none transition-all
-					focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:ring-offset-black data-[dragging]:transition-none
-					dark:border-none
+			class="absolute size-6 rounded-md border border-[var(--orange)] bg-[var(--fg)] outline-none transition-all focus-visible:ring-1
+					focus-visible:ring-[var(--orange)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--bg)] data-[dragging]:transition-none
 					{slider.orientation === 'horizontal'
 				? 'left-[var(--percentage)] top-1/2 -translate-x-1/2 -translate-y-1/2'
 				: 'left-1/2 top-[var(--percentage)] -translate-x-1/2 -translate-y-1/2'}"

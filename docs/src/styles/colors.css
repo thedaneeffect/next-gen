@@ -74,4 +74,26 @@
 	--purple-muted: #684c53;
 	--aqua-muted: #4f6048;
 	--orange-muted: #7a4929;
+
+	/* =========================================
+	 * Theme-Aware Semantic Tokens (Dark Mode)
+	 * ========================================= */
+
+	/* Surfaces - for cards, dialogs, popovers */
+	--surface: var(--bg1);
+	--surface-hover: var(--bg2);
+	--surface-active: var(--bg3);
+
+	/* Text hierarchy */
+	--text: var(--fg1);
+	--text-muted: var(--fg4);
+	--text-subtle: var(--fg3);
+
+	/* Borders */
+	--border: var(--bg4);
+	--border-subtle: var(--bg3);
+
+	/* Input fields */
+	--input-bg: var(--bg2);
+	--input-border: var(--bg4);
 }

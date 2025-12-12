@@ -59,15 +59,7 @@
 </script>
 
 <Preview class="text-center">
-	<button
-		class="mx-auto block rounded-xl bg-gray-600 px-4 py-2 font-semibold text-white
-				transition-all hover:cursor-pointer hover:bg-gray-500
-				active:bg-gray-400 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50
-				dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-500/50 dark:active:bg-gray-600/50"
-		onclick={addRandomToast}
-	>
-		Show Toast
-	</button>
+	<button class="btn btn-secondary mx-auto block" onclick={addRandomToast}> Show Toast </button>
 
 	<div
 		{...toaster.root}
@@ -76,18 +68,18 @@
 	>
 		{#each toaster.toasts as toast, i (toast.id)}
 			<div
-				class="h-(--toast-height) relative flex w-full flex-col justify-center rounded-xl bg-white px-4 text-left transition dark:bg-gray-800"
+				class="h-(--toast-height) relative flex w-full flex-col justify-center rounded-xl bg-[var(--surface)] px-4 text-left transition"
 				{...toast.content}
 				style:--n={toaster.toasts.length - i}
 				in:fly={{ y: 60, opacity: 0.9 }}
 				out:fly={{ y: 20 }}
 			>
-				<h3 {...toast.title} class="whitespace-nowrap text-sm font-medium">
+				<h3 {...toast.title} class="whitespace-nowrap text-sm font-medium text-[var(--text)]">
 					{toast.data.title}
 				</h3>
 
 				{#if toast.data.description}
-					<div {...toast.description} class="text-xs text-gray-700 dark:text-gray-300">
+					<div {...toast.description} class="text-xs text-[var(--text-muted)]">
 						{toast.data.description}
 					</div>
 				{/if}
@@ -95,7 +87,7 @@
 				<button
 					{...toast.close}
 					aria-label="dismiss toast"
-					class="absolute right-1 top-1 bg-transparent text-gray-300 hover:text-gray-400 dark:hover:text-gray-100"
+					class="absolute right-1 top-1 bg-transparent text-[var(--text-muted)] hover:text-[var(--text)]"
 				>
 					<Close class="h-3.5 w-3.5" />
 				</button>
@@ -106,14 +98,14 @@
 							{#snippet children(progress)}
 								<div
 									{...progress.root}
-									class="relative h-full w-full overflow-hidden bg-gray-200 dark:bg-gray-950"
+									class="relative h-full w-full overflow-hidden bg-[var(--bg)]"
 								>
 									<div
 										{...progress.progress}
 										class="h-full w-full -translate-x-[var(--progress)]"
-										class:bg-green-400={toast.data.variant === "success"}
-										class:bg-orange-400={toast.data.variant === "warning"}
-										class:bg-red-500={toast.data.variant === "error"}
+										class:bg-[var(--green)]={toast.data.variant === "success"}
+										class:bg-[var(--orange)]={toast.data.variant === "warning"}
+										class:bg-[var(--red)]={toast.data.variant === "error"}
 									></div>
 								</div>
 							{/snippet}
@@ -165,7 +157,7 @@
 		transition: all 350ms ease;
 	}
 
-	:global([data-theme="dark"] [data-melt-toaster-toast-content]) {
+	[data-melt-toaster-toast-content] {
 		box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
 	}
 

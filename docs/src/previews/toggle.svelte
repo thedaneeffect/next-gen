@@ -30,13 +30,12 @@
 		<button
 			class="relative size-16 rounded-xl bg-transparent
 				text-xl transition-all hover:cursor-pointer
-			  hover:bg-gray-300/25 active:bg-gray-300/40 disabled:cursor-not-allowed
-				dark:hover:bg-gray-700 dark:active:bg-gray-600 dark:disabled:bg-gray-900"
+			  hover:bg-[var(--surface)] active:bg-[var(--surface-hover)] disabled:cursor-not-allowed"
 			{...toggle.trigger}
 			aria-label="toggle favourite"
 		>
 			<PhHeartFill
-				class="text-accent-500 dark:text-accent-200 absolute left-1/2 top-1/2 z-10 origin-center -translate-x-1/2 -translate-y-1/2"
+				class="absolute left-1/2 top-1/2 z-10 origin-center -translate-x-1/2 -translate-y-1/2 text-[var(--orange)]"
 				style="scale: {absScale}"
 			/>
 			<PhHeartBold

@@ -29,71 +29,43 @@
 </script>
 
 <Preview>
-	<button
-		class="mx-auto block rounded-xl bg-gray-100 px-4 py-2 font-semibold text-gray-800
-			transition-all hover:cursor-pointer hover:bg-gray-200
-			active:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50
-			dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-500/50 dark:active:bg-gray-600/50"
-		{...dialog.trigger}
-	>
-		Open Dialog
-	</button>
+	<button class="btn btn-secondary" {...dialog.trigger}> Open Dialog </button>
 
 	<dialog
-		class="m-auto max-w-md rounded-2xl bg-white p-6 shadow-2xl backdrop:bg-black/50 dark:bg-gray-800"
+		class="m-auto max-w-md rounded-2xl bg-[var(--surface)] p-6 shadow-2xl backdrop:bg-black/50"
 		{...dialog.content}
 	>
-		<h2 class="text-xl font-bold text-gray-900 dark:text-gray-100" {...dialog.title}>
-			Edit profile
-		</h2>
-		<p class="mt-2 text-gray-600 dark:text-gray-400" {...dialog.description}>
+		<h2 class="text-xl font-bold text-[var(--text)]" {...dialog.title}>Edit profile</h2>
+		<p class="mt-2 text-[var(--text-muted)]" {...dialog.description}>
 			Make changes to your profile here. Click save when you're done.
 		</p>
 
 		<div class="mt-4 space-y-4">
 			<div>
-				<label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="name">
-					Name
-				</label>
+				<label class="block text-sm font-medium text-[var(--text-muted)]" for="name"> Name </label>
 				<input
 					id="name"
 					type="text"
-					class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2
-						text-gray-900
-						dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+					class="mt-1 block w-full rounded-lg border border-[var(--border)] bg-[var(--input-bg)] px-3 py-2 text-[var(--text)]"
 					placeholder="Enter your name"
 				/>
 			</div>
 			<div>
-				<label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="email">
+				<label class="block text-sm font-medium text-[var(--text-muted)]" for="email">
 					Email
 				</label>
 				<input
 					id="email"
 					type="email"
-					class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2
-						text-gray-900
-						dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+					class="mt-1 block w-full rounded-lg border border-[var(--border)] bg-[var(--input-bg)] px-3 py-2 text-[var(--text)]"
 					placeholder="Enter your email"
 				/>
 			</div>
 		</div>
 
 		<div class="mt-6 flex justify-end gap-3">
-			<button
-				class="rounded-lg px-4 py-2 text-gray-700 transition hover:bg-gray-100
-					dark:text-gray-300 dark:hover:bg-gray-700"
-				{...dialog.close}
-			>
-				Cancel
-			</button>
-			<button
-				class="bg-accent-500 hover:bg-accent-600 active:bg-accent-700 rounded-lg px-4 py-2
-					text-white transition"
-				{...dialog.close}
-			>
-				Save changes
-			</button>
+			<button class="btn btn-ghost" {...dialog.close}> Cancel </button>
+			<button class="btn btn-primary" {...dialog.close}> Save changes </button>
 		</div>
 	</dialog>
 </Preview>

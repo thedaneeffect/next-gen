@@ -57,13 +57,12 @@
 					<button
 						{...item.trigger}
 						class={[
-							"flex flex-1 cursor-pointer items-center justify-between bg-gray-200 px-5 py-5 text-base font-medium leading-none text-gray-800 outline-none transition-colors",
-							"focus-visible:ring-accent-400 focus-visible:ring-1 focus-visible:ring-inset outline-none",
+							"flex flex-1 cursor-pointer items-center justify-between bg-[var(--surface)] px-5 py-5 text-base font-medium leading-none text-[var(--text)] outline-none transition-colors",
+							"outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[var(--orange)]",
 							!item.isDisabled &&
-								"hover:bg-gray-300 dark:hover:bg-gray-500/50 dark:active:bg-gray-600/50",
-							"disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50",
-							"dark:bg-gray-800 dark:text-gray-200 ",
-							!isLast && "border-b border-neutral-200 dark:border-neutral-700",
+								"hover:bg-[var(--surface-hover)] active:bg-[var(--surface-active)]",
+							"disabled:cursor-not-allowed disabled:opacity-50",
+							!isLast && "border-b border-[var(--border-subtle)]",
 							isFirst && "rounded-t-xl",
 							isLast && !item.isExpanded && "rounded-b-xl",
 						]}
@@ -75,7 +74,7 @@
 				{#if item.isExpanded}
 					<div
 						{...item.content}
-						class="content overflow-hidden bg-white p-4 text-sm dark:bg-gray-900 dark:text-white/80"
+						class="content overflow-hidden bg-[var(--bg)] p-4 text-sm text-[var(--text-subtle)]"
 						transition:slide={{ duration: 250 }}
 					>
 						<div class="p-2">
