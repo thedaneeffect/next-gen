@@ -5,7 +5,7 @@ import { extract } from "$lib/utils/extract";
 import { createBuilderMetadata, createId } from "$lib/utils/identifiers";
 import { isFunction, isHtmlElement } from "$lib/utils/is";
 import { autoOpenPopover, safelyHidePopover } from "$lib/utils/popover";
-import { canScrollVertically, findScrollableAncestor } from "$lib/utils/scroll";
+import { findScrollableAncestor } from "$lib/utils/scroll";
 import {
 	useFloating,
 	type UseFloatingArgs,
@@ -356,7 +356,7 @@ export class BasePopover {
 				// Inside popover - check if we can actually scroll
 				const scrollableEl = findScrollableAncestor(target, contentEl);
 
-				if (!scrollableEl || !canScrollVertically(scrollableEl, e.deltaY)) {
+				if (!scrollableEl) {
 					// Can't scroll - prevent page scroll but don't close
 					e.preventDefault();
 				}

@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+::-webkit-scrollbar-thumb {
+  transition: none !important;
+  transform: none !important;
+}

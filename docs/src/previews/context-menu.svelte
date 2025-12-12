@@ -21,39 +21,161 @@
 		closeOnOutsideClick: () => controls.closeOnOutsideClick,
 	});
 
-	// Submenus
-	const shareSubmenu = menu.createSub();
-	const socialSubmenu = shareSubmenu.createSub();
-
 	function handleSelect(action: string) {
 		console.log("Selected:", action);
 	}
 
-	// Create item instances
+	// -------------------------------------------------------------------------
+	// Submenus
+	// -------------------------------------------------------------------------
+
+	const pasteSpecialSubmenu = menu.createSub();
+	const findReplaceSubmenu = menu.createSub();
+	const transformSubmenu = menu.createSub();
+	const sortLinesSubmenu = transformSubmenu.createSub();
+	const insertSubmenu = menu.createSub();
+	const snippetSubmenu = insertSubmenu.createSub();
+	const shareSubmenu = menu.createSub();
+	const socialSubmenu = shareSubmenu.createSub();
+
+	// -------------------------------------------------------------------------
+	// Main menu items
+	// -------------------------------------------------------------------------
+
 	const undoItem = menu.getItem({ onSelect: () => handleSelect("undo") });
 	const redoItem = menu.getItem({ onSelect: () => handleSelect("redo") });
 	const cutItem = menu.getItem({ onSelect: () => handleSelect("cut") });
 	const copyItem = menu.getItem({ onSelect: () => handleSelect("copy") });
 	const pasteItem = menu.getItem({ onSelect: () => handleSelect("paste") });
+	const deleteItem = menu.getItem({ onSelect: () => handleSelect("delete"), disabled: true });
 	const selectAllItem = menu.getItem({ onSelect: () => handleSelect("select-all") });
-	const findItem = menu.getItem({ onSelect: () => handleSelect("find") });
-	const replaceItem = menu.getItem({ onSelect: () => handleSelect("replace") });
-	const deleteItem = menu.getItem({ onSelect: () => handleSelect("delete") });
+	const selectLineItem = menu.getItem({ onSelect: () => handleSelect("select-line") });
+	const selectWordItem = menu.getItem({ onSelect: () => handleSelect("select-word") });
+	const preferencesItem = menu.getItem({
+		onSelect: () => handleSelect("preferences"),
+		disabled: true,
+	});
+	const deleteFileItem = menu.getItem({ onSelect: () => handleSelect("delete-file") });
 
+	// -------------------------------------------------------------------------
+	// Paste Special submenu items
+	// -------------------------------------------------------------------------
+
+	const pastePlainTextItem = pasteSpecialSubmenu.getItem({
+		onSelect: () => handleSelect("paste-plain-text"),
+	});
+	const pasteAsQuoteItem = pasteSpecialSubmenu.getItem({
+		onSelect: () => handleSelect("paste-as-quote"),
+	});
+	const pasteMatchStyleItem = pasteSpecialSubmenu.getItem({
+		onSelect: () => handleSelect("paste-match-style"),
+	});
+
+	// -------------------------------------------------------------------------
+	// Find & Replace submenu items
+	// -------------------------------------------------------------------------
+
+	const findItem = findReplaceSubmenu.getItem({ onSelect: () => handleSelect("find") });
+	const findNextItem = findReplaceSubmenu.getItem({ onSelect: () => handleSelect("find-next") });
+	const findPrevItem = findReplaceSubmenu.getItem({ onSelect: () => handleSelect("find-prev") });
+	const replaceItem = findReplaceSubmenu.getItem({ onSelect: () => handleSelect("replace") });
+	const replaceAllItem = findReplaceSubmenu.getItem({
+		onSelect: () => handleSelect("replace-all"),
+	});
+
+	// -------------------------------------------------------------------------
+	// Transform submenu items
+	// -------------------------------------------------------------------------
+
+	const uppercaseItem = transformSubmenu.getItem({ onSelect: () => handleSelect("uppercase") });
+	const lowercaseItem = transformSubmenu.getItem({ onSelect: () => handleSelect("lowercase") });
+	const titleCaseItem = transformSubmenu.getItem({ onSelect: () => handleSelect("title-case") });
+	const sentenceCaseItem = transformSubmenu.getItem({
+		onSelect: () => handleSelect("sentence-case"),
+	});
+	const reverseLinesItem = transformSubmenu.getItem({
+		onSelect: () => handleSelect("reverse-lines"),
+	});
+	const shuffleLinesItem = transformSubmenu.getItem({
+		onSelect: () => handleSelect("shuffle-lines"),
+	});
+	const removeDuplicatesItem = transformSubmenu.getItem({
+		onSelect: () => handleSelect("remove-duplicates"),
+	});
+	const trimWhitespaceItem = transformSubmenu.getItem({
+		onSelect: () => handleSelect("trim-whitespace"),
+	});
+	const joinLinesItem = transformSubmenu.getItem({ onSelect: () => handleSelect("join-lines") });
+
+	// -------------------------------------------------------------------------
+	// Sort Lines submenu items
+	// -------------------------------------------------------------------------
+
+	const sortAZItem = sortLinesSubmenu.getItem({ onSelect: () => handleSelect("sort-az") });
+	const sortZAItem = sortLinesSubmenu.getItem({ onSelect: () => handleSelect("sort-za") });
+	const sortByLengthItem = sortLinesSubmenu.getItem({
+		onSelect: () => handleSelect("sort-by-length"),
+	});
+
+	// -------------------------------------------------------------------------
+	// Insert submenu items
+	// -------------------------------------------------------------------------
+
+	const insertDateTimeItem = insertSubmenu.getItem({
+		onSelect: () => handleSelect("insert-datetime"),
+	});
+	const insertFilePathItem = insertSubmenu.getItem({
+		onSelect: () => handleSelect("insert-filepath"),
+	});
+	const insertUUIDItem = insertSubmenu.getItem({ onSelect: () => handleSelect("insert-uuid") });
+
+	// -------------------------------------------------------------------------
+	// Snippet submenu items
+	// -------------------------------------------------------------------------
+
+	const loremIpsumItem = snippetSubmenu.getItem({ onSelect: () => handleSelect("lorem-ipsum") });
+	const mitLicenseItem = snippetSubmenu.getItem({ onSelect: () => handleSelect("mit-license") });
+	const apacheLicenseItem = snippetSubmenu.getItem({
+		onSelect: () => handleSelect("apache-license"),
+	});
+	const htmlBoilerplateItem = snippetSubmenu.getItem({
+		onSelect: () => handleSelect("html-boilerplate"),
+	});
+	const cssResetItem = snippetSubmenu.getItem({ onSelect: () => handleSelect("css-reset") });
+	const readmeTemplateItem = snippetSubmenu.getItem({
+		onSelect: () => handleSelect("readme-template"),
+	});
+	const gitignoreItem = snippetSubmenu.getItem({ onSelect: () => handleSelect("gitignore") });
+	const packageJsonItem = snippetSubmenu.getItem({ onSelect: () => handleSelect("package-json") });
+
+	// -------------------------------------------------------------------------
 	// Share submenu items
+	// -------------------------------------------------------------------------
+
 	const copyLinkItem = shareSubmenu.getItem({ onSelect: () => handleSelect("copy-link") });
 	const emailItem = shareSubmenu.getItem({ onSelect: () => handleSelect("email") });
 	const messagesItem = shareSubmenu.getItem({ onSelect: () => handleSelect("messages") });
 	const airdropItem = shareSubmenu.getItem({ onSelect: () => handleSelect("airdrop") });
-	const notesItem = shareSubmenu.getItem({ onSelect: () => handleSelect("notes") });
-	const remindersItem = shareSubmenu.getItem({ onSelect: () => handleSelect("reminders") });
 
+	// -------------------------------------------------------------------------
 	// Social submenu items
-	const twitterItem = socialSubmenu.getItem({ onSelect: () => handleSelect("twitter") });
-	const facebookItem = socialSubmenu.getItem({ onSelect: () => handleSelect("facebook") });
-	const linkedinItem = socialSubmenu.getItem({ onSelect: () => handleSelect("linkedin") });
+	// -------------------------------------------------------------------------
 
+	const twitterItem = socialSubmenu.getItem({ onSelect: () => handleSelect("twitter") });
+	const linkedinItem = socialSubmenu.getItem({ onSelect: () => handleSelect("linkedin") });
+	const mastodonItem = socialSubmenu.getItem({ onSelect: () => handleSelect("mastodon") });
+	const blueskyItem = socialSubmenu.getItem({ onSelect: () => handleSelect("bluesky") });
+
+	// -------------------------------------------------------------------------
 	// Sub-triggers
+	// -------------------------------------------------------------------------
+
+	const pasteSpecialTrigger = pasteSpecialSubmenu.trigger;
+	const findReplaceTrigger = findReplaceSubmenu.trigger;
+	const transformTrigger = transformSubmenu.trigger;
+	const sortLinesTrigger = sortLinesSubmenu.trigger;
+	const insertTrigger = insertSubmenu.trigger;
+	const snippetTrigger = snippetSubmenu.trigger;
 	const shareTrigger = shareSubmenu.trigger;
 	const socialTrigger = socialSubmenu.trigger;
 </script>
@@ -67,97 +189,238 @@
 		Right-click here
 	</div>
 
+	<!-- ===================================================================== -->
 	<!-- Main Menu Content -->
+	<!-- ===================================================================== -->
 	<div
-		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content max-h-64 min-w-44 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
 		{...menu.content}
 	>
 		<button class="menu-item" {...undoItem.attrs}>
 			Undo
-			<span class="ml-auto text-[10px] opacity-50">&#8984;Z</span>
+			<span class="shortcut">&#8984;Z</span>
 		</button>
 		<button class="menu-item" {...redoItem.attrs}>
 			Redo
-			<span class="ml-auto text-[10px] opacity-50">&#8984;&#8679;Z</span>
+			<span class="shortcut">&#8984;&#8679;Z</span>
 		</button>
 
-		<hr class="my-0.5 border-[var(--border-subtle)]" {...menu.separator} />
+		<hr class="separator" {...menu.separator} />
 
 		<button class="menu-item" {...cutItem.attrs}>
 			Cut
-			<span class="ml-auto text-[10px] opacity-50">&#8984;X</span>
+			<span class="shortcut">&#8984;X</span>
 		</button>
 		<button class="menu-item" {...copyItem.attrs}>
 			Copy
-			<span class="ml-auto text-[10px] opacity-50">&#8984;C</span>
+			<span class="shortcut">&#8984;C</span>
 		</button>
 		<button class="menu-item" {...pasteItem.attrs}>
 			Paste
-			<span class="ml-auto text-[10px] opacity-50">&#8984;V</span>
+			<span class="shortcut">&#8984;V</span>
 		</button>
+		<button class="menu-item justify-between" {...pasteSpecialTrigger.attrs}>
+			Paste Special
+			<span class="submenu-arrow">&#8250;</span>
+		</button>
+		<button class="menu-item" {...deleteItem.attrs}>Delete</button>
+
+		<hr class="separator" {...menu.separator} />
+
 		<button class="menu-item" {...selectAllItem.attrs}>
 			Select All
-			<span class="ml-auto text-[10px] opacity-50">&#8984;A</span>
+			<span class="shortcut">&#8984;A</span>
+		</button>
+		<button class="menu-item" {...selectLineItem.attrs}>Select Line</button>
+		<button class="menu-item" {...selectWordItem.attrs}>Select Word</button>
+
+		<hr class="separator" {...menu.separator} />
+
+		<button class="menu-item justify-between" {...findReplaceTrigger.attrs}>
+			Find & Replace
+			<span class="submenu-arrow">&#8250;</span>
 		</button>
 
-		<hr class="my-0.5 border-[var(--border-subtle)]" {...menu.separator} />
+		<hr class="separator" {...menu.separator} />
 
-		<button class="menu-item" {...findItem.attrs}>
-			Find
-			<span class="ml-auto text-[10px] opacity-50">&#8984;F</span>
-		</button>
-		<button class="menu-item" {...replaceItem.attrs}>
-			Replace
-			<span class="ml-auto text-[10px] opacity-50">&#8984;H</span>
+		<button class="menu-item justify-between" {...transformTrigger.attrs}>
+			Transform
+			<span class="submenu-arrow">&#8250;</span>
 		</button>
 
-		<hr class="my-0.5 border-[var(--border-subtle)]" {...menu.separator} />
+		<hr class="separator" {...menu.separator} />
 
-		<!-- Share Submenu Trigger -->
+		<button class="menu-item justify-between" {...insertTrigger.attrs}>
+			Insert
+			<span class="submenu-arrow">&#8250;</span>
+		</button>
+
+		<hr class="separator" {...menu.separator} />
+
 		<button class="menu-item justify-between" {...shareTrigger.attrs}>
 			Share
-			<span class="opacity-50">&#8250;</span>
+			<span class="submenu-arrow">&#8250;</span>
 		</button>
 
-		<hr class="my-0.5 border-[var(--border-subtle)]" {...menu.separator} />
+		<hr class="separator" {...menu.separator} />
+
+		<span class="menu-label">Settings</span>
+		<button class="menu-item" {...preferencesItem.attrs}>Preferences...</button>
+
+		<hr class="separator" {...menu.separator} />
 
 		<span class="menu-label">Danger Zone</span>
 		<button
 			class="menu-item text-[var(--red)] data-[highlighted]:bg-[var(--red-subtle)]"
-			{...deleteItem.attrs}
+			{...deleteFileItem.attrs}
 		>
-			Delete
-			<span class="ml-auto text-[10px] opacity-50">&#8984;&#9003;</span>
+			Delete File
+			<span class="shortcut">&#8984;&#9003;</span>
 		</button>
 	</div>
 
-	<!-- Share Submenu Content -->
+	<!-- ===================================================================== -->
+	<!-- Paste Special Submenu -->
+	<!-- ===================================================================== -->
 	<div
-		class="menu-content max-h-24 min-w-36 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
-		{...shareSubmenu.content}
+		class="menu-content min-w-40 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		{...pasteSpecialSubmenu.content}
 	>
-		<button class="menu-item" {...copyLinkItem.attrs}> Copy Link </button>
-		<button class="menu-item" {...emailItem.attrs}> Email </button>
-		<button class="menu-item" {...messagesItem.attrs}> Messages </button>
-		<button class="menu-item" {...airdropItem.attrs}> AirDrop </button>
-		<button class="menu-item" {...notesItem.attrs}> Notes </button>
-		<button class="menu-item" {...remindersItem.attrs}> Reminders </button>
+		<button class="menu-item" {...pastePlainTextItem.attrs}>Paste as Plain Text</button>
+		<button class="menu-item" {...pasteAsQuoteItem.attrs}>Paste as Quote</button>
+		<button class="menu-item" {...pasteMatchStyleItem.attrs}>Paste and Match Style</button>
+	</div>
 
-		<!-- Social Submenu Trigger -->
-		<button class="menu-item justify-between" {...socialTrigger.attrs}>
-			Social
-			<span class="opacity-50">&#8250;</span>
+	<!-- ===================================================================== -->
+	<!-- Find & Replace Submenu -->
+	<!-- ===================================================================== -->
+	<div
+		class="menu-content min-w-36 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		{...findReplaceSubmenu.content}
+	>
+		<button class="menu-item" {...findItem.attrs}>
+			Find
+			<span class="shortcut">&#8984;F</span>
+		</button>
+		<button class="menu-item" {...findNextItem.attrs}>Find Next</button>
+		<button class="menu-item" {...findPrevItem.attrs}>Find Previous</button>
+
+		<hr class="separator" {...findReplaceSubmenu.separator} />
+
+		<button class="menu-item" {...replaceItem.attrs}>
+			Replace
+			<span class="shortcut">&#8984;H</span>
+		</button>
+		<button class="menu-item" {...replaceAllItem.attrs}>Replace All</button>
+	</div>
+
+	<!-- ===================================================================== -->
+	<!-- Transform Submenu -->
+	<!-- ===================================================================== -->
+	<div
+		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		{...transformSubmenu.content}
+	>
+		<button class="menu-item" {...uppercaseItem.attrs}>UPPERCASE</button>
+		<button class="menu-item" {...lowercaseItem.attrs}>lowercase</button>
+		<button class="menu-item" {...titleCaseItem.attrs}>Title Case</button>
+		<button class="menu-item" {...sentenceCaseItem.attrs}>Sentence case</button>
+
+		<hr class="separator" {...transformSubmenu.separator} />
+
+		<button class="menu-item justify-between" {...sortLinesTrigger.attrs}>
+			Sort Lines
+			<span class="submenu-arrow">&#8250;</span>
+		</button>
+		<button class="menu-item" {...reverseLinesItem.attrs}>Reverse Lines</button>
+		<button class="menu-item" {...shuffleLinesItem.attrs}>Shuffle Lines</button>
+
+		<hr class="separator" {...transformSubmenu.separator} />
+
+		<button class="menu-item" {...removeDuplicatesItem.attrs}>Remove Duplicates</button>
+		<button class="menu-item" {...trimWhitespaceItem.attrs}>Trim Whitespace</button>
+		<button class="menu-item" {...joinLinesItem.attrs}>Join Lines</button>
+	</div>
+
+	<!-- ===================================================================== -->
+	<!-- Sort Lines Submenu (nested in Transform) -->
+	<!-- ===================================================================== -->
+	<div
+		class="menu-content min-w-28 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		{...sortLinesSubmenu.content}
+	>
+		<button class="menu-item" {...sortAZItem.attrs}>A → Z</button>
+		<button class="menu-item" {...sortZAItem.attrs}>Z → A</button>
+		<button class="menu-item" {...sortByLengthItem.attrs}>By Length</button>
+	</div>
+
+	<!-- ===================================================================== -->
+	<!-- Insert Submenu -->
+	<!-- ===================================================================== -->
+	<div
+		class="menu-content min-w-36 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		{...insertSubmenu.content}
+	>
+		<button class="menu-item" {...insertDateTimeItem.attrs}>Date & Time</button>
+		<button class="menu-item" {...insertFilePathItem.attrs}>File Path</button>
+		<button class="menu-item" {...insertUUIDItem.attrs}>UUID</button>
+
+		<hr class="separator" {...insertSubmenu.separator} />
+
+		<button class="menu-item justify-between" {...snippetTrigger.attrs}>
+			Snippet
+			<span class="submenu-arrow">&#8250;</span>
 		</button>
 	</div>
 
-	<!-- Social Submenu Content (nested) -->
+	<!-- ===================================================================== -->
+	<!-- Snippet Submenu (nested in Insert) -->
+	<!-- ===================================================================== -->
+	<div
+		class="menu-content max-h-32 min-w-36 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		{...snippetSubmenu.content}
+	>
+		<button class="menu-item" {...loremIpsumItem.attrs}>Lorem Ipsum</button>
+		<button class="menu-item" {...mitLicenseItem.attrs}>MIT License</button>
+		<button class="menu-item" {...apacheLicenseItem.attrs}>Apache License</button>
+		<button class="menu-item" {...htmlBoilerplateItem.attrs}>HTML Boilerplate</button>
+		<button class="menu-item" {...cssResetItem.attrs}>CSS Reset</button>
+		<button class="menu-item" {...readmeTemplateItem.attrs}>README Template</button>
+		<button class="menu-item" {...gitignoreItem.attrs}>.gitignore</button>
+		<button class="menu-item" {...packageJsonItem.attrs}>package.json</button>
+	</div>
+
+	<!-- ===================================================================== -->
+	<!-- Share Submenu -->
+	<!-- ===================================================================== -->
 	<div
 		class="menu-content min-w-32 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		{...shareSubmenu.content}
+	>
+		<button class="menu-item" {...copyLinkItem.attrs}>Copy Link</button>
+		<button class="menu-item" {...emailItem.attrs}>Email</button>
+		<button class="menu-item" {...messagesItem.attrs}>Messages</button>
+		<button class="menu-item" {...airdropItem.attrs}>AirDrop</button>
+
+		<hr class="separator" {...shareSubmenu.separator} />
+
+		<button class="menu-item justify-between" {...socialTrigger.attrs}>
+			Social
+			<span class="submenu-arrow">&#8250;</span>
+		</button>
+	</div>
+
+	<!-- ===================================================================== -->
+	<!-- Social Submenu (nested in Share) -->
+	<!-- ===================================================================== -->
+	<div
+		class="menu-content min-w-28 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
 		{...socialSubmenu.content}
 	>
-		<button class="menu-item" {...twitterItem.attrs}> Twitter </button>
-		<button class="menu-item" {...facebookItem.attrs}> Facebook </button>
-		<button class="menu-item" {...linkedinItem.attrs}> LinkedIn </button>
+		<button class="menu-item" {...twitterItem.attrs}>Twitter</button>
+		<button class="menu-item" {...linkedinItem.attrs}>LinkedIn</button>
+		<button class="menu-item" {...mastodonItem.attrs}>Mastodon</button>
+		<button class="menu-item" {...blueskyItem.attrs}>Bluesky</button>
 	</div>
 </Preview>
 
@@ -165,6 +428,10 @@
 	.menu-content {
 		--scrollbar-width: 0.375rem;
 		--scrollbar-padding: 0.5625rem;
+
+		/* Submenu offset to align first item with trigger (px only) */
+		--submenu-offset-x: 0px;
+		--submenu-offset-y: -3px; /* padding (2px) + border (1px) */
 
 		position: fixed;
 		opacity: 0;
@@ -220,7 +487,7 @@
 		display: flex;
 		width: 100%;
 		align-items: center;
-		gap: 0.125rem;
+		gap: 0.5rem;
 		border-radius: 0.125rem;
 		padding: 0.125rem 0.25rem;
 		font-size: 0.75rem;
@@ -241,9 +508,26 @@
 
 	.menu-label {
 		display: block;
-		padding: 0.0625rem 0.25rem;
+		padding: 0.125rem 0.25rem;
 		font-size: 0.625rem;
 		font-weight: 500;
+		opacity: 0.5;
+	}
+
+	.separator {
+		margin: 0.25rem 0;
+		border-color: var(--border-subtle);
+		border-bottom-width: 1px;
+	}
+
+	.shortcut {
+		margin-left: auto;
+		font-size: 0.625rem;
+		opacity: 0.5;
+	}
+
+	.submenu-arrow {
+		margin-left: auto;
 		opacity: 0.5;
 	}
 </style>

@@ -23,17 +23,3 @@ export function findScrollableAncestor(
 
 	return null;
 }
-
-/**
- * Check if element can scroll vertically in the given direction.
- * Returns false if at boundary or not scrollable.
- */
-export function canScrollVertically(el: HTMLElement, deltaY: number): boolean {
-	const { scrollTop, scrollHeight, clientHeight } = el;
-
-	if (scrollHeight <= clientHeight) return false;
-	if (deltaY < 0 && scrollTop <= 0) return false;
-	if (deltaY > 0 && scrollTop + clientHeight >= scrollHeight) return false;
-
-	return true;
-}

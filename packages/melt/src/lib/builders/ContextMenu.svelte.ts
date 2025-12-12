@@ -6,7 +6,7 @@ import { createBuilderMetadata } from "$lib/utils/identifiers";
 import { kbd } from "$lib/utils/keyboard";
 import { createVirtualAnchor } from "$lib/utils/menu";
 import { computeConvexHullFromElements, type Point } from "$lib/utils/polygon";
-import { canScrollVertically, findScrollableAncestor } from "$lib/utils/scroll";
+import { findScrollableAncestor } from "$lib/utils/scroll";
 import { letterRegex } from "$lib/utils/typeahead.svelte";
 import { useFloating, type UseFloatingConfig } from "$lib/utils/use-floating.svelte";
 import type { VirtualElement } from "@floating-ui/dom";
@@ -278,6 +278,8 @@ class ContextMenuSubTrigger {
 		tabindex: -1 as const,
 		...this.#attachment,
 		onpointerenter: () => {
+			this.#parentMenu.closeAllSubmenus(this.#subMenu);
+
 			this.#subMenu.clearTimeouts();
 			if (!this.#subMenu.open) {
 				this.#subMenu.clearGraceIntent();
@@ -711,6 +713,14 @@ export class ContextMenu {
 		return sub;
 	}
 
+	closeAllSubmenus(except?: ContextMenuSub) {
+		for (const child of this.#children) {
+			if (child.open && child !== except) {
+				child.open = false;
+			}
+		}
+	}
+
 	// -------------------------------------------------------------------------
 	// Trigger
 	// -------------------------------------------------------------------------
@@ -847,6 +857,13 @@ export class ContextMenu {
 			const handleWheel = (e: WheelEvent) => {
 				const target = e.target as HTMLElement;
 
+				console.log(performance.now());
+				// nuance:
+				// The target of a wheel event doesn't change until the mouse moves,
+				// so it's possible to wheel and scroll a container and the component
+				// underneath the cursor to visually change, but the component under
+				// the cursor will not match the target until the mouse moves again.
+
 				// Find which menu content (main or submenu) contains the target
 				const menuContent = this.#contentEl?.contains(target)
 					? this.#contentEl
@@ -865,7 +882,7 @@ export class ContextMenu {
 				// Inside a menu - check if scrollable
 				const scrollableEl = findScrollableAncestor(target, menuContent);
 
-				if (!scrollableEl || !canScrollVertically(scrollableEl, e.deltaY)) {
+				if (!scrollableEl) {
 					// Can't scroll - prevent page scroll
 					e.preventDefault();
 				} else {
@@ -1515,6 +1532,14 @@ export class ContextMenuSub {
 		return sub;
 	}
 
+	closeAllSubmenus(except?: ContextMenuSub) {
+		for (const child of this.#children) {
+			if (child.open && child !== except) {
+				child.open = false;
+			}
+		}
+	}
+
 	// -------------------------------------------------------------------------
 	// Trigger (returns class instance)
 	// -------------------------------------------------------------------------
@@ -1535,6 +1560,11 @@ export class ContextMenuSub {
 		$effect(() => {
 			if (!this.open || !this.#triggerEl || !this.#contentEl) return;
 
+			// Read offset from CSS custom properties (expects px values)
+			const style = getComputedStyle(this.#contentEl);
+			const offsetX = parseFloat(style.getPropertyValue("--submenu-offset-x")) || 0;
+			const offsetY = parseFloat(style.getPropertyValue("--submenu-offset-y")) || 0;
+
 			useFloating({
 				node: () => this.#triggerEl!,
 				floating: () => this.#contentEl!,
@@ -1542,7 +1572,7 @@ export class ContextMenuSub {
 					computePosition: {
 						placement: "right-start",
 					},
-					offset: { mainAxis: -4, crossAxis: 0 },
+					offset: { mainAxis: offsetX, crossAxis: offsetY },
 				}),
 			});
 		});

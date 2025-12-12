@@ -1704,6 +1704,11 @@
         "description": ""
       },
       {
+        "name": "closeAllSubmenus",
+        "type": "(except?: ContextMenuSub | undefined) => void",
+        "description": ""
+      },
+      {
         "name": "getItem",
         "type": "(props?: ContextMenuItemProps) => ContextMenuItem",
         "description": ""
