@@ -912,11 +912,7 @@ export class ContextMenu {
 			on(document, "pointerdown", (e) => {
 				if (!this.open || !this.closeOnOutsideClick) return;
 				const target = e.target as Node;
-				if (
-					!this.#contentEl?.contains(target) &&
-					!this.#triggerEl?.contains(target) &&
-					!this.#isInsideSubmenu(target)
-				) {
+				if (!this.#contentEl?.contains(target) && !this.#isInsideSubmenu(target)) {
 					this.close();
 				}
 			}),
