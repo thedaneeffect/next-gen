@@ -79,6 +79,10 @@ export default defineConfig({
 							label: "API Reference",
 							link: "/reference/api",
 						},
+						{
+							label: "Color Palette",
+							link: "/reference/palette",
+						},
 					],
 				},
 			],

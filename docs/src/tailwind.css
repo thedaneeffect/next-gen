@@ -1,46 +1,115 @@
 /* src/tailwind.css */
 @layer base, starlight, theme, components, utilities;
 
+@import "./styles/colors.css";
 @import "@astrojs/starlight-tailwind";
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @theme {
-	/* Gruvbox-inspired Accent (Orange) */
-	--color-accent-200: #fec89a;
-	--color-accent-300: #feac6d;
-	--color-accent-400: #fe8019;
-	/* gruvbox bright_orange */
-	--color-accent-500: #d65d0e;
-	/* gruvbox neutral_orange */
-	--color-accent-600: #c35000;
-	--color-accent-700: #af3a03;
-	/* gruvbox faded_orange */
-	--color-accent-800: #8a2e02;
-	--color-accent-900: #6a2301;
-	--color-accent-950: #4a1801;
+	/* =========================================
+	 * Gray Scale (maps to Tailwind's gray-*)
+	 * Uses primitives from colors.css
+	 * ========================================= */
+	--color-gray-950: var(--bg-hard);
+	--color-gray-900: var(--bg);
+	--color-gray-800: var(--bg1);
+	--color-gray-700: var(--bg2);
+	--color-gray-600: var(--bg3);
+	--color-gray-500: var(--gray);
+	--color-gray-400: var(--fg4);
+	--color-gray-300: var(--fg3);
+	--color-gray-200: var(--fg2);
+	--color-gray-100: var(--fg1);
+	--color-gray-50: var(--fg);
 
-	/* Gruvbox-inspired Gray Scale */
-	--color-gray-100: #f9f5d7;
-	/* gruvbox light0_hard */
-	--color-gray-200: #ebdbb2;
-	/* gruvbox light1 */
-	--color-gray-300: #d5c4a1;
-	/* gruvbox light2 */
-	--color-gray-400: #a89984;
-	/* gruvbox light4 */
-	--color-gray-500: #928374;
-	/* gruvbox gray */
-	--color-gray-600: #7c6f64;
-	/* gruvbox dark4 */
-	--color-gray-700: #504945;
-	/* gruvbox dark2 */
-	--color-gray-800: #3c3836;
-	/* gruvbox dark1 */
-	--color-gray-900: #282828;
-	/* gruvbox dark0 */
-	--color-gray-950: #1d2021;
-	/* gruvbox dark0_hard */
+	/* =========================================
+	 * Accent Scale (Orange)
+	 * ========================================= */
+	--color-accent-950: #4a1801;
+	--color-accent-900: #6a2301;
+	--color-accent-800: #8a2e02;
+	--color-accent-700: var(--orange-dim);
+	--color-accent-600: #c35000;
+	--color-accent-500: var(--orange-dim);
+	--color-accent-400: var(--orange);
+	--color-accent-300: #feac6d;
+	--color-accent-200: #fec89a;
+
+	/* =========================================
+	 * Semantic: Structural
+	 * ========================================= */
+	--color-background: var(--bg);
+	--color-foreground: var(--fg1);
+	--color-muted: var(--bg2);
+	--color-muted-foreground: var(--fg4);
+	--color-border: var(--bg4);
+
+	/* =========================================
+	 * Semantic: Surfaces
+	 * ========================================= */
+	--color-card: var(--bg1);
+	--color-card-foreground: var(--fg1);
+	--color-popover: var(--bg1);
+	--color-popover-foreground: var(--fg1);
+
+	/* =========================================
+	 * Semantic: Primary (Orange)
+	 * ========================================= */
+	--color-primary: var(--orange);
+	--color-primary-foreground: var(--bg);
+	--color-primary-subtle: var(--orange-subtle);
+	--color-primary-muted: var(--orange-muted);
+
+	/* =========================================
+	 * Semantic: Secondary
+	 * ========================================= */
+	--color-secondary: var(--bg2);
+	--color-secondary-foreground: var(--fg1);
+
+	/* =========================================
+	 * Semantic: Accent (hover states)
+	 * ========================================= */
+	--color-accent: var(--bg3);
+	--color-accent-foreground: var(--fg1);
+
+	/* =========================================
+	 * Semantic: Destructive (Red)
+	 * ========================================= */
+	--color-destructive: var(--red);
+	--color-destructive-foreground: var(--bg);
+	--color-destructive-subtle: var(--red-subtle);
+	--color-destructive-muted: var(--red-muted);
+
+	/* =========================================
+	 * Semantic: Success (Green)
+	 * ========================================= */
+	--color-success: var(--green);
+	--color-success-foreground: var(--bg);
+	--color-success-subtle: var(--green-subtle);
+	--color-success-muted: var(--green-muted);
+
+	/* =========================================
+	 * Semantic: Warning (Yellow)
+	 * ========================================= */
+	--color-warning: var(--yellow);
+	--color-warning-foreground: var(--bg);
+	--color-warning-subtle: var(--yellow-subtle);
+	--color-warning-muted: var(--yellow-muted);
+
+	/* =========================================
+	 * Semantic: Info (Blue)
+	 * ========================================= */
+	--color-info: var(--blue);
+	--color-info-foreground: var(--bg);
+	--color-info-subtle: var(--blue-subtle);
+	--color-info-muted: var(--blue-muted);
+
+	/* =========================================
+	 * Focus / Input
+	 * ========================================= */
+	--color-ring: var(--orange);
+	--color-input: var(--bg3);
 }
 
 :root {

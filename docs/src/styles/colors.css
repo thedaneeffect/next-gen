@@ -1,0 +1,77 @@
+/* ===========================================
+ * Melt UI Color Primitives
+ * Based on Gruvbox palette
+ * =========================================== */
+
+:root {
+	/* -----------------------------------------
+	 * Backgrounds (dark → light)
+	 * ----------------------------------------- */
+	--bg-hard: #1d2021;
+	--bg: #282828;
+	--bg-soft: #32302f;
+	--bg1: #3c3836;
+	--bg2: #504945;
+	--bg3: #665c54;
+	--bg4: #7c6f64;
+
+	/* -----------------------------------------
+	 * Foregrounds (light → dark)
+	 * ----------------------------------------- */
+	--fg: #fbf1c7;
+	--fg1: #ebdbb2;
+	--fg2: #d5c4a1;
+	--fg3: #bdae93;
+	--fg4: #a89984;
+
+	/* -----------------------------------------
+	 * Gray (neutral middle)
+	 * ----------------------------------------- */
+	--gray: #928374;
+
+	/* -----------------------------------------
+	 * Accent Colors - Bright (dark mode primary)
+	 * ----------------------------------------- */
+	--red: #fb4934;
+	--green: #b8bb26;
+	--yellow: #fabd2f;
+	--blue: #83a598;
+	--purple: #d3869b;
+	--aqua: #8ec07c;
+	--orange: #fe8019;
+
+	/* -----------------------------------------
+	 * Accent Colors - Dim (light mode / emphasis)
+	 * ----------------------------------------- */
+	--red-dim: #cc241d;
+	--green-dim: #98971a;
+	--yellow-dim: #d79921;
+	--blue-dim: #458588;
+	--purple-dim: #b16286;
+	--aqua-dim: #689d6a;
+	--orange-dim: #d65d0e;
+
+	/* -----------------------------------------
+	 * Accent Colors - Subtle (15% mix with bg)
+	 * For subtle backgrounds
+	 * ----------------------------------------- */
+	--red-subtle: #47302a;
+	--green-subtle: #3d3b2b;
+	--yellow-subtle: #453c2c;
+	--blue-subtle: #353937;
+	--purple-subtle: #3f3537;
+	--aqua-subtle: #363c34;
+	--orange-subtle: #473529;
+
+	/* -----------------------------------------
+	 * Accent Colors - Muted (40% mix with bg)
+	 * For borders, separators
+	 * ----------------------------------------- */
+	--red-muted: #7a392e;
+	--green-muted: #5f5e2f;
+	--yellow-muted: #775e31;
+	--blue-muted: #4b5752;
+	--purple-muted: #684c53;
+	--aqua-muted: #4f6048;
+	--orange-muted: #7a4929;
+}

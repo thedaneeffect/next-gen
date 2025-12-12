@@ -1,0 +1,224 @@
+---
+title: Color Palette
+description: Visual reference for Melt UI's color system based on Gruvbox.
+---
+
+import Palette from "@previews/palette.svelte";
+
+<Palette client:load />
+
+## Overview
+
+Our color system is built on the [Gruvbox](https://github.com/morhetz/gruvbox) palette, organized into two tiers:
+
+1. **Primitives** - Raw color values with no semantic meaning
+2. **Semantic Tokens** - Purpose-driven aliases that reference primitives
+
+Click any swatch above to copy its hex value.
+
+---
+
+## Primitives
+
+### Backgrounds
+
+Dark to light progression for layering UI elements.
+
+| Token | Value | Description |
+|-------|-------|-------------|
+| `--bg-hard` | `#1d2021` | Deepest background |
+| `--bg` | `#282828` | Default background |
+| `--bg-soft` | `#32302f` | Soft background |
+| `--bg1` | `#3c3836` | Elevated surfaces (cards, popovers) |
+| `--bg2` | `#504945` | Higher elevation |
+| `--bg3` | `#665c54` | Subtle borders, input backgrounds |
+| `--bg4` | `#7c6f64` | Prominent borders |
+
+### Foregrounds
+
+Light to dark progression for text hierarchy.
+
+| Token | Value | Description |
+|-------|-------|-------------|
+| `--fg` | `#fbf1c7` | Brightest text |
+| `--fg1` | `#ebdbb2` | Primary text |
+| `--fg2` | `#d5c4a1` | Secondary text |
+| `--fg3` | `#bdae93` | Muted text |
+| `--fg4` | `#a89984` | Subtle/placeholder text |
+
+### Gray
+
+| Token | Value | Description |
+|-------|-------|-------------|
+| `--gray` | `#928374` | Neutral middle tone |
+
+### Accent Colors
+
+Each accent color has four variants:
+
+| Variant | Purpose |
+|---------|---------|
+| **base** | Primary use - buttons, links, interactive elements |
+| **dim** | Darker variant for light mode or emphasis |
+| **subtle** | Subtle backgrounds (alerts, badges, highlights) |
+| **muted** | Borders, separators, hover states |
+
+#### Orange (Primary)
+| Token | Value |
+|-------|-------|
+| `--orange` | `#fe8019` |
+| `--orange-dim` | `#d65d0e` |
+| `--orange-subtle` | `#473529` |
+| `--orange-muted` | `#7a4929` |
+
+#### Red (Destructive)
+| Token | Value |
+|-------|-------|
+| `--red` | `#fb4934` |
+| `--red-dim` | `#cc241d` |
+| `--red-subtle` | `#47302a` |
+| `--red-muted` | `#7a392e` |
+
+#### Green (Success)
+| Token | Value |
+|-------|-------|
+| `--green` | `#b8bb26` |
+| `--green-dim` | `#98971a` |
+| `--green-subtle` | `#3d3b2b` |
+| `--green-muted` | `#5f5e2f` |
+
+#### Yellow (Warning)
+| Token | Value |
+|-------|-------|
+| `--yellow` | `#fabd2f` |
+| `--yellow-dim` | `#d79921` |
+| `--yellow-subtle` | `#453c2c` |
+| `--yellow-muted` | `#775e31` |
+
+#### Blue (Info)
+| Token | Value |
+|-------|-------|
+| `--blue` | `#83a598` |
+| `--blue-dim` | `#458588` |
+| `--blue-subtle` | `#353937` |
+| `--blue-muted` | `#4b5752` |
+
+#### Purple
+| Token | Value |
+|-------|-------|
+| `--purple` | `#d3869b` |
+| `--purple-dim` | `#b16286` |
+| `--purple-subtle` | `#3f3537` |
+| `--purple-muted` | `#684c53` |
+
+#### Aqua
+| Token | Value |
+|-------|-------|
+| `--aqua` | `#8ec07c` |
+| `--aqua-dim` | `#689d6a` |
+| `--aqua-subtle` | `#363c34` |
+| `--aqua-muted` | `#4f6048` |
+
+---
+
+## Semantic Tokens
+
+Purpose-driven tokens that reference the primitives. Use these in your components for consistent theming.
+
+### Structural
+
+| Token | Maps To | Use |
+|-------|---------|-----|
+| `--color-background` | `--bg` | Page background |
+| `--color-foreground` | `--fg1` | Primary text |
+| `--color-muted` | `--bg2` | Muted backgrounds |
+| `--color-muted-foreground` | `--fg4` | Muted text |
+| `--color-border` | `--bg4` | Default borders |
+
+### Surfaces
+
+| Token | Maps To | Use |
+|-------|---------|-----|
+| `--color-card` | `--bg1` | Card backgrounds |
+| `--color-card-foreground` | `--fg1` | Card text |
+| `--color-popover` | `--bg1` | Popover backgrounds |
+| `--color-popover-foreground` | `--fg1` | Popover text |
+
+### Interactive
+
+| Token | Maps To | Use |
+|-------|---------|-----|
+| `--color-primary` | `--orange` | Primary actions |
+| `--color-primary-foreground` | `--bg` | Text on primary |
+| `--color-primary-subtle` | `--orange-subtle` | Subtle primary bg |
+| `--color-primary-muted` | `--orange-muted` | Primary borders |
+| `--color-secondary` | `--bg2` | Secondary actions |
+| `--color-secondary-foreground` | `--fg1` | Text on secondary |
+| `--color-accent` | `--bg3` | Hover states |
+| `--color-accent-foreground` | `--fg1` | Text on accent |
+
+### Status
+
+| Token | Maps To | Use |
+|-------|---------|-----|
+| `--color-destructive` | `--red` | Destructive actions |
+| `--color-destructive-subtle` | `--red-subtle` | Destructive bg |
+| `--color-destructive-muted` | `--red-muted` | Destructive borders |
+| `--color-success` | `--green` | Success states |
+| `--color-success-subtle` | `--green-subtle` | Success bg |
+| `--color-success-muted` | `--green-muted` | Success borders |
+| `--color-warning` | `--yellow` | Warning states |
+| `--color-warning-subtle` | `--yellow-subtle` | Warning bg |
+| `--color-warning-muted` | `--yellow-muted` | Warning borders |
+| `--color-info` | `--blue` | Info states |
+| `--color-info-subtle` | `--blue-subtle` | Info bg |
+| `--color-info-muted` | `--blue-muted` | Info borders |
+
+### Focus
+
+| Token | Maps To | Use |
+|-------|---------|-----|
+| `--color-ring` | `--orange` | Focus rings |
+| `--color-input` | `--bg3` | Input backgrounds |
+
+---
+
+## Usage
+
+### CSS Variables
+
+```css
+.my-component {
+  background: var(--bg1);
+  color: var(--fg1);
+  border: 1px solid var(--bg4);
+}
+
+.my-component:hover {
+  background: var(--bg2);
+}
+```
+
+### Tailwind Classes
+
+The semantic tokens are mapped to Tailwind utilities:
+
+```html
+<div class="bg-background text-foreground">
+  <button class="bg-primary text-primary-foreground">
+    Action
+  </button>
+</div>
+```
+
+### Status Colors
+
+```html
+<div class="bg-destructive-subtle text-destructive border border-destructive-muted">
+  Error message
+</div>
+
+<div class="bg-success-subtle text-success border border-success-muted">
+  Success message
+</div>
+```
