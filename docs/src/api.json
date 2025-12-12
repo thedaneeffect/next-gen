@@ -317,7 +317,7 @@
       },
       {
         "name": "trigger",
-        "type": "{\n  readonly onfocusout: () => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}`\n  readonly \"data-melt-tooltip-trigger\": \"\"\n  readonly id: string\n  readonly \"aria-describedby\": string\n  readonly \"data-open\": \"\" | undefined\n  readonly onpointerdown: () => void\n  readonly onpointerenter: (\n    e: PointerEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly onpointermove: () => void\n  readonly onpointerleave: (\n    e: PointerEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly onfocus: () => void\n  readonly onblur: () => void\n}",
+        "type": "{\n  readonly onfocusout: () => Promise<void>\n  readonly style: string\n  readonly \"data-melt-tooltip-trigger\": \"\"\n  readonly id: string\n  readonly \"aria-describedby\": string\n  readonly \"data-open\": \"\" | undefined\n  readonly onpointerdown: () => void\n  readonly onpointerenter: (\n    e: PointerEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly onpointermove: () => void\n  readonly onpointerleave: (\n    e: PointerEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly onfocus: () => void\n  readonly onblur: () => void\n}",
         "description": ""
       },
       {
@@ -749,7 +749,7 @@
       },
       {
         "name": "root",
-        "type": "{\n  readonly \"data-dragging\": \"\" | undefined\n  readonly \"data-value\": number\n  readonly \"data-orientation\": \"horizontal\" | \"vertical\"\n  readonly \"aria-valuenow\": number\n  readonly \"aria-valuemin\": number\n  readonly \"aria-valuemax\": number\n  readonly \"aria-orientation\": \"horizontal\" | \"vertical\"\n  readonly style: `--percentage: ${string}; --percentage-inv: ${string}; touch-action: ${string}`\n  readonly tabindex: 0\n  readonly role: \"slider\"\n  readonly \"data-melt-slider-root\": \"\"\n  readonly id: string\n  readonly onpointerdown: (e: PointerEvent) => void\n  readonly onkeydown: (e: KeyboardEvent) => void\n}",
+        "type": "{\n  readonly \"data-dragging\": \"\" | undefined\n  readonly \"data-value\": number\n  readonly \"data-orientation\": \"horizontal\" | \"vertical\"\n  readonly \"aria-valuenow\": number\n  readonly \"aria-valuemin\": number\n  readonly \"aria-valuemax\": number\n  readonly \"aria-orientation\": \"horizontal\" | \"vertical\"\n  readonly style: string\n  readonly tabindex: 0\n  readonly role: \"slider\"\n  readonly \"data-melt-slider-root\": \"\"\n  readonly id: string\n  readonly onpointerdown: (e: PointerEvent) => void\n  readonly onkeydown: (e: KeyboardEvent) => void\n}",
         "description": "The root of the slider.\nAny cursor interaction along this element will change the slider's values."
       },
       {
@@ -805,6 +805,13 @@
         "type": "any",
         "description": "If the popover should close when clicking outside.\nAlternatively, accepts a function that receives the clicked element,\nand returns if the popover should close.",
         "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "scrollBehavior",
+        "type": "any",
+        "description": "Behavior when scrolling while the popover is open.\n- `'close'`: Closes the popover when scrolling outside of it (default)\n- `'prevent'`: Prevents page scroll when scrolling outside of it\n- `'allow'`: Allows normal page scrolling (no intervention)\n\nScrolling inside the popover content is always allowed.",
+        "defaultValue": "'close'",
         "optional": true
       },
       {
@@ -942,12 +949,12 @@
       },
       {
         "name": "trigger",
-        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly popovertarget: string\n  readonly onclick: (e: Event) => void\n} & {\n  \"data-melt-select-trigger\": string\n  id: string\n  role: string\n  \"aria-expanded\": boolean\n  \"aria-controls\": string\n  \"aria-owns\": string\n  onkeydown: (e: KeyboardEvent) => void\n}",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: string\n  readonly popovertarget: string\n  readonly onclick: (e: Event) => void\n} & {\n  \"data-melt-select-trigger\": string\n  id: string\n  role: string\n  \"aria-expanded\": boolean\n  \"aria-controls\": string\n  \"aria-owns\": string\n  onkeydown: (e: KeyboardEvent) => void\n}",
         "description": ""
       },
       {
         "name": "content",
-        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly id: string\n  readonly popover: \"manual\"\n  readonly ontoggle: (\n    e: ToggleEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly tabindex: -1\n  readonly inert: boolean\n  readonly \"data-open\": \"\" | undefined\n} & {\n  readonly \"data-melt-select-content\": \"\"\n  readonly role: \"listbox\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-activedescendant\": string | undefined\n  readonly onkeydown: (e: KeyboardEvent) => void\n}",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: string\n  readonly id: string\n  readonly popover: \"manual\"\n  readonly ontoggle: (\n    e: ToggleEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly tabindex: -1\n  readonly inert: boolean\n  readonly \"data-open\": \"\" | undefined\n} & {\n  readonly \"data-melt-select-content\": \"\"\n  readonly role: \"listbox\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-activedescendant\": string | undefined\n  readonly onkeydown: (e: KeyboardEvent) => void\n}",
         "description": ""
       }
     ],
@@ -1117,7 +1124,7 @@
       },
       {
         "name": "progress",
-        "type": "{\n  \"data-melt-progress-progress\": string\n  style: `--progress: ${string}; --neg-progress: ${string}`\n}",
+        "type": "{ \"data-melt-progress-progress\": string; style: string }",
         "description": "Spread attributes for the Progress percentage element.\nProvides a --progress CSS variable that can be used to style the progress:\n`transform: translateX(calc(var(--progress) * -1));`"
       }
     ],
@@ -1173,6 +1180,13 @@
         "optional": true
       },
       {
+        "name": "scrollBehavior",
+        "type": "MaybeGetter<\"close\" | \"prevent\" | \"allow\" | undefined>",
+        "description": "Behavior when scrolling while the popover is open.\n- `'close'`: Closes the popover when scrolling outside of it (default)\n- `'prevent'`: Prevents page scroll when scrolling outside of it\n- `'allow'`: Allows normal page scrolling (no intervention)\n\nScrolling inside the popover content is always allowed.",
+        "defaultValue": "'close'",
+        "optional": true
+      },
+      {
         "name": "focus",
         "type": "{ onOpen?: MaybeGetter<boolean | undefined> } | undefined",
         "optional": true
@@ -1187,16 +1201,16 @@
       },
       {
         "name": "trigger",
-        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly popovertarget: string\n  readonly onclick: (e: Event) => void\n} & { \"data-melt-popover-trigger\": string }",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: string\n  readonly popovertarget: string\n  readonly onclick: (e: Event) => void\n} & { \"data-melt-popover-trigger\": string }",
         "description": "The trigger that toggles the value."
       },
       {
         "name": "content",
-        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly id: string\n  readonly popover: \"manual\"\n  readonly ontoggle: (\n    e: ToggleEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly tabindex: -1\n  readonly inert: boolean\n  readonly \"data-open\": \"\" | undefined\n} & { \"data-melt-popover-content\": string }",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: string\n  readonly id: string\n  readonly popover: \"manual\"\n  readonly ontoggle: (\n    e: ToggleEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly tabindex: -1\n  readonly inert: boolean\n  readonly \"data-open\": \"\" | undefined\n} & { \"data-melt-popover-content\": string }",
         "description": ""
       }
     ],
-    "propsAlt": "export type PopoverProps = {\n  /**\n   * If the Popover is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the value is supposed to change.\n   */\n  onOpenChange?: (value: boolean) => void;\n\n  /**\n   * If the popover visibility should be controlled by the user.\n   *\n   * @default false\n   */\n  forceVisible?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Config to be passed to `useFloating`\n   */\n  floatingConfig?: UseFloatingArgs[\"config\"];\n\n  /**\n   * If the popover should have the same width as the trigger\n   *\n   * @default false\n   */\n  sameWidth?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * If the popover should close when clicking escape.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * If the popover should close when clicking outside.\n   * Alternatively, accepts a function that receives the clicked element,\n   * and returns if the popover should close.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: CloseOnOutsideClickProp;\n\n  focus?: {\n    /**\n     * Which element to focus when the popover opens.\n     * Can be a selector string, an element, or a Getter for those.\n     * If null, the focus remains on the trigger element.\n     *\n     * Defaults to the popover content element.\n     */\n    onOpen?: MaybeGetter<HTMLElement | string | null | undefined>;\n\n    /**\n     * Which element to focus when the popover closes.\n     * Can be a selector string, an element, or a Getter for those.\n     * If null, the focus goes to the document body.\n     *\n     * Defaults to the last used trigger element.\n     */\n    onClose?: MaybeGetter<HTMLElement | string | null | undefined>;\n\n    /**\n     * If focus should be trapped inside the popover content when open.\n     *\n     * @default false\n     */\n    trap?: MaybeGetter<boolean | undefined>;\n  };\n};"
+    "propsAlt": "export type PopoverProps = {\n  /**\n   * If the Popover is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the value is supposed to change.\n   */\n  onOpenChange?: (value: boolean) => void;\n\n  /**\n   * If the popover visibility should be controlled by the user.\n   *\n   * @default false\n   */\n  forceVisible?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Config to be passed to `useFloating`\n   */\n  floatingConfig?: UseFloatingArgs[\"config\"];\n\n  /**\n   * If the popover should have the same width as the trigger\n   *\n   * @default false\n   */\n  sameWidth?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * If the popover should close when clicking escape.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * If the popover should close when clicking outside.\n   * Alternatively, accepts a function that receives the clicked element,\n   * and returns if the popover should close.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: CloseOnOutsideClickProp;\n\n  /**\n   * Behavior when scrolling while the popover is open.\n   * - `'close'`: Closes the popover when scrolling outside of it (default)\n   * - `'prevent'`: Prevents page scroll when scrolling outside of it\n   * - `'allow'`: Allows normal page scrolling (no intervention)\n   *\n   * Scrolling inside the popover content is always allowed.\n   *\n   * @default 'close'\n   */\n  scrollBehavior?: MaybeGetter<\"close\" | \"prevent\" | \"allow\" | undefined>;\n\n  focus?: {\n    /**\n     * Which element to focus when the popover opens.\n     * Can be a selector string, an element, or a Getter for those.\n     * If null, the focus remains on the trigger element.\n     *\n     * Defaults to the popover content element.\n     */\n    onOpen?: MaybeGetter<HTMLElement | string | null | undefined>;\n\n    /**\n     * Which element to focus when the popover closes.\n     * Can be a selector string, an element, or a Getter for those.\n     * If null, the focus goes to the document body.\n     *\n     * Defaults to the last used trigger element.\n     */\n    onClose?: MaybeGetter<HTMLElement | string | null | undefined>;\n\n    /**\n     * If focus should be trapped inside the popover content when open.\n     *\n     * @default false\n     */\n    trap?: MaybeGetter<boolean | undefined>;\n  };\n};"
   },
   "PinInput": {
     "constructorProps": [
@@ -1502,10 +1516,10 @@
         "optional": true
       },
       {
-        "name": "preventScroll",
-        "type": "MaybeGetter<boolean | undefined>",
-        "description": "Whether to prevent body scrolling when the dialog is open.",
-        "defaultValue": "true",
+        "name": "scrollBehavior",
+        "type": "MaybeGetter<\"prevent\" | \"allow\" | undefined>",
+        "description": "Behavior when scrolling while the dialog is open.\n- `'prevent'`: Prevents page scroll (default for dialogs)\n- `'allow'`: Allows normal page scrolling\n\nNote: `'close'` is not supported for Dialog since dialogs are modal.",
+        "defaultValue": "'prevent'",
         "optional": true
       },
       {
@@ -1529,8 +1543,8 @@
         "description": ""
       },
       {
-        "name": "preventScroll",
-        "type": "boolean",
+        "name": "scrollBehavior",
+        "type": "\"prevent\" | \"allow\"",
         "description": ""
       },
       {
@@ -1579,7 +1593,7 @@
         "description": "The spread attributes for the dialog description.\nConnected to the dialog via `aria-describedby`."
       }
     ],
-    "propsAlt": "export type DialogProps = {\n  /**\n   * Whether the dialog is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing the Escape key closes the dialog.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking the backdrop closes the dialog.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether to prevent body scrolling when the dialog is open.\n   *\n   * @default true\n   */\n  preventScroll?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Keep the dialog visible for exit animations.\n   * When true, the dialog remains in the DOM until CSS transitions complete.\n   *\n   * @default false\n   */\n  forceVisible?: MaybeGetter<boolean | undefined>;\n};"
+    "propsAlt": "export type DialogProps = {\n  /**\n   * Whether the dialog is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether pressing the Escape key closes the dialog.\n   *\n   * @default true\n   */\n  closeOnEscape?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Whether clicking the backdrop closes the dialog.\n   *\n   * @default true\n   */\n  closeOnOutsideClick?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Behavior when scrolling while the dialog is open.\n   * - `'prevent'`: Prevents page scroll (default for dialogs)\n   * - `'allow'`: Allows normal page scrolling\n   *\n   * Note: `'close'` is not supported for Dialog since dialogs are modal.\n   *\n   * @default 'prevent'\n   */\n  scrollBehavior?: MaybeGetter<\"prevent\" | \"allow\" | undefined>;\n\n  /**\n   * Keep the dialog visible for exit animations.\n   * When true, the dialog remains in the DOM until CSS transitions complete.\n   *\n   * @default false\n   */\n  forceVisible?: MaybeGetter<boolean | undefined>;\n};"
   },
   "ContextMenu": {
     "constructorProps": [
@@ -1809,6 +1823,13 @@
         "optional": true
       },
       {
+        "name": "scrollBehavior",
+        "type": "MaybeGetter<\"close\" | \"prevent\" | \"allow\" | undefined>",
+        "description": "Behavior when scrolling while the popover is open.\n- `'close'`: Closes the popover when scrolling outside of it (default)\n- `'prevent'`: Prevents page scroll when scrolling outside of it\n- `'allow'`: Allows normal page scrolling (no intervention)\n\nScrolling inside the popover content is always allowed.",
+        "defaultValue": "'close'",
+        "optional": true
+      },
+      {
         "name": "focus",
         "type": "{ onOpen?: MaybeGetter<boolean | undefined> } | undefined",
         "optional": true
@@ -1994,17 +2015,17 @@
       },
       {
         "name": "input",
-        "type": "{\n  readonly \"data-melt-combobox-input\": \"\"\n  readonly id: string\n  readonly role: \"combobox\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-controls\": string\n  readonly \"aria-owns\": string\n  readonly onclick: () => void\n  readonly value: string\n  readonly oninput: (e: Event) => void\n  readonly onkeydown: (e: KeyboardEvent) => void\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly popovertarget: string\n}",
+        "type": "{\n  readonly \"data-melt-combobox-input\": \"\"\n  readonly id: string\n  readonly role: \"combobox\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-controls\": string\n  readonly \"aria-owns\": string\n  readonly onclick: () => void\n  readonly value: string\n  readonly oninput: (e: Event) => void\n  readonly onkeydown: (e: KeyboardEvent) => void\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: string\n  readonly popovertarget: string\n}",
         "description": ""
       },
       {
         "name": "trigger",
-        "type": "{\n  onfocus: (event: FocusEvent) => void\n  onfocusout: (event: FocusEvent) => Promise<void>\n  style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  \"data-melt-combobox-trigger\": string\n  id: string\n  onclick: () => void\n}",
+        "type": "{\n  onfocus: (event: FocusEvent) => void\n  onfocusout: (event: FocusEvent) => Promise<void>\n  style: string\n  \"data-melt-combobox-trigger\": string\n  id: string\n  onclick: () => void\n}",
         "description": ""
       },
       {
         "name": "content",
-        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly id: string\n  readonly popover: \"manual\"\n  readonly ontoggle: (\n    e: ToggleEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly tabindex: -1\n  readonly inert: boolean\n  readonly \"data-open\": \"\" | undefined\n} & {\n  readonly \"data-melt-combobox-content\": \"\"\n  readonly role: \"listbox\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-activedescendant\": string | undefined\n}",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: string\n  readonly id: string\n  readonly popover: \"manual\"\n  readonly ontoggle: (\n    e: ToggleEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly tabindex: -1\n  readonly inert: boolean\n  readonly \"data-open\": \"\" | undefined\n} & {\n  readonly \"data-melt-combobox-content\": \"\"\n  readonly role: \"listbox\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-activedescendant\": string | undefined\n}",
         "description": ""
       },
       {
@@ -2107,12 +2128,12 @@
       },
       {
         "name": "image",
-        "type": "{\n  readonly \"data-melt-avatar-image\": \"\"\n  readonly src: string\n  readonly style: `display: ${string}`\n  readonly onload: () => (() => void) | undefined\n  readonly onerror: () => void\n}",
+        "type": "{\n  readonly \"data-melt-avatar-image\": \"\"\n  readonly src: string\n  readonly style: string\n  readonly onload: () => (() => void) | undefined\n  readonly onerror: () => void\n}",
         "description": ""
       },
       {
         "name": "fallback",
-        "type": "{\n  readonly \"data-melt-avatar-fallback\": \"\"\n  readonly style: `display: ${string}` | undefined\n  readonly hidden: true | undefined\n}",
+        "type": "{\n  readonly \"data-melt-avatar-fallback\": \"\"\n  readonly style: string | undefined\n  readonly hidden: true | undefined\n}",
         "description": ""
       }
     ],
@@ -2134,10 +2155,10 @@
         "optional": true
       },
       {
-        "name": "preventScroll",
-        "type": "MaybeGetter<boolean | undefined>",
-        "description": "Whether to prevent body scrolling when the dialog is open.",
-        "defaultValue": "true",
+        "name": "scrollBehavior",
+        "type": "MaybeGetter<\"prevent\" | \"allow\" | undefined>",
+        "description": "Behavior when scrolling while the dialog is open.\n- `'prevent'`: Prevents page scroll (default for dialogs)\n- `'allow'`: Allows normal page scrolling\n\nNote: `'close'` is not supported for AlertDialog since it requires explicit action.",
+        "defaultValue": "'prevent'",
         "optional": true
       },
       {
@@ -2151,8 +2172,8 @@
     "methods": [],
     "properties": [
       {
-        "name": "preventScroll",
-        "type": "boolean",
+        "name": "scrollBehavior",
+        "type": "\"prevent\" | \"allow\"",
         "description": ""
       },
       {
@@ -2206,7 +2227,7 @@
         "description": "The spread attributes for the alert dialog description.\nConnected to the dialog via `aria-describedby`."
       }
     ],
-    "propsAlt": "export type AlertDialogProps = {\n  /**\n   * Whether the alert dialog is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Whether to prevent body scrolling when the dialog is open.\n   *\n   * @default true\n   */\n  preventScroll?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Keep the dialog visible for exit animations.\n   * When true, the dialog remains in the DOM until CSS transitions complete.\n   *\n   * @default false\n   */\n  forceVisible?: MaybeGetter<boolean | undefined>;\n};"
+    "propsAlt": "export type AlertDialogProps = {\n  /**\n   * Whether the alert dialog is open.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  open?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Called when the open state changes.\n   */\n  onOpenChange?: (open: boolean) => void;\n\n  /**\n   * Behavior when scrolling while the dialog is open.\n   * - `'prevent'`: Prevents page scroll (default for dialogs)\n   * - `'allow'`: Allows normal page scrolling\n   *\n   * Note: `'close'` is not supported for AlertDialog since it requires explicit action.\n   *\n   * @default 'prevent'\n   */\n  scrollBehavior?: MaybeGetter<\"prevent\" | \"allow\" | undefined>;\n\n  /**\n   * Keep the dialog visible for exit animations.\n   * When true, the dialog remains in the DOM until CSS transitions complete.\n   *\n   * @default false\n   */\n  forceVisible?: MaybeGetter<boolean | undefined>;\n};"
   },
   "Accordion": {
     "constructorProps": [

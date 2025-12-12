@@ -58,7 +58,7 @@
 
 <div
 	class="not-content relative grid min-h-[500px] place-items-center overflow-clip rounded-2xl
-	border border-[var(--border-subtle)] bg-[var(--bg)] {className}"
+	border border-[var(--border-subtle)] bg-[var(--bg-hard)] {className}"
 >
 	<div class="w-full min-w-0 overflow-clip p-4">
 		{@render children()}

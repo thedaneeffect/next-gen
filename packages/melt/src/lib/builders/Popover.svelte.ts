@@ -5,6 +5,7 @@ import { extract } from "$lib/utils/extract";
 import { createBuilderMetadata, createId } from "$lib/utils/identifiers";
 import { isFunction, isHtmlElement } from "$lib/utils/is";
 import { autoOpenPopover, safelyHidePopover } from "$lib/utils/popover";
+import { canScrollVertically, findScrollableAncestor } from "$lib/utils/scroll";
 import {
 	useFloating,
 	type UseFloatingArgs,
@@ -92,6 +93,18 @@ export type PopoverProps = {
 	 */
 	closeOnOutsideClick?: CloseOnOutsideClickProp;
 
+	/**
+	 * Behavior when scrolling while the popover is open.
+	 * - `'close'`: Closes the popover when scrolling outside of it (default)
+	 * - `'prevent'`: Prevents page scroll when scrolling outside of it
+	 * - `'allow'`: Allows normal page scrolling (no intervention)
+	 *
+	 * Scrolling inside the popover content is always allowed.
+	 *
+	 * @default 'close'
+	 */
+	scrollBehavior?: MaybeGetter<"close" | "prevent" | "allow" | undefined>;
+
 	focus?: {
 		/**
 		 * Which element to focus when the popover opens.
@@ -127,6 +140,7 @@ export class BasePopover {
 	closeOnEscape = $derived(extract(this.#props.closeOnEscape, true));
 	sameWidth = $derived(extract(this.#props.sameWidth, false));
 	closeOnOutsideClick = $derived(extract(this.#props.closeOnOutsideClick, true));
+	scrollBehavior = $derived(extract(this.#props.scrollBehavior, "close" as const));
 	floatingConfig = $derived.by(() => {
 		const config = extract(this.#props.floatingConfig, {} satisfies UseFloatingConfig);
 
@@ -315,6 +329,74 @@ export class BasePopover {
 			trap.activate();
 
 			return () => trap.deactivate();
+		});
+
+		// Handle scroll behavior when popover is open
+		$effect(() => {
+			if (!this.open || this.scrollBehavior === "allow") return;
+
+			const handleWheel = (e: WheelEvent) => {
+				const contentEl = document.getElementById(this.ids.popover);
+				if (!contentEl) return;
+
+				const target = e.target as HTMLElement;
+				const isInside = contentEl.contains(target);
+
+				if (!isInside) {
+					// Outside popover
+					if (this.scrollBehavior === "close") {
+						this.open = false;
+					} else {
+						e.preventDefault();
+					}
+					return;
+				}
+
+				// Inside popover - check if we can actually scroll
+				const scrollableEl = findScrollableAncestor(target, contentEl);
+
+				if (!scrollableEl || !canScrollVertically(scrollableEl, e.deltaY)) {
+					// Can't scroll - prevent page scroll but don't close
+					e.preventDefault();
+				}
+				// else: let it scroll naturally
+			};
+
+			const handleTouchMove = (e: TouchEvent) => {
+				const contentEl = document.getElementById(this.ids.popover);
+				if (!contentEl) return;
+
+				const target = e.target as HTMLElement;
+				const isInside = contentEl.contains(target);
+
+				if (!isInside) {
+					// Outside popover
+					if (this.scrollBehavior === "close") {
+						this.open = false;
+					} else {
+						e.preventDefault();
+					}
+					return;
+				}
+
+				// Inside popover - check if content is scrollable at all
+				const scrollableEl = findScrollableAncestor(target, contentEl);
+
+				if (!scrollableEl) {
+					// Not scrollable - prevent page scroll but don't close
+					e.preventDefault();
+				}
+				// Note: For touch, we don't check direction (no deltaY available)
+				// If scrollable, let native touch scrolling handle boundaries
+			};
+
+			document.addEventListener("wheel", handleWheel, { passive: false });
+			document.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+			return () => {
+				document.removeEventListener("wheel", handleWheel);
+				document.removeEventListener("touchmove", handleTouchMove);
+			};
 		});
 
 		$effect(() => {

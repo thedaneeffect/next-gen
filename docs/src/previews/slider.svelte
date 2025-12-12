@@ -40,7 +40,7 @@
 			></div>
 		</div>
 		<div
-			class="absolute size-6 rounded-md border border-[var(--orange)] bg-[var(--fg)] outline-none transition-all focus-visible:ring-1
+			class="absolute size-6 rounded-md border border-[var(--bg)] bg-[var(--fg)] outline-none transition-all focus-visible:ring-1
 					focus-visible:ring-[var(--orange)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--bg)] data-[dragging]:transition-none
 					{slider.orientation === 'horizontal'
 				? 'left-[var(--percentage)] top-1/2 -translate-x-1/2 -translate-y-1/2'

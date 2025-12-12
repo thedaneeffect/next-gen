@@ -53,7 +53,7 @@
 
 		<div
 			{...select.content}
-			class="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow"
+			class="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow-lg"
 		>
 			{#each options as option}
 				<div

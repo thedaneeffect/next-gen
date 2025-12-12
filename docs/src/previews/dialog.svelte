@@ -14,17 +14,18 @@
 			type: "boolean",
 			defaultValue: true,
 		},
-		preventScroll: {
-			label: "Prevent scroll",
-			type: "boolean",
-			defaultValue: true,
+		scrollBehavior: {
+			label: "Scroll behavior",
+			type: "select",
+			options: ["prevent", "allow"],
+			defaultValue: "prevent",
 		},
 	});
 
 	const dialog = new Dialog({
 		closeOnEscape: () => controls.closeOnEscape,
 		closeOnOutsideClick: () => controls.closeOnOutsideClick,
-		preventScroll: () => controls.preventScroll,
+		scrollBehavior: () => controls.scrollBehavior,
 	});
 </script>
 

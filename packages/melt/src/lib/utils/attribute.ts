@@ -11,10 +11,10 @@ export function disabledAttr<V extends boolean>(value?: V): DisabledReturn<V> {
 	return (value === true ? true : undefined) as DisabledReturn<V>;
 }
 
-export function styleAttr<T extends Record<string, string>>(value: T): ObjToString<T> {
+export function styleAttr<T extends Record<string, string>>(value: T): string {
 	return Object.entries(value)
 		.map(([key, value]) => `${key}: ${value};`)
-		.join(" ") as ObjToString<T>;
+		.join(" ");
 }
 
 /**

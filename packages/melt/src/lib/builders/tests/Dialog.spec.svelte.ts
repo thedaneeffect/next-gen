@@ -86,14 +86,14 @@ testWithEffect("Dialog: closeOnOutsideClick can be disabled", () => {
 	expect(dialog.closeOnOutsideClick).toBe(false);
 });
 
-testWithEffect("Dialog: preventScroll defaults to true", () => {
+testWithEffect("Dialog: scrollBehavior defaults to 'prevent'", () => {
 	const dialog = new Dialog();
-	expect(dialog.preventScroll).toBe(true);
+	expect(dialog.scrollBehavior).toBe("prevent");
 });
 
-testWithEffect("Dialog: preventScroll can be disabled", () => {
-	const dialog = new Dialog({ preventScroll: false });
-	expect(dialog.preventScroll).toBe(false);
+testWithEffect("Dialog: scrollBehavior can be set to 'allow'", () => {
+	const dialog = new Dialog({ scrollBehavior: "allow" });
+	expect(dialog.scrollBehavior).toBe("allow");
 });
 
 testWithEffect("Dialog: forceVisible defaults to false", () => {
@@ -208,9 +208,9 @@ testWithEffect("AlertDialog: can open and close via property", () => {
 	expect(alertDialog.open).toBe(false);
 });
 
-testWithEffect("AlertDialog: preventScroll defaults to true", () => {
+testWithEffect("AlertDialog: scrollBehavior defaults to 'prevent'", () => {
 	const alertDialog = new AlertDialog();
-	expect(alertDialog.preventScroll).toBe(true);
+	expect(alertDialog.scrollBehavior).toBe("prevent");
 });
 
 testWithEffect("AlertDialog: trigger has correct attributes", () => {
@@ -279,7 +279,7 @@ testWithEffect("Dialog: type tests", () => {
 	// Props
 	expectTypeOf(dialog.closeOnEscape).toEqualTypeOf<boolean>();
 	expectTypeOf(dialog.closeOnOutsideClick).toEqualTypeOf<boolean>();
-	expectTypeOf(dialog.preventScroll).toEqualTypeOf<boolean>();
+	expectTypeOf(dialog.scrollBehavior).toEqualTypeOf<"prevent" | "allow">();
 	expectTypeOf(dialog.forceVisible).toEqualTypeOf<boolean>();
 
 	// IDs
@@ -295,7 +295,7 @@ testWithEffect("AlertDialog: type tests", () => {
 	expectTypeOf(alertDialog.open).toEqualTypeOf<boolean>();
 
 	// Props
-	expectTypeOf(alertDialog.preventScroll).toEqualTypeOf<boolean>();
+	expectTypeOf(alertDialog.scrollBehavior).toEqualTypeOf<"prevent" | "allow">();
 	expectTypeOf(alertDialog.forceVisible).toEqualTypeOf<boolean>();
 
 	// IDs

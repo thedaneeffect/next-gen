@@ -112,7 +112,7 @@
 
 		<div
 			{...combobox.content}
-			class="flex max-h-96 flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow"
+			class="flex max-h-96 flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow-lg"
 		>
 			{#each filtered as option (option)}
 				<div

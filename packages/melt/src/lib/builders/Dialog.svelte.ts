@@ -48,11 +48,15 @@ export type DialogProps = {
 	closeOnOutsideClick?: MaybeGetter<boolean | undefined>;
 
 	/**
-	 * Whether to prevent body scrolling when the dialog is open.
+	 * Behavior when scrolling while the dialog is open.
+	 * - `'prevent'`: Prevents page scroll (default for dialogs)
+	 * - `'allow'`: Allows normal page scrolling
 	 *
-	 * @default true
+	 * Note: `'close'` is not supported for Dialog since dialogs are modal.
+	 *
+	 * @default 'prevent'
 	 */
-	preventScroll?: MaybeGetter<boolean | undefined>;
+	scrollBehavior?: MaybeGetter<"prevent" | "allow" | undefined>;
 
 	/**
 	 * Keep the dialog visible for exit animations.
@@ -68,7 +72,7 @@ export class Dialog {
 	#props!: DialogProps;
 	readonly closeOnEscape = $derived(extract(this.#props.closeOnEscape, true));
 	readonly closeOnOutsideClick = $derived(extract(this.#props.closeOnOutsideClick, true));
-	readonly preventScroll = $derived(extract(this.#props.preventScroll, true));
+	readonly scrollBehavior = $derived(extract(this.#props.scrollBehavior, "prevent" as const));
 	readonly forceVisible = $derived(extract(this.#props.forceVisible, false));
 
 	/* State */
@@ -142,7 +146,7 @@ export class Dialog {
 
 		// Prevent body scroll when open
 		$effect(() => {
-			if (!this.open || !this.preventScroll) return;
+			if (!this.open || this.scrollBehavior !== "prevent") return;
 
 			const originalOverflow = document.body.style.overflow;
 			document.body.style.overflow = "hidden";
