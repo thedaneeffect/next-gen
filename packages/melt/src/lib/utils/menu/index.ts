@@ -1,2 +1,2 @@
 export { createVirtualAnchor } from "./virtual-anchor";
-export { MenuNavigation, type MenuNavigationOptions } from "./navigation.svelte";
+export { MenuNavigator, type MenuNavigatorOptions } from "./navigation.svelte";

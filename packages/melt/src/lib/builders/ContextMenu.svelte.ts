@@ -4,13 +4,11 @@ import { dataAttr } from "$lib/utils/attribute";
 import { extract } from "$lib/utils/extract";
 import { createBuilderMetadata } from "$lib/utils/identifiers";
 import { kbd } from "$lib/utils/keyboard";
-import { createVirtualAnchor } from "$lib/utils/menu";
+import { createVirtualAnchor, MenuNavigator } from "$lib/utils/menu";
 import { computeConvexHullFromElements, type Point } from "$lib/utils/polygon";
 import { findScrollableAncestor } from "$lib/utils/scroll";
-import { letterRegex } from "$lib/utils/typeahead.svelte";
 import { useFloating, type UseFloatingConfig } from "$lib/utils/use-floating.svelte";
 import type { VirtualElement } from "@floating-ui/dom";
-import { useDebounce } from "runed";
 import { tick } from "svelte";
 import { createAttachmentKey, type Attachment } from "svelte/attachments";
 import type { HTMLAttributes } from "svelte/elements";
@@ -126,20 +124,26 @@ export type ContextMenuSubProps = {
 };
 
 // =============================================================================
-// ContextMenuItem - Reactive item class for main menu
+// ContextMenuItem - Reactive item class for menu items (main menu and submenus)
 // =============================================================================
 
 class ContextMenuItem {
-	#menu!: ContextMenu;
+	#menu!: ContextMenu | ContextMenuSub;
 	#props!: ContextMenuItemProps;
+	#onClose!: () => void;
 	#el: HTMLElement | null = null;
 
 	disabled = $derived(extract(this.#props.disabled, false));
 	highlighted = $derived(this.#menu.highlightedEl === this.#el && this.#el !== null);
 
-	constructor(menu: ContextMenu, props: ContextMenuItemProps) {
+	constructor(
+		menu: ContextMenu | ContextMenuSub,
+		props: ContextMenuItemProps,
+		onClose: () => void,
+	) {
 		this.#menu = menu;
 		this.#props = props;
+		this.#onClose = onClose;
 	}
 
 	// Attachment created once per instance, spread into attrs
@@ -167,63 +171,7 @@ class ContextMenuItem {
 				return;
 			}
 			this.#props.onSelect?.();
-			this.#menu.close();
-		},
-		onpointermove: (e: PointerEvent) => {
-			if (e.pointerType !== "mouse") return;
-			if (this.disabled) return;
-			this.#menu.highlightedEl = this.#el;
-		},
-	}));
-
-	get el() {
-		return this.#el;
-	}
-}
-
-// =============================================================================
-// ContextMenuSubItem - Reactive item class for submenus
-// =============================================================================
-
-class ContextMenuSubItem {
-	#menu!: ContextMenuSub;
-	#props!: ContextMenuItemProps;
-	#el: HTMLElement | null = null;
-
-	disabled = $derived(extract(this.#props.disabled, false));
-	highlighted = $derived(this.#menu.highlightedEl === this.#el && this.#el !== null);
-
-	constructor(menu: ContextMenuSub, props: ContextMenuItemProps) {
-		this.#menu = menu;
-		this.#props = props;
-	}
-
-	// Attachment created once per instance, spread into attrs
-	#attachment = {
-		[createAttachmentKey()]: (node: HTMLElement) => {
-			this.#el = node;
-			this.#menu.registerItem(this);
-			return () => {
-				this.#el = null;
-				this.#menu.unregisterItem(this);
-			};
-		},
-	};
-
-	attrs = $derived.by(() => ({
-		[dataAttrs.item]: "",
-		role: "menuitem" as const,
-		tabindex: -1 as const,
-		"data-disabled": dataAttr(this.disabled),
-		"data-highlighted": dataAttr(this.highlighted),
-		...this.#attachment,
-		onclick: (e: MouseEvent) => {
-			if (this.disabled) {
-				e.preventDefault();
-				return;
-			}
-			this.#props.onSelect?.();
-			this.#menu.closeRoot();
+			this.#onClose();
 		},
 		onpointermove: (e: PointerEvent) => {
 			if (e.pointerType !== "mouse") return;
@@ -364,8 +312,10 @@ export class ContextMenu {
 	/* Item tracking */
 	#items: ContextMenuItem[] = [];
 	#subTriggers: ContextMenuSubTrigger[] = [];
-	#highlightedEl: HTMLElement | null = $state(null);
 	#autoOpenTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	/* Navigation */
+	#nav: MenuNavigator;
 
 	/* Pointer tracking */
 	#lastPointerX = 0;
@@ -373,10 +323,6 @@ export class ContextMenu {
 	#graceIntent: { area: Point[]; side: "left" | "right" } | null = null;
 	#hasEnteredContent = $state(false);
 	#pointerMoveAccumulator = 0;
-
-	/* Typeahead */
-	#typeaheadValue = $state("");
-	#debounceClearTypeahead: ReturnType<typeof useDebounce>;
 
 	constructor(props: ContextMenuProps = {}) {
 		this.#props = props;
@@ -386,12 +332,12 @@ export class ContextMenu {
 			defaultValue: false,
 		});
 
-		this.#debounceClearTypeahead = useDebounce(
-			() => {
-				this.#typeaheadValue = "";
-			},
-			() => TYPEAHEAD_TIMEOUT,
-		);
+		this.#nav = new MenuNavigator({
+			getEls: () => this.#getEnabledEls(),
+			getLoop: () => this.loop,
+			onHighlightChange: (prev, next) => this.#handleHighlightChange(prev, next),
+			typeaheadTimeout: TYPEAHEAD_TIMEOUT,
+		});
 	}
 
 	// -------------------------------------------------------------------------
@@ -404,8 +350,8 @@ export class ContextMenu {
 
 	unregisterItem(item: ContextMenuItem) {
 		this.#items = this.#items.filter((i) => i !== item);
-		if (this.#highlightedEl === item.el) {
-			this.#highlightedEl = null;
+		if (this.#nav.highlightedEl === item.el) {
+			this.#nav.highlightedEl = null;
 		}
 	}
 
@@ -415,8 +361,8 @@ export class ContextMenu {
 
 	unregisterSubTrigger(trigger: ContextMenuSubTrigger) {
 		this.#subTriggers = this.#subTriggers.filter((t) => t !== trigger);
-		if (this.#highlightedEl === trigger.el) {
-			this.#highlightedEl = null;
+		if (this.#nav.highlightedEl === trigger.el) {
+			this.#nav.highlightedEl = null;
 		}
 	}
 
@@ -425,11 +371,11 @@ export class ContextMenu {
 	// -------------------------------------------------------------------------
 
 	get highlightedEl() {
-		return this.#highlightedEl;
+		return this.#nav.highlightedEl;
 	}
 
 	set highlightedEl(el: HTMLElement | null) {
-		this.#highlightedEl = el;
+		this.#nav.highlightedEl = el;
 	}
 
 	// -------------------------------------------------------------------------
@@ -483,7 +429,7 @@ export class ContextMenu {
 		const newSubTrigger = this.#subTriggers.find((t) => t.el === newEl);
 		if (newSubTrigger) {
 			this.#autoOpenTimeout = setTimeout(() => {
-				if (this.#highlightedEl === newEl) {
+				if (this.#nav.highlightedEl === newEl) {
 					newSubTrigger.subMenu.open = true;
 				}
 			}, SUBMENU_OPEN_DELAY);
@@ -491,97 +437,19 @@ export class ContextMenu {
 	}
 
 	highlightFirst() {
-		const els = this.#getEnabledEls();
-		if (els.length > 0) {
-			const prevEl = this.#highlightedEl;
-			this.#highlightedEl = els[0]!;
-			els[0]!.scrollIntoView({ block: "nearest" });
-			this.#handleHighlightChange(prevEl, this.#highlightedEl);
-		}
+		this.#nav.highlightFirst();
 	}
 
 	highlightLast() {
-		const els = this.#getEnabledEls();
-		if (els.length > 0) {
-			const prevEl = this.#highlightedEl;
-			this.#highlightedEl = els[els.length - 1]!;
-			els[els.length - 1]!.scrollIntoView({ block: "nearest" });
-			this.#handleHighlightChange(prevEl, this.#highlightedEl);
-		}
+		this.#nav.highlightLast();
 	}
 
 	highlightNext() {
-		const els = this.#getEnabledEls();
-		if (els.length === 0) return;
-
-		const currentIdx = this.#highlightedEl ? els.indexOf(this.#highlightedEl) : -1;
-
-		let nextIdx: number;
-		if (currentIdx === -1) {
-			nextIdx = 0;
-		} else if (currentIdx === els.length - 1) {
-			nextIdx = this.loop ? 0 : currentIdx;
-		} else {
-			nextIdx = currentIdx + 1;
-		}
-
-		const prevEl = this.#highlightedEl;
-		this.#highlightedEl = els[nextIdx]!;
-		els[nextIdx]!.scrollIntoView({ block: "nearest" });
-		this.#handleHighlightChange(prevEl, this.#highlightedEl);
+		this.#nav.highlightNext();
 	}
 
 	highlightPrev() {
-		const els = this.#getEnabledEls();
-		if (els.length === 0) return;
-
-		const currentIdx = this.#highlightedEl ? els.indexOf(this.#highlightedEl) : -1;
-
-		let prevIdx: number;
-		if (currentIdx === -1) {
-			prevIdx = els.length - 1;
-		} else if (currentIdx === 0) {
-			prevIdx = this.loop ? els.length - 1 : 0;
-		} else {
-			prevIdx = currentIdx - 1;
-		}
-
-		const prevEl = this.#highlightedEl;
-		this.#highlightedEl = els[prevIdx]!;
-		els[prevIdx]!.scrollIntoView({ block: "nearest" });
-		this.#handleHighlightChange(prevEl, this.#highlightedEl);
-	}
-
-	#handleTypeahead(char: string) {
-		if (!letterRegex.test(char)) return;
-
-		this.#debounceClearTypeahead();
-		this.#typeaheadValue += char.toLowerCase();
-
-		const els = this.#getEnabledEls();
-		const startIndex = this.#highlightedEl ? els.indexOf(this.#highlightedEl) : -1;
-
-		const itemsWithText = els.map((el, index) => ({
-			el,
-			index,
-			text: el.textContent?.toLowerCase() ?? "",
-		}));
-
-		const isStartingTypeahead = this.#typeaheadValue.length === 1;
-		const orderedItems = [
-			...itemsWithText.slice(isStartingTypeahead ? startIndex + 1 : startIndex),
-			...itemsWithText.slice(0, isStartingTypeahead ? startIndex + 1 : startIndex),
-		];
-
-		for (const item of orderedItems) {
-			if (item.text.startsWith(this.#typeaheadValue)) {
-				const prevEl = this.#highlightedEl;
-				this.#highlightedEl = item.el;
-				item.el.scrollIntoView({ block: "nearest" });
-				this.#handleHighlightChange(prevEl, this.#highlightedEl);
-				return;
-			}
-		}
+		this.#nav.highlightPrev();
 	}
 
 	#handleKeydown = (e: KeyboardEvent) => {
@@ -608,7 +476,7 @@ export class ContextMenu {
 			}
 			case kbd.ARROW_RIGHT: {
 				// Check if highlighted element is a sub-trigger
-				const subTrigger = this.#subTriggers.find((t) => t.el === this.#highlightedEl);
+				const subTrigger = this.#subTriggers.find((t) => t.el === this.#nav.highlightedEl);
 				if (subTrigger) {
 					e.preventDefault();
 					this.#openSubmenu(subTrigger);
@@ -618,13 +486,14 @@ export class ContextMenu {
 			case kbd.ENTER:
 			case kbd.SPACE: {
 				e.preventDefault();
-				if (this.#highlightedEl && !this.#highlightedEl.hasAttribute("data-disabled")) {
+				const highlighted = this.#nav.highlightedEl;
+				if (highlighted && !highlighted.hasAttribute("data-disabled")) {
 					// Check if it's a submenu trigger
-					const subTrigger = this.#subTriggers.find((t) => t.el === this.#highlightedEl);
+					const subTrigger = this.#subTriggers.find((t) => t.el === highlighted);
 					if (subTrigger) {
 						this.#openSubmenu(subTrigger);
 					} else {
-						this.#highlightedEl.click();
+						highlighted.click();
 					}
 				}
 				break;
@@ -637,7 +506,7 @@ export class ContextMenu {
 			default: {
 				if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
 					e.preventDefault();
-					this.#handleTypeahead(e.key);
+					this.#nav.handleTypeahead(e.key);
 				}
 			}
 		}
@@ -657,12 +526,11 @@ export class ContextMenu {
 			for (const child of this.#children) {
 				child.open = false;
 			}
-			this.#highlightedEl = null;
+			this.#nav.reset();
 			this.#graceIntent = null;
 			this.#virtualAnchor = null;
 			this.#clearCloseTimeout();
 			this.#clearAutoOpenTimeout();
-			this.#typeaheadValue = "";
 			this.#hasEnteredContent = false;
 			this.#pointerMoveAccumulator = 0;
 			if (this.#contentEl) {
@@ -799,7 +667,7 @@ export class ContextMenu {
 
 		// Update aria-activedescendant when highlighted element changes
 		$effect(() => {
-			const highlightedId = this.#highlightedEl?.id;
+			const highlightedId = this.#nav.highlightedEl?.id;
 			if (highlightedId) {
 				node.setAttribute("aria-activedescendant", highlightedId);
 			} else {
@@ -857,7 +725,6 @@ export class ContextMenu {
 			const handleWheel = (e: WheelEvent) => {
 				const target = e.target as HTMLElement;
 
-				console.log(performance.now());
 				// nuance:
 				// The target of a wheel event doesn't change until the mouse moves,
 				// so it's possible to wheel and scroll a container and the component
@@ -874,6 +741,7 @@ export class ContextMenu {
 					if (this.scrollBehavior === "close") {
 						this.close();
 					} else {
+						console.log(e);
 						e.preventDefault();
 					}
 					return;
@@ -883,9 +751,11 @@ export class ContextMenu {
 				const scrollableEl = findScrollableAncestor(target, menuContent);
 
 				if (!scrollableEl) {
+					console.log(e);
 					// Can't scroll - prevent page scroll
 					e.preventDefault();
 				} else {
+					console.log(scrollableEl.scrollTop);
 					// Can scroll - close submenus of the scrolled menu
 					if (menuContent === this.#contentEl) {
 						for (const child of this.#children) {
@@ -1021,7 +891,7 @@ export class ContextMenu {
 				this.#contentEl?.focus();
 			},
 			onpointerleave: () => {
-				this.#highlightedEl = null;
+				this.#nav.highlightedEl = null;
 				if (!this.closeOnPointerLeave) return;
 				const openChild = [...this.#children].find((child) => child.open);
 				if (openChild && this.#contentEl) {
@@ -1040,7 +910,7 @@ export class ContextMenu {
 	// -------------------------------------------------------------------------
 
 	getItem(props: ContextMenuItemProps = {}): ContextMenuItem {
-		return new ContextMenuItem(this, props);
+		return new ContextMenuItem(this, props, () => this.close());
 	}
 
 	get separator() {
@@ -1077,19 +947,17 @@ export class ContextMenuSub {
 	#closeTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	/* Item tracking */
-	#items: ContextMenuSubItem[] = [];
+	#items: ContextMenuItem[] = [];
 	#subTriggers: ContextMenuSubTrigger[] = [];
-	#highlightedEl: HTMLElement | null = $state(null);
 	#autoOpenTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	/* Navigation */
+	#nav: MenuNavigator;
 
 	/* Pointer direction tracking for grace intent */
 	#lastPointerX = 0;
 	#pointerDir: "left" | "right" = "right";
 	#graceIntent: { area: Point[]; side: "left" | "right" } | null = null;
-
-	/* Typeahead */
-	#typeaheadValue = $state("");
-	#debounceClearTypeahead: ReturnType<typeof useDebounce>;
 
 	ids = $state(createIds());
 
@@ -1102,26 +970,26 @@ export class ContextMenuSub {
 			defaultValue: false,
 		});
 
-		this.#debounceClearTypeahead = useDebounce(
-			() => {
-				this.#typeaheadValue = "";
-			},
-			() => TYPEAHEAD_TIMEOUT,
-		);
+		this.#nav = new MenuNavigator({
+			getEls: () => this.#getEnabledEls(),
+			getLoop: () => (this.#parent instanceof ContextMenu ? this.#parent.loop : true),
+			onHighlightChange: (prev, next) => this.#handleHighlightChange(prev, next),
+			typeaheadTimeout: TYPEAHEAD_TIMEOUT,
+		});
 	}
 
 	// -------------------------------------------------------------------------
 	// Item registration
 	// -------------------------------------------------------------------------
 
-	registerItem(item: ContextMenuSubItem) {
+	registerItem(item: ContextMenuItem) {
 		this.#items.push(item);
 	}
 
-	unregisterItem(item: ContextMenuSubItem) {
+	unregisterItem(item: ContextMenuItem) {
 		this.#items = this.#items.filter((i) => i !== item);
-		if (this.#highlightedEl === item.el) {
-			this.#highlightedEl = null;
+		if (this.#nav.highlightedEl === item.el) {
+			this.#nav.highlightedEl = null;
 		}
 	}
 
@@ -1131,8 +999,8 @@ export class ContextMenuSub {
 
 	unregisterSubTrigger(trigger: ContextMenuSubTrigger) {
 		this.#subTriggers = this.#subTriggers.filter((t) => t !== trigger);
-		if (this.#highlightedEl === trigger.el) {
-			this.#highlightedEl = null;
+		if (this.#nav.highlightedEl === trigger.el) {
+			this.#nav.highlightedEl = null;
 		}
 	}
 
@@ -1141,11 +1009,11 @@ export class ContextMenuSub {
 	// -------------------------------------------------------------------------
 
 	get highlightedEl() {
-		return this.#highlightedEl;
+		return this.#nav.highlightedEl;
 	}
 
 	set highlightedEl(el: HTMLElement | null) {
-		this.#highlightedEl = el;
+		this.#nav.highlightedEl = el;
 	}
 
 	// -------------------------------------------------------------------------
@@ -1198,7 +1066,7 @@ export class ContextMenuSub {
 		const newSubTrigger = this.#subTriggers.find((t) => t.el === newEl);
 		if (newSubTrigger) {
 			this.#autoOpenTimeout = setTimeout(() => {
-				if (this.#highlightedEl === newEl) {
+				if (this.#nav.highlightedEl === newEl) {
 					newSubTrigger.subMenu.open = true;
 				}
 			}, SUBMENU_OPEN_DELAY);
@@ -1206,99 +1074,19 @@ export class ContextMenuSub {
 	}
 
 	highlightFirst() {
-		const els = this.#getEnabledEls();
-		if (els.length > 0) {
-			const prevEl = this.#highlightedEl;
-			this.#highlightedEl = els[0]!;
-			els[0]!.scrollIntoView({ block: "nearest" });
-			this.#handleHighlightChange(prevEl, this.#highlightedEl);
-		}
+		this.#nav.highlightFirst();
 	}
 
 	highlightLast() {
-		const els = this.#getEnabledEls();
-		if (els.length > 0) {
-			const prevEl = this.#highlightedEl;
-			this.#highlightedEl = els[els.length - 1]!;
-			els[els.length - 1]!.scrollIntoView({ block: "nearest" });
-			this.#handleHighlightChange(prevEl, this.#highlightedEl);
-		}
+		this.#nav.highlightLast();
 	}
 
 	highlightNext() {
-		const els = this.#getEnabledEls();
-		if (els.length === 0) return;
-
-		const currentIdx = this.#highlightedEl ? els.indexOf(this.#highlightedEl) : -1;
-		const loop = this.#parent instanceof ContextMenu ? this.#parent.loop : true;
-
-		let nextIdx: number;
-		if (currentIdx === -1) {
-			nextIdx = 0;
-		} else if (currentIdx === els.length - 1) {
-			nextIdx = loop ? 0 : currentIdx;
-		} else {
-			nextIdx = currentIdx + 1;
-		}
-
-		const prevEl = this.#highlightedEl;
-		this.#highlightedEl = els[nextIdx]!;
-		els[nextIdx]!.scrollIntoView({ block: "nearest" });
-		this.#handleHighlightChange(prevEl, this.#highlightedEl);
+		this.#nav.highlightNext();
 	}
 
 	highlightPrev() {
-		const els = this.#getEnabledEls();
-		if (els.length === 0) return;
-
-		const currentIdx = this.#highlightedEl ? els.indexOf(this.#highlightedEl) : -1;
-		const loop = this.#parent instanceof ContextMenu ? this.#parent.loop : true;
-
-		let prevIdx: number;
-		if (currentIdx === -1) {
-			prevIdx = els.length - 1;
-		} else if (currentIdx === 0) {
-			prevIdx = loop ? els.length - 1 : 0;
-		} else {
-			prevIdx = currentIdx - 1;
-		}
-
-		const prevEl = this.#highlightedEl;
-		this.#highlightedEl = els[prevIdx]!;
-		els[prevIdx]!.scrollIntoView({ block: "nearest" });
-		this.#handleHighlightChange(prevEl, this.#highlightedEl);
-	}
-
-	#handleTypeahead(char: string) {
-		if (!letterRegex.test(char)) return;
-
-		this.#debounceClearTypeahead();
-		this.#typeaheadValue += char.toLowerCase();
-
-		const els = this.#getEnabledEls();
-		const startIndex = this.#highlightedEl ? els.indexOf(this.#highlightedEl) : -1;
-
-		const itemsWithText = els.map((el, index) => ({
-			el,
-			index,
-			text: el.textContent?.toLowerCase() ?? "",
-		}));
-
-		const isStartingTypeahead = this.#typeaheadValue.length === 1;
-		const orderedItems = [
-			...itemsWithText.slice(isStartingTypeahead ? startIndex + 1 : startIndex),
-			...itemsWithText.slice(0, isStartingTypeahead ? startIndex + 1 : startIndex),
-		];
-
-		for (const item of orderedItems) {
-			if (item.text.startsWith(this.#typeaheadValue)) {
-				const prevEl = this.#highlightedEl;
-				this.#highlightedEl = item.el;
-				item.el.scrollIntoView({ block: "nearest" });
-				this.#handleHighlightChange(prevEl, this.#highlightedEl);
-				return;
-			}
-		}
+		this.#nav.highlightPrev();
 	}
 
 	#handleKeydown = (e: KeyboardEvent) => {
@@ -1329,7 +1117,7 @@ export class ContextMenuSub {
 				break;
 			}
 			case kbd.ARROW_RIGHT: {
-				const subTrigger = this.#subTriggers.find((t) => t.el === this.#highlightedEl);
+				const subTrigger = this.#subTriggers.find((t) => t.el === this.#nav.highlightedEl);
 				if (subTrigger) {
 					e.preventDefault();
 					this.#openSubmenu(subTrigger);
@@ -1339,13 +1127,14 @@ export class ContextMenuSub {
 			case kbd.ENTER:
 			case kbd.SPACE: {
 				e.preventDefault();
-				if (this.#highlightedEl && !this.#highlightedEl.hasAttribute("data-disabled")) {
+				const highlighted = this.#nav.highlightedEl;
+				if (highlighted && !highlighted.hasAttribute("data-disabled")) {
 					// Check if it's a submenu trigger
-					const subTrigger = this.#subTriggers.find((t) => t.el === this.#highlightedEl);
+					const subTrigger = this.#subTriggers.find((t) => t.el === highlighted);
 					if (subTrigger) {
 						this.#openSubmenu(subTrigger);
 					} else {
-						this.#highlightedEl.click();
+						highlighted.click();
 					}
 				}
 				break;
@@ -1358,7 +1147,7 @@ export class ContextMenuSub {
 			default: {
 				if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
 					e.preventDefault();
-					this.#handleTypeahead(e.key);
+					this.#nav.handleTypeahead(e.key);
 				}
 			}
 		}
@@ -1378,10 +1167,9 @@ export class ContextMenuSub {
 			for (const child of this.#children) {
 				child.open = false;
 			}
-			this.#highlightedEl = null;
+			this.#nav.reset();
 			this.#graceIntent = null;
 			this.#clearAutoOpenTimeout();
-			this.#typeaheadValue = "";
 			if (this.#contentEl) {
 				this.#contentEl.scrollTop = 0;
 			}
@@ -1603,7 +1391,7 @@ export class ContextMenuSub {
 
 		// Update aria-activedescendant
 		$effect(() => {
-			const highlightedId = this.#highlightedEl?.id;
+			const highlightedId = this.#nav.highlightedEl?.id;
 			if (highlightedId) {
 				node.setAttribute("aria-activedescendant", highlightedId);
 			} else {
@@ -1641,7 +1429,7 @@ export class ContextMenuSub {
 				this.#contentEl?.focus();
 			},
 			onpointerleave: () => {
-				this.#highlightedEl = null;
+				this.#nav.highlightedEl = null;
 				if (!this.#getRootMenu().closeOnPointerLeave) return;
 				const openChild = [...this.#children].find((child) => child.open);
 				if (openChild && this.#triggerEl && this.#contentEl) {
@@ -1659,8 +1447,8 @@ export class ContextMenuSub {
 	// Items
 	// -------------------------------------------------------------------------
 
-	getItem(props: ContextMenuItemProps = {}): ContextMenuSubItem {
-		return new ContextMenuSubItem(this, props);
+	getItem(props: ContextMenuItemProps = {}): ContextMenuItem {
+		return new ContextMenuItem(this, props, () => this.closeRoot());
 	}
 
 	get separator() {
