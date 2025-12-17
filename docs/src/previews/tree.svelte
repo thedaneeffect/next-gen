@@ -127,9 +127,11 @@
 		>
 			<div class="group py-1" style="padding-left: {depth * 1}rem">
 				<div
-					class="{item.selected ? 'bg-[var(--orange)] text-[var(--bg)]' : ''}
+					class="{item.selected
+						? 'bg-[var(--orange)] text-[var(--bg)]'
+						: 'group-hover:bg-[var(--surface)]'}
 					flex h-full w-full items-center gap-2 rounded-xl px-3
-					py-1 ring-[var(--orange)] ring-offset-2 ring-offset-[var(--bg)] transition group-hover:bg-[var(--surface)]"
+					py-1 ring-[var(--orange)] ring-offset-2 ring-offset-[var(--bg)] transition"
 				>
 					{@render treeItemIcon(item)}
 					<span class="select-none">
