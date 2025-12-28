@@ -125,9 +125,11 @@ You can control the dialog's open state externally:
 </script>
 
 <button onclick={() => (isOpen = true)}>Open from outside</button>
+<button {...dialog.trigger}>Open with trigger</button>
 
 <dialog {...dialog.content}>
-	<p>Dialog is {isOpen ? 'open' : 'closed'}</p>
+	<h2 {...dialog.title}>Dialog Title</h2>
+	<p {...dialog.description}>Dialog is {isOpen ? 'open' : 'closed'}</p>
 	<button {...dialog.close}>Close</button>
 </dialog>
 ```
@@ -158,11 +160,62 @@ The native `<dialog>` element supports stacking, so you can open a dialog from w
 </dialog>
 ```
 
+## Configuration Options
+
+### Escape Key & Outside Click
+
+Control how the dialog closes:
+
+```svelte
+<script lang="ts">
+	import { Dialog } from "melt/builders";
+
+	const dialog = new Dialog({
+		closeOnEscape: true, // Close when Escape is pressed (default: true)
+		closeOnOutsideClick: true, // Close when clicking backdrop (default: true)
+	});
+</script>
+```
+
+### Scroll Behavior
+
+Control page scrolling while the dialog is open:
+
+```svelte
+<script lang="ts">
+	import { Dialog } from "melt/builders";
+
+	const dialog = new Dialog({
+		scrollBehavior: "prevent", // Prevent page scroll (default)
+		// scrollBehavior: "allow", // Allow page scroll
+	});
+</script>
+```
+
+### Exit Animations
+
+Use `forceVisible` to keep the dialog in the DOM for exit animations:
+
+```svelte
+<script lang="ts">
+	import { Dialog } from "melt/builders";
+
+	const dialog = new Dialog({
+		forceVisible: false, // Remove from DOM immediately (default)
+		// forceVisible: true, // Keep in DOM for CSS transitions
+	});
+</script>
+```
+
+When `forceVisible` is true, the dialog element remains in the DOM after closing, allowing CSS transitions to complete before removal.
+
 ## Form Integration
 
 Dialogs work seamlessly with forms using `method="dialog"`:
 
 ```svelte
+<button {...dialog.trigger}>Delete Item</button>
+
 <dialog {...dialog.content}>
 	<form method="dialog">
 		<h2 {...dialog.title}>Confirm Action</h2>

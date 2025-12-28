@@ -68,14 +68,61 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 	</TabItem>
 </Tabs>
 
+## Elements
+
+### `trigger`
+Spread onto a `<button>` element. Opens the alert dialog when clicked.
+
+### `content`
+Spread onto a `<dialog>` element. The main alert dialog container with `role="alertdialog"`.
+
+### `title`
+Spread onto a heading element (e.g., `<h2>`). Connected to the dialog via `aria-labelledby`.
+
+### `description`
+Spread onto a paragraph or div element. Connected to the dialog via `aria-describedby`.
+
+### `cancel`
+Spread onto a `<button>` element. Closes the dialog without taking action.
+
+### `action`
+Spread onto a `<button>` element. Confirms the action and closes the dialog.
+
+## Controlled State
+
+You can control the alert dialog's open state externally:
+
+```svelte
+<script lang="ts">
+	import { AlertDialog } from "melt/builders";
+
+	let isOpen = $state(false);
+
+	const alertDialog = new AlertDialog({
+		open: () => isOpen,
+		onOpenChange: (open) => (isOpen = open),
+	});
+</script>
+
+<button onclick={() => (isOpen = true)}>Open from outside</button>
+
+<dialog {...alertDialog.content}>
+	<h2 {...alertDialog.title}>Alert Dialog</h2>
+	<p {...alertDialog.description}>Dialog is {isOpen ? 'open' : 'closed'}</p>
+	<button {...alertDialog.cancel}>Close</button>
+</dialog>
+```
+
 ## Dialog vs Alert Dialog
 
 | Feature | Dialog | Alert Dialog |
 |---------|--------|--------------|
-| Escape key closes | ✅ (configurable) | ❌ |
-| Click outside closes | ✅ (configurable) | ❌ |
+| Escape key closes | ✅ Yes (via `closeOnEscape`) | ❌ No |
+| Click outside closes | ✅ Yes (via `closeOnOutsideClick`) | ❌ No |
 | ARIA role | `dialog` | `alertdialog` |
 | Use case | General modals | Destructive/important actions |
+
+**Important:** `closeOnEscape` and `closeOnOutsideClick` props are **not available** for AlertDialog. It requires explicit user action via the `cancel` or `action` buttons.
 
 Use `AlertDialog` when you need the user to explicitly acknowledge or respond to something important, such as:
 
@@ -83,20 +130,57 @@ Use `AlertDialog` when you need the user to explicitly acknowledge or respond to
 - Displaying critical error messages
 - Requiring user input before proceeding
 
-## Handling Actions
+## Configuration Options
 
-You can handle the action and cancel buttons to perform different operations:
+### Scroll Behavior
+
+Control how page scrolling behaves when the alert dialog is open:
 
 ```svelte
 <script lang="ts">
 	import { AlertDialog } from "melt/builders";
-	import { mergeAttrs } from "melt";
+
+	const alertDialog = new AlertDialog({
+		scrollBehavior: "prevent", // 'prevent' (default) or 'allow'
+	});
+</script>
+```
+
+- `'prevent'` (default): Prevents body scroll while dialog is open
+- `'allow'`: Allows normal page scrolling
+
+**Note:** Unlike Dialog, `'close'` is not supported for AlertDialog since it requires explicit action.
+
+### Force Visible
+
+Keep the dialog visible during exit animations:
+
+```svelte
+<script lang="ts">
+	import { AlertDialog } from "melt/builders";
+
+	const alertDialog = new AlertDialog({
+		forceVisible: true, // Keeps dialog in DOM until CSS transitions complete
+	});
+</script>
+```
+
+When `true`, the dialog element remains visible (in the DOM) after setting `open = false`, allowing CSS exit animations to complete before the dialog is removed.
+
+## Handling Actions
+
+Both `cancel` and `action` automatically close the dialog. To perform additional operations (like deleting data), use `mergeAttrs` to compose your handler with the built-in close handler:
+
+```svelte
+<script lang="ts">
+	import { AlertDialog, mergeAttrs } from "melt";
 
 	const alertDialog = new AlertDialog();
 
 	function handleDelete() {
 		// Perform delete operation
 		console.log("Item deleted");
+		// Dialog closes automatically after this runs
 	}
 </script>
 
@@ -113,6 +197,8 @@ You can handle the action and cancel buttons to perform different operations:
 	</button>
 </dialog>
 ```
+
+The `mergeAttrs` utility ensures both your `handleDelete` function and the dialog's built-in close handler run when clicked.
 
 ## Animating the Alert Dialog
 

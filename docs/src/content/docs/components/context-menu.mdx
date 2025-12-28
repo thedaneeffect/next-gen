@@ -197,6 +197,73 @@ The currently highlighted item receives `data-highlighted`:
 }
 ```
 
+## Configuration
+
+### Scroll Behavior
+
+Control what happens when scrolling while the menu is open:
+
+```svelte
+<script lang="ts">
+	const menu = new ContextMenu({
+		scrollBehavior: 'prevent', // 'close' | 'prevent' | 'allow'
+	});
+</script>
+```
+
+- `'close'` (default) - Closes the menu when scrolling outside of it
+- `'prevent'` - Prevents page scroll when scrolling outside of it  
+- `'allow'` - Allows normal page scrolling
+
+Scrolling inside the menu content is always allowed.
+
+### Floating UI Configuration
+
+Customize menu positioning using [Floating UI](https://floating-ui.com/) options:
+
+```svelte
+<script lang="ts">
+	import { offset, flip } from '@floating-ui/dom';
+
+	const menu = new ContextMenu({
+		floatingConfig: {
+			computePosition: {
+				placement: 'right-start',
+				middleware: [offset(10), flip()],
+			},
+		},
+	});
+</script>
+```
+
+### Keyboard Navigation Loop
+
+Control whether keyboard navigation wraps around at boundaries:
+
+```svelte
+<script lang="ts">
+	const menu = new ContextMenu({
+		loop: false, // Default: true
+	});
+</script>
+```
+
+When `loop` is `true`, pressing `ArrowDown` on the last item moves to the first item, and vice versa.
+
+### Close on Pointer Leave
+
+Control whether the menu closes when the pointer leaves the content area:
+
+```svelte
+<script lang="ts">
+	const menu = new ContextMenu({
+		closeOnPointerLeave: true, // Default: false
+	});
+</script>
+```
+
+When `false` (default), the menu stays open until explicitly closed. The "close on moving away before entering" behavior is unaffected.
+
 ## Controlled State
 
 Control the open state externally:
