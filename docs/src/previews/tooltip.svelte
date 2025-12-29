@@ -48,17 +48,17 @@
 <Preview>
 	<button
 		type="button"
-		class="mx-auto grid size-12 place-items-center rounded-xl bg-[var(--surface)] text-[var(--text)]
-		transition hover:bg-[var(--surface-hover)] active:bg-[var(--surface-active)]"
+		class="mx-auto grid size-12 place-items-center rounded-xl bg-stone-800 text-stone-200
+		transition hover:bg-stone-700 active:bg-stone-600"
 		aria-label="Add"
 		{...tooltip.trigger}
 	>
 		<PhChefHatFill aria-label="Plus"></PhChefHatFill>
 	</button>
 
-	<div {...tooltip.content} class="rounded-xl bg-[var(--surface)] p-0 shadow-xl">
+	<div {...tooltip.content} class="rounded-xl bg-stone-800 p-0 shadow-xl">
 		<div {...tooltip.arrow} class="size-2 rounded-tl"></div>
-		<p class="px-4 py-1 text-[var(--text)]">Let us cook!</p>
+		<p class="px-4 py-1 text-stone-200">Let us cook!</p>
 	</div>
 </Preview>
 

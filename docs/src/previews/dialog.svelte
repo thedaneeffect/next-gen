@@ -33,32 +33,30 @@
 	<button class="btn btn-secondary" {...dialog.trigger}> Open Dialog </button>
 
 	<dialog
-		class="m-auto max-w-md rounded-2xl bg-[var(--surface)] p-6 shadow-2xl backdrop:bg-black/50"
+		class="m-auto max-w-md rounded-2xl bg-stone-800 p-6 shadow-2xl backdrop:bg-black/50"
 		{...dialog.content}
 	>
-		<h2 class="text-xl font-bold text-[var(--text)]" {...dialog.title}>Edit profile</h2>
-		<p class="mt-2 text-[var(--text-muted)]" {...dialog.description}>
+		<h2 class="text-xl font-bold text-stone-200" {...dialog.title}>Edit profile</h2>
+		<p class="mt-2 text-stone-400" {...dialog.description}>
 			Make changes to your profile here. Click save when you're done.
 		</p>
 
 		<div class="mt-4 space-y-4">
 			<div>
-				<label class="block text-sm font-medium text-[var(--text-muted)]" for="name"> Name </label>
+				<label class="block text-sm font-medium text-stone-400" for="name"> Name </label>
 				<input
 					id="name"
 					type="text"
-					class="mt-1 block w-full rounded-lg border border-[var(--border)] bg-[var(--input-bg)] px-3 py-2 text-[var(--text)]"
+					class="mt-1 block w-full rounded-lg border border-stone-700 bg-stone-900 px-3 py-2 text-stone-200"
 					placeholder="Enter your name"
 				/>
 			</div>
 			<div>
-				<label class="block text-sm font-medium text-[var(--text-muted)]" for="email">
-					Email
-				</label>
+				<label class="block text-sm font-medium text-stone-400" for="email"> Email </label>
 				<input
 					id="email"
 					type="email"
-					class="mt-1 block w-full rounded-lg border border-[var(--border)] bg-[var(--input-bg)] px-3 py-2 text-[var(--text)]"
+					class="mt-1 block w-full rounded-lg border border-stone-700 bg-stone-900 px-3 py-2 text-stone-200"
 					placeholder="Enter your email"
 				/>
 			</div>

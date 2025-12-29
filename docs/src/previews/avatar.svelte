@@ -49,7 +49,7 @@
 	<div class="flex flex-col items-center">
 		<div class="flex w-full items-center justify-center gap-6">
 			<div
-				class="relative flex size-32 items-center justify-center overflow-hidden rounded-full bg-gray-400"
+				class="relative flex size-32 items-center justify-center overflow-hidden rounded-full bg-neutral-100"
 			>
 				<img
 					{...mergeAttrs(avatar.image, {
@@ -63,17 +63,17 @@
 						avatar.loadingStatus === "loaded" ? "fade-in" : "invisible",
 					]}
 				/>
-				<span {...avatar.fallback} class="!block text-4xl font-medium text-gray-950"
+				<span {...avatar.fallback} class="!block text-4xl font-medium text-stone-950"
 					>{initials}</span
 				>
 			</div>
 		</div>
-		<label for="gh" class="mt-4 text-[var(--text)]"> GitHub username </label>
+		<label for="gh" class="mt-4 text-stone-200"> GitHub username </label>
 		<span
 			contenteditable
 			id="gh"
-			class="w-auto border-b-2 border-[var(--border)] bg-transparent px-1 pb-1 text-center text-2xl font-light
-		text-[var(--text)] placeholder-[var(--text-muted)] outline-none transition focus:border-orange-500"
+			class="w-auto border-b-2 border-stone-700 bg-transparent px-1 pb-1 text-center text-2xl font-light
+		text-stone-200 placeholder-stone-400 outline-none transition focus:border-orange-500 focus-visible:ring-1 focus-visible:ring-orange-500"
 			bind:innerText={username}
 			spellcheck="false"
 		></span>

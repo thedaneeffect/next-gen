@@ -72,7 +72,7 @@
 		</span>
 		<div
 			{...progress.root}
-			class="relative w-[300px] overflow-hidden rounded-full bg-[var(--surface-hover)]"
+			class="relative w-[300px] overflow-hidden rounded-full bg-neutral-700"
 			style:height={`${scaleConvert(value, [0, 100], [8, 24])}px`}
 		>
 			<div

@@ -183,7 +183,7 @@
 <Preview>
 	<div
 		class="mx-auto flex h-48 w-80 items-center justify-center rounded-md border-2 border-dashed
-			border-[var(--border)] text-[var(--text-muted)]"
+			border-stone-700 text-stone-400"
 		{...menu.trigger}
 	>
 		Right-click here
@@ -193,7 +193,7 @@
 	<!-- Main Menu Content -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content max-h-64 min-w-44 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content max-h-64 min-w-44 overflow-y-auto rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...menu.content}
 	>
 		<button class="menu-item" {...undoItem.attrs}>
@@ -283,7 +283,7 @@
 	<!-- Paste Special Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-40 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content min-w-40 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...pasteSpecialSubmenu.content}
 	>
 		<button class="menu-item" {...pastePlainTextItem.attrs}>Paste as Plain Text</button>
@@ -295,7 +295,7 @@
 	<!-- Find & Replace Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-36 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content min-w-36 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...findReplaceSubmenu.content}
 	>
 		<button class="menu-item" {...findItem.attrs}>
@@ -318,7 +318,7 @@
 	<!-- Transform Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...transformSubmenu.content}
 	>
 		<button class="menu-item" {...uppercaseItem.attrs}>UPPERCASE</button>
@@ -346,7 +346,7 @@
 	<!-- Sort Lines Submenu (nested in Transform) -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-28 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content min-w-28 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...sortLinesSubmenu.content}
 	>
 		<button class="menu-item" {...sortAZItem.attrs}>A → Z</button>
@@ -358,7 +358,7 @@
 	<!-- Insert Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-36 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content min-w-36 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...insertSubmenu.content}
 	>
 		<button class="menu-item" {...insertDateTimeItem.attrs}>Date & Time</button>
@@ -377,7 +377,7 @@
 	<!-- Snippet Submenu (nested in Insert) -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content max-h-32 min-w-36 overflow-y-auto rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content max-h-32 min-w-36 overflow-y-auto rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...snippetSubmenu.content}
 	>
 		<button class="menu-item" {...loremIpsumItem.attrs}>Lorem Ipsum</button>
@@ -394,7 +394,7 @@
 	<!-- Share Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-32 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content min-w-32 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...shareSubmenu.content}
 	>
 		<button class="menu-item" {...copyLinkItem.attrs}>Copy Link</button>
@@ -414,7 +414,7 @@
 	<!-- Social Submenu (nested in Share) -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-28 rounded-sm border border-[var(--border)] bg-[var(--surface)] p-0.5 shadow-lg outline-none"
+		class="menu-content min-w-28 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
 		{...socialSubmenu.content}
 	>
 		<button class="menu-item" {...twitterItem.attrs}>Twitter</button>
@@ -495,10 +495,19 @@
 		outline: none;
 		transition: background-color 0.1s;
 		background-color: transparent;
+		color: rgb(231 229 228); /* text-stone-200 */
+	}
+
+	.menu-item:hover {
+		background-color: rgb(120 113 108 / 0.5); /* hover:bg-stone-500/50 */
+	}
+
+	.menu-item:active {
+		background-color: rgb(87 83 78 / 0.5); /* active:bg-stone-600/50 */
 	}
 
 	.menu-item[data-highlighted] {
-		background-color: rgb(255 255 255 / 0.15);
+		background-color: rgb(120 113 108 / 0.5); /* bg-stone-500/50 */
 	}
 
 	.menu-item[data-disabled] {
@@ -511,23 +520,23 @@
 		padding: 0.125rem 0.25rem;
 		font-size: 0.625rem;
 		font-weight: 500;
-		opacity: 0.5;
+		color: rgb(168 162 158); /* text-stone-400 */
 	}
 
 	.separator {
 		margin: 0.25rem 0;
-		border-color: var(--border-subtle);
+		border-color: rgb(68 64 60); /* border-stone-700 */
 		border-bottom-width: 1px;
 	}
 
 	.shortcut {
 		margin-left: auto;
 		font-size: 0.625rem;
-		opacity: 0.5;
+		color: rgb(168 162 158); /* text-stone-400 */
 	}
 
 	.submenu-arrow {
 		margin-left: auto;
-		opacity: 0.5;
+		color: rgb(168 162 158); /* text-stone-400 */
 	}
 </style>

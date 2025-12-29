@@ -68,18 +68,18 @@
 	>
 		{#each toaster.toasts as toast, i (toast.id)}
 			<div
-				class="h-(--toast-height) relative flex w-full flex-col justify-center rounded-xl bg-[var(--surface)] px-4 text-left transition"
+				class="h-(--toast-height) relative flex w-full flex-col justify-center rounded-xl bg-stone-800 px-4 text-left transition"
 				{...toast.content}
 				style:--n={toaster.toasts.length - i}
 				in:fly={{ y: 60, opacity: 0.9 }}
 				out:fly={{ y: 20 }}
 			>
-				<h3 {...toast.title} class="whitespace-nowrap text-sm font-medium text-[var(--text)]">
+				<h3 {...toast.title} class="whitespace-nowrap text-sm font-medium text-stone-200">
 					{toast.data.title}
 				</h3>
 
 				{#if toast.data.description}
-					<div {...toast.description} class="text-xs text-[var(--text-muted)]">
+					<div {...toast.description} class="text-xs text-stone-300">
 						{toast.data.description}
 					</div>
 				{/if}
@@ -87,7 +87,7 @@
 				<button
 					{...toast.close}
 					aria-label="dismiss toast"
-					class="absolute right-1 top-1 bg-transparent text-[var(--text-muted)] hover:text-[var(--text)]"
+					class="absolute right-1 top-1 bg-transparent text-stone-300 hover:bg-stone-500/50 hover:text-stone-200 active:bg-stone-600/50"
 				>
 					<Close class="h-3.5 w-3.5" />
 				</button>
@@ -96,7 +96,7 @@
 					<div class="absolute bottom-4 right-4 h-[4px] w-[30px] overflow-hidden rounded-full">
 						<Progress value={toast.percentage}>
 							{#snippet children(progress)}
-								<div {...progress.root} class="relative h-full w-full overflow-hidden bg-gray-950">
+								<div {...progress.root} class="relative h-full w-full overflow-hidden bg-stone-950">
 									<div
 										{...progress.progress}
 										class="h-full w-full -translate-x-[var(--progress)]"

@@ -88,8 +88,8 @@ function generateMutedColorScale(baseColor: ColorDef, colorName: string): Record
 	const baseC = baseColor.c;
 	const baseH = baseColor.h;
 
-	const mutedChroma = baseC * 0.4;
-	const darknessAdjust = 0.25;
+	const mutedChroma = baseC * 0.3;
+	const darknessAdjust = 0.2;
 
 	const lightRange =
 		baseL > 0.5

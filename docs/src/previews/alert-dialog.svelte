@@ -9,13 +9,13 @@
 	<button class="btn btn-destructive" {...alertDialog.trigger}> Delete account </button>
 
 	<dialog
-		class="m-auto max-w-md rounded-2xl bg-[var(--surface)] p-6 shadow-2xl backdrop:bg-black/50"
+		class="m-auto max-w-md rounded-2xl bg-stone-800 p-6 shadow-2xl backdrop:bg-black/50"
 		{...alertDialog.content}
 	>
-		<h2 class="text-xl font-bold text-[var(--text)]" {...alertDialog.title}>
+		<h2 class="text-xl font-bold text-stone-200" {...alertDialog.title}>
 			Are you absolutely sure?
 		</h2>
-		<p class="mt-2 text-[var(--text-muted)]" {...alertDialog.description}>
+		<p class="mt-2 text-stone-400" {...alertDialog.description}>
 			This action cannot be undone. This will permanently delete your account and remove your data
 			from our servers.
 		</p>

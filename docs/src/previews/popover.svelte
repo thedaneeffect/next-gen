@@ -21,19 +21,19 @@
 	<button class="btn btn-secondary mx-auto block" {...popover.trigger}> psst... </button>
 
 	<div
-		class="w-[260px] overflow-visible rounded-2xl bg-[var(--surface)] p-4 shadow-xl"
+		class="w-[260px] overflow-visible rounded-2xl bg-stone-800 p-4 shadow-xl"
 		{...popover.content}
 	>
 		{#if controls.arrow}
 			<div {...popover.arrow} class="size-2 rounded-tl"></div>
 		{/if}
-		<p class="text-center font-semibold text-[var(--text)]">Can I tell you a secret?</p>
+		<p class="text-center font-semibold text-stone-200">Can I tell you a secret?</p>
 
 		<div class="mt-4 flex items-center justify-center gap-4">
 			<PopoverComponent forceVisible>
 				{#snippet children(popover2)}
 					<button
-						class="border-b-2 border-dashed bg-transparent text-[var(--text)] transition hover:cursor-pointer hover:opacity-75 active:opacity-50"
+						class="border-b-2 border-dashed bg-transparent text-stone-200 transition hover:cursor-pointer hover:opacity-75 active:opacity-50"
 						{...popover2.trigger}
 					>
 						yes
@@ -41,7 +41,7 @@
 
 					<div
 						{...popover2.content}
-						class="rounded-xl bg-[var(--surface-hover)] p-4 text-[var(--text)] shadow-xl backdrop-blur"
+						class="rounded-xl bg-stone-700 p-4 text-stone-200 shadow-xl backdrop-blur hover:bg-stone-500/50 active:bg-stone-600/50"
 					>
 						you're awesome
 					</div>

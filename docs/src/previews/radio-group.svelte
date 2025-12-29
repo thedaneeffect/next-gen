@@ -47,7 +47,7 @@
 
 <Preview>
 	<div class="mx-auto flex w-fit flex-col gap-2" {...group.root}>
-		<label {...group.label} class="font-medium text-[var(--text)]">Layout</label>
+		<label {...group.label} class="font-medium text-stone-200">Layout</label>
 		<div class="flex {isVert ? 'flex-col gap-1' : 'flex-row gap-3'}">
 			{#each items as i}
 				{@const item = group.getItem(i)}
@@ -59,21 +59,20 @@
 					<div
 						class={[
 							"grid h-6 w-6 place-items-center rounded-full border shadow-sm",
-							"hover:bg-[var(--surface)] data-[disabled=true]:bg-[var(--border)]",
-							item.checked
-								? "border-orange-500 bg-orange-500"
-								: "border-[var(--border)] bg-[var(--surface)]",
+							"focus-visible:ring-1 focus-visible:ring-orange-500",
+							"hover:bg-stone-800 data-[disabled=true]:bg-stone-700",
+							item.checked ? "border-orange-500 bg-orange-500" : "border-stone-700 bg-stone-900",
 						]}
 					>
 						{#if item.checked}
 							<div
-								class={["h-3 w-3 rounded-full", item.checked && "bg-gray-950"]}
+								class={["h-3 w-3 rounded-full", item.checked && "bg-stone-100"]}
 								aria-hidden="true"
 							></div>
 						{/if}
 					</div>
 
-					<span class="font-semibold capitalize leading-none text-[var(--text)]">
+					<span class="font-semibold capitalize leading-none text-stone-200">
 						{i}
 					</span>
 				</div>

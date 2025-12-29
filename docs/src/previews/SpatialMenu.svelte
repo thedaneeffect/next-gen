@@ -91,7 +91,7 @@
 						>
 							<div
 								class={[
-									"relative overflow-hidden rounded-md outline-1 outline-offset-1 transition-all",
+									"relative overflow-hidden rounded-md outline-1 transition-all",
 									item.highlighted ? "outline-orange-500" : "!outline-transparent",
 									item.disabled ? "opacity-50" : "",
 								]}

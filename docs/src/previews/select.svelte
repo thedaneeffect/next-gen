@@ -42,7 +42,7 @@
 		<label {...select.label}>Anime</label>
 		<button
 			{...select.trigger}
-			class="btn btn-secondary flex items-center justify-between overflow-hidden border border-[var(--border)] py-2 pl-3 pr-4 text-left"
+			class="flex items-center justify-between overflow-hidden rounded-xl border border-stone-700 bg-stone-900 py-2 pl-3 pr-4 text-left text-stone-200 hover:bg-stone-500/50 active:bg-stone-600/50"
 		>
 			<div class="inline-flex items-center gap-2 overflow-hidden">
 				<AlphabetJapanese class="shrink-0" />
@@ -53,14 +53,14 @@
 
 		<div
 			{...select.content}
-			class="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow-lg"
+			class="flex flex-col rounded-xl border border-stone-700 bg-stone-800 p-2 shadow-lg"
 		>
 			{#each options as option}
 				<div
 					{...select.getOption(option.value, option.label)}
 					class={[
-						"relative flex items-center justify-between rounded-xl py-2 pl-8 pr-2",
-						select.highlighted === option.value && "bg-[var(--surface-hover)]",
+						"relative flex items-center justify-between rounded-xl py-2 pl-8 pr-2 text-stone-200",
+						select.highlighted === option.value && "bg-stone-500/50",
 						select.value === option.value && "font-semibold",
 					]}
 				>

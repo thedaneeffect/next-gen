@@ -29,7 +29,7 @@
 		{...slider.root}
 	>
 		<div
-			class="absolute rounded-full bg-[var(--border)]
+			class="absolute rounded-full bg-stone-700
 					{slider.orientation === 'horizontal'
 				? 'left-0 right-0 top-1/2 h-2 -translate-y-1/2'
 				: 'bottom-0 left-1/2 top-0 w-2 -translate-x-1/2'}"
@@ -40,9 +40,9 @@
 			></div>
 		</div>
 		<div
-			class="absolute size-6 rounded-md border border-gray-950 bg-gray-50 outline-none transition-all focus-visible:ring-1
-				focus-visible:ring-orange-500 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-950 data-[dragging]:transition-none
-				{slider.orientation === 'horizontal'
+			class="absolute size-6 rounded-md border-2 border-stone-900 bg-stone-100 transition-all focus-visible:outline focus-visible:outline-2
+			focus-visible:focus-visible:outline-orange-500 data-[dragging]:transition-none
+			{slider.orientation === 'horizontal'
 				? 'left-[var(--percentage)] top-1/2 -translate-x-1/2 -translate-y-1/2'
 				: 'left-1/2 top-[var(--percentage)] -translate-x-1/2 -translate-y-1/2'}"
 			{...slider.thumb}

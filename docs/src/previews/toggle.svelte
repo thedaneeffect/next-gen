@@ -29,13 +29,14 @@
 	<div class="flex justify-center">
 		<button
 			class="relative size-16 rounded-xl bg-transparent
-				text-xl transition-all hover:cursor-pointer
-			  hover:bg-[var(--surface)] active:bg-[var(--surface-hover)] disabled:cursor-not-allowed"
+				text-xl ring-orange-300 transition-all
+			  hover:cursor-pointer hover:bg-stone-300/25 focus-visible:ring-1
+			  active:bg-stone-300/40 disabled:cursor-not-allowed"
 			{...toggle.trigger}
 			aria-label="toggle favourite"
 		>
 			<PhHeartFill
-				class="absolute left-1/2 top-1/2 z-10 origin-center -translate-x-1/2 -translate-y-1/2 text-orange-500"
+				class="absolute left-1/2 top-1/2 z-10 origin-center -translate-x-1/2 -translate-y-1/2 text-orange-200"
 				style="scale: {absScale}"
 			/>
 			<PhHeartBold

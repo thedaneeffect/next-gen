@@ -125,7 +125,7 @@
 										{@const mutedValue = scale.mutedColors.find((m) => m.step === step)?.value}
 										{#if mutedValue}
 											<div
-												class="h-6 w-8 rounded"
+												class="h-8 w-8 rounded"
 												style="background-color: {mutedValue}"
 												title="{scale.slug}-muted-{step}"
 											></div>
@@ -173,15 +173,15 @@
 						<p class="mb-2 text-xs font-semibold text-[var(--text-muted)]">CSS Variables</p>
 						<div
 							class="rounded-lg border p-3 text-sm"
-							style="background: var(--red-muted-200); color: var(--red-700); border-color: var(--red-muted-400)"
+							style="background: var(--red-200); color: var(--red-800); border-color: var(--red-400)"
 						>
 							<strong>Error:</strong> Something went wrong
 						</div>
 						<pre
 							class="mt-2 overflow-x-auto rounded bg-[var(--background)] p-3 text-[10px] text-[var(--text-muted)]"><code
-								>{`style="background: var(--red-muted-200); 
+								>{`style="background: var(--red-200); 
        color: var(--red-700); 
-       border-color: var(--red-muted-400)"`}</code
+       border-color: var(--red-400)"`}</code
 							></pre>
 					</div>
 
@@ -192,27 +192,27 @@
 						</p>
 						<div class="flex gap-2">
 							<span
-								class="inline-block rounded-full px-3 py-1 text-xs font-medium"
-								style="background: var(--green-muted-300); color: var(--green-700);"
+								class="inline-block rounded-md px-3 py-1 text-xs font-medium"
+								style="background: var(--green-300); color: var(--green-800);"
 							>
 								Success
 							</span>
 							<span
-								class="inline-block rounded-full px-3 py-1 text-xs font-medium"
-								style="background: var(--blue-muted-300); color: var(--blue-700);"
+								class="inline-block rounded-md px-3 py-1 text-xs font-medium"
+								style="background: var(--blue-300); color: var(--blue-800);"
 							>
 								Info
 							</span>
 							<span
-								class="inline-block rounded-full px-3 py-1 text-xs font-medium"
-								style="background: var(--yellow-muted-300); color: var(--yellow-700);"
+								class="inline-block rounded-md px-3 py-1 text-xs font-medium"
+								style="background: var(--yellow-300); color: var(--yellow-800);"
 							>
 								Warning
 							</span>
 						</div>
 						<pre
 							class="mt-2 overflow-x-auto rounded bg-[var(--background)] p-3 text-[10px] text-[var(--text-muted)]"><code
-								>{`style="background: var(--green-muted-300); color: var(--green-700)"`}</code
+								>{`style="background: var(--green-300); color: var(--green-800)"`}</code
 							></pre>
 					</div>
 				</div>

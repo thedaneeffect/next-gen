@@ -127,9 +127,11 @@
 		>
 			<div class="group py-1" style="padding-left: {depth * 1}rem">
 				<div
-					class="{item.selected ? 'bg-orange-500 text-gray-950' : 'group-hover:bg-[var(--surface)]'}
+					class="{item.selected
+						? 'bg-orange-500/50'
+						: 'group-hover:bg-stone-500/50 group-active:bg-stone-600/50'}
 				flex h-full w-full items-center gap-2 rounded-xl px-3
-				py-1 ring-orange-500 ring-offset-2 ring-offset-gray-950 transition"
+				py-1 text-stone-200 ring-orange-500 transition"
 				>
 					{@render treeItemIcon(item)}
 					<span class="select-none">
@@ -158,7 +160,7 @@
 					class="relative list-none p-0 {!item.expanded ? 'pointer-events-none' : ''} origin-left"
 				>
 					<div
-						class="absolute bottom-2 top-2 w-px bg-[var(--border-subtle)]"
+						class="absolute bottom-2 top-2 w-px bg-stone-700"
 						style="left: {0.5 + depth * 1}rem"
 					></div>
 					{@render treeItems(item.children, depth + 1)}

@@ -85,17 +85,17 @@
 <Preview>
 	<div class="mx-auto flex w-[300px] flex-col gap-1">
 		<label {...combobox.label}>Favorite Character</label>
-		<div class="relative text-left text-[var(--text)] transition">
+		<div class="relative text-left text-stone-200 transition">
 			<AlphabetJapanese class="abs-y-center absolute left-3 shrink-0" />
 			<input
 				{...combobox.input}
-				class="w-full rounded-xl border border-[var(--border)] bg-gray-950 py-2 pl-9 text-left
+				class="w-full rounded-xl border border-stone-700 bg-stone-900 py-2 pl-9 text-left
 					disabled:cursor-not-allowed disabled:opacity-50"
 				type="text"
 			/>
 			<button
 				class="abs-y-center absolute right-3 grid shrink-0 place-items-center rounded-md
-					bg-[var(--surface-hover)] hover:bg-[var(--surface-active)] active:bg-[var(--border)]"
+					bg-stone-700 hover:bg-stone-500 active:bg-stone-600"
 				{...combobox.trigger}
 			>
 				<ChevronDown />
@@ -112,14 +112,14 @@
 
 		<div
 			{...combobox.content}
-			class="flex max-h-96 flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow-lg"
+			class="flex max-h-96 flex-col rounded-xl border border-stone-700 bg-stone-800 p-2 shadow-lg"
 		>
 			{#each filtered as option (option)}
 				<div
 					{...combobox.getOption(option)}
 					class={[
-						"relative flex scroll-m-2 items-center justify-between rounded-xl py-2 pl-8 pr-2",
-						combobox.highlighted === option && "bg-[var(--surface-hover)]",
+						"relative flex scroll-m-2 items-center justify-between rounded-xl py-2 pl-8 pr-2 text-stone-200",
+						combobox.highlighted === option && "bg-stone-500/50",
 						combobox.value === option && "font-semibold",
 					]}
 				>

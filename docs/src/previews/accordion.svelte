@@ -57,12 +57,11 @@
 					<button
 						{...item.trigger}
 						class={[
-							"flex flex-1 cursor-pointer items-center justify-between bg-[var(--surface)] px-5 py-5 text-base font-medium leading-none text-[var(--text)] outline-none transition-colors",
+							"flex flex-1 cursor-pointer items-center justify-between bg-stone-800 px-5 py-5 text-base font-medium leading-none text-stone-200 outline-none transition-colors",
 							"outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-orange-500",
-							!item.isDisabled &&
-								"hover:bg-[var(--surface-hover)] active:bg-[var(--surface-active)]",
-							"disabled:cursor-not-allowed disabled:opacity-50",
-							!isLast && "border-b border-[var(--border-subtle)]",
+							!item.isDisabled && "hover:bg-stone-500/50 active:bg-stone-600/50",
+							"disabled:cursor-not-allowed disabled:bg-red-500 disabled:opacity-50",
+							!isLast && "border-b border-neutral-700",
 							isFirst && "rounded-t-xl",
 							isLast && !item.isExpanded && "rounded-b-xl",
 						]}
@@ -74,7 +73,7 @@
 				{#if item.isExpanded}
 					<div
 						{...item.content}
-						class="content overflow-hidden bg-[var(--background)] p-4 text-sm text-[var(--text-subtle)]"
+						class="content overflow-hidden bg-stone-900 p-4 text-sm text-stone-300"
 						transition:slide={{ duration: 250 }}
 					>
 						<div class="p-2">
