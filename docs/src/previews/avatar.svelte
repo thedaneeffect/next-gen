@@ -49,7 +49,7 @@
 	<div class="flex flex-col items-center">
 		<div class="flex w-full items-center justify-center gap-6">
 			<div
-				class="relative flex size-32 items-center justify-center overflow-hidden rounded-full bg-[var(--fg2)]"
+				class="relative flex size-32 items-center justify-center overflow-hidden rounded-full bg-gray-400"
 			>
 				<img
 					{...mergeAttrs(avatar.image, {
@@ -63,7 +63,7 @@
 						avatar.loadingStatus === "loaded" ? "fade-in" : "invisible",
 					]}
 				/>
-				<span {...avatar.fallback} class="!block text-4xl font-medium text-[var(--bg)]"
+				<span {...avatar.fallback} class="!block text-4xl font-medium text-gray-950"
 					>{initials}</span
 				>
 			</div>
@@ -73,13 +73,13 @@
 			contenteditable
 			id="gh"
 			class="w-auto border-b-2 border-[var(--border)] bg-transparent px-1 pb-1 text-center text-2xl font-light
-			text-[var(--text)] placeholder-[var(--text-muted)] outline-none transition focus:border-[var(--orange)]"
+		text-[var(--text)] placeholder-[var(--text-muted)] outline-none transition focus:border-orange-500"
 			bind:innerText={username}
 			spellcheck="false"
 		></span>
 		<span
 			class={[
-				"mt-2 text-[var(--red)]",
+				"mt-2 text-red-500",
 				avatar.loadingStatus !== "error" && "pointer-events-none opacity-0",
 			]}
 		>

@@ -271,7 +271,7 @@
 
 		<span class="menu-label">Danger Zone</span>
 		<button
-			class="menu-item text-[var(--red)] data-[highlighted]:bg-[var(--red-subtle)]"
+			class="menu-item text-red-500 data-[highlighted]:bg-red-500/10"
 			{...deleteFileItem.attrs}
 		>
 			Delete File

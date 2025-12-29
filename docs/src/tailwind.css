@@ -2,124 +2,39 @@
 @layer base, starlight, theme, components, utilities;
 
 @import "./styles/colors.css";
+@import "./styles/tailwind-neutrals.css";
+@import "./styles/tailwind-gruvbox.css";
+@import "./styles/tailwind-theme.css";
 @import "@astrojs/starlight-tailwind";
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @theme {
-	/* =========================================
-	 * Gray Scale (maps to Tailwind's gray-*)
-	 * Uses primitives from colors.css
-	 * ========================================= */
-	--color-gray-950: var(--bg-hard);
-	--color-gray-900: var(--bg);
-	--color-gray-800: var(--bg1);
-	--color-gray-700: var(--bg2);
-	--color-gray-600: var(--bg3);
-	--color-gray-500: var(--gray);
-	--color-gray-400: var(--fg4);
-	--color-gray-300: var(--fg3);
-	--color-gray-200: var(--fg2);
-	--color-gray-100: var(--fg1);
-	--color-gray-50: var(--fg);
+	/* Map accent-* to orange-* for component compatibility */
+	--color-accent-50: var(--orange-50);
+	--color-accent-100: var(--orange-100);
+	--color-accent-200: var(--orange-200);
+	--color-accent-300: var(--orange-300);
+	--color-accent-400: var(--orange-400);
+	--color-accent-500: var(--orange-500);
+	--color-accent-600: var(--orange-600);
+	--color-accent-700: var(--orange-700);
+	--color-accent-800: var(--orange-800);
+	--color-accent-900: var(--orange-900);
+	--color-accent-950: var(--orange-950);
 
-	/* =========================================
-	 * Accent Scale (Orange)
-	 * ========================================= */
-	--color-accent-950: #4a1801;
-	--color-accent-900: #6a2301;
-	--color-accent-800: #8a2e02;
-	--color-accent-700: var(--orange-dim);
-	--color-accent-600: #c35000;
-	--color-accent-500: var(--orange-dim);
-	--color-accent-400: var(--orange);
-	--color-accent-300: #feac6d;
-	--color-accent-200: #fec89a;
-
-	/* =========================================
-	 * Semantic: Structural
-	 * ========================================= */
-	--color-background: var(--bg);
-	--color-foreground: var(--fg1);
-	--color-muted: var(--bg2);
-	--color-muted-foreground: var(--fg4);
-	--color-border: var(--bg4);
-
-	/* =========================================
-	 * Semantic: Surfaces
-	 * ========================================= */
-	--color-card: var(--bg1);
-	--color-card-foreground: var(--fg1);
-	--color-popover: var(--bg1);
-	--color-popover-foreground: var(--fg1);
-
-	/* =========================================
-	 * Semantic: Primary (Orange)
-	 * ========================================= */
-	--color-primary: var(--orange);
-	--color-primary-foreground: var(--bg);
-	--color-primary-subtle: var(--orange-subtle);
-	--color-primary-muted: var(--orange-muted);
-
-	/* =========================================
-	 * Semantic: Secondary
-	 * ========================================= */
-	--color-secondary: var(--bg2);
-	--color-secondary-foreground: var(--fg1);
-
-	/* =========================================
-	 * Semantic: Accent (hover states)
-	 * ========================================= */
-	--color-accent: var(--bg3);
-	--color-accent-foreground: var(--fg1);
-
-	/* =========================================
-	 * Semantic: Destructive (Red)
-	 * ========================================= */
-	--color-destructive: var(--red);
-	--color-destructive-foreground: var(--bg);
-	--color-destructive-subtle: var(--red-subtle);
-	--color-destructive-muted: var(--red-muted);
-
-	/* =========================================
-	 * Semantic: Success (Green)
-	 * ========================================= */
-	--color-success: var(--green);
-	--color-success-foreground: var(--bg);
-	--color-success-subtle: var(--green-subtle);
-	--color-success-muted: var(--green-muted);
-
-	/* =========================================
-	 * Semantic: Warning (Yellow)
-	 * ========================================= */
-	--color-warning: var(--yellow);
-	--color-warning-foreground: var(--bg);
-	--color-warning-subtle: var(--yellow-subtle);
-	--color-warning-muted: var(--yellow-muted);
-
-	/* =========================================
-	 * Semantic: Info (Blue)
-	 * ========================================= */
-	--color-info: var(--blue);
-	--color-info-foreground: var(--bg);
-	--color-info-subtle: var(--blue-subtle);
-	--color-info-muted: var(--blue-muted);
-
-	/* =========================================
-	 * Focus / Input
-	 * ========================================= */
-	--color-ring: var(--orange);
-	--color-input: var(--bg3);
-
-	/* =========================================
-	 * Dark Mode Optimized Shadows
-	 * Higher opacity for visibility on dark backgrounds
-	 * ========================================= */
-	--shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-	--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.4);
-	--shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.6);
+	/* Map gray-* to stone-* for component compatibility */
+	--color-gray-50: var(--stone-50);
+	--color-gray-100: var(--stone-100);
+	--color-gray-200: var(--stone-200);
+	--color-gray-300: var(--stone-300);
+	--color-gray-400: var(--stone-400);
+	--color-gray-500: var(--stone-500);
+	--color-gray-600: var(--stone-600);
+	--color-gray-700: var(--stone-700);
+	--color-gray-800: var(--stone-800);
+	--color-gray-900: var(--stone-900);
+	--color-gray-950: var(--stone-950);
 }
 
 :root {
@@ -146,11 +61,11 @@
 }
 
 * {
-	outline-color: var(--color-accent-400);
+	outline-color: var(--orange-500);
 }
 
 :focus-visible:not(.outline-none) {
-	outline: 1px solid var(--color-accent-400);
+	outline: 1px solid var(--orange-500);
 	outline-offset: 1px;
 }
 
@@ -170,13 +85,13 @@
 	}
 
 	.btn-primary {
-		background: var(--orange);
-		color: var(--bg);
+		background: var(--orange-500);
+		color: var(--stone-950);
 		&:hover {
-			background: var(--orange-dim);
+			background: var(--orange-600);
 		}
 		&:active {
-			background: var(--orange-muted);
+			background: var(--orange-700);
 		}
 	}
 
@@ -204,13 +119,13 @@
 	}
 
 	.btn-destructive {
-		background: var(--red);
-		color: var(--bg);
+		background: var(--red-500);
+		color: var(--stone-950);
 		&:hover {
-			background: var(--red-dim);
+			background: var(--red-600);
 		}
 		&:active {
-			background: var(--red-muted);
+			background: var(--red-700);
 		}
 	}
 }

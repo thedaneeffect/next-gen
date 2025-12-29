@@ -35,14 +35,14 @@
 				: 'bottom-0 left-1/2 top-0 w-2 -translate-x-1/2'}"
 		>
 			<div
-				class="absolute inset-0 rounded-full bg-[var(--orange)] transition-all group-data-[dragging]:transition-none
-						{slider.orientation === 'horizontal' ? 'right-[var(--percentage-inv)]' : 'top-[var(--percentage)]'}"
+				class="absolute inset-0 rounded-full bg-orange-500 transition-all group-data-[dragging]:transition-none
+					{slider.orientation === 'horizontal' ? 'right-[var(--percentage-inv)]' : 'top-[var(--percentage)]'}"
 			></div>
 		</div>
 		<div
-			class="absolute size-6 rounded-md border border-[var(--bg)] bg-[var(--fg)] outline-none transition-all focus-visible:ring-1
-					focus-visible:ring-[var(--orange)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--bg)] data-[dragging]:transition-none
-					{slider.orientation === 'horizontal'
+			class="absolute size-6 rounded-md border border-gray-950 bg-gray-50 outline-none transition-all focus-visible:ring-1
+				focus-visible:ring-orange-500 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-950 data-[dragging]:transition-none
+				{slider.orientation === 'horizontal'
 				? 'left-[var(--percentage)] top-1/2 -translate-x-1/2 -translate-y-1/2'
 				: 'left-1/2 top-[var(--percentage)] -translate-x-1/2 -translate-y-1/2'}"
 			{...slider.thumb}

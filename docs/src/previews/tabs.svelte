@@ -93,9 +93,9 @@
 				>
 					<div
 						class="overflow-clip rounded-full px-4 py-1 transition
-						group-focus-visible:ring-1 group-focus-visible:ring-[var(--orange)]
-						group-focus-visible:ring-offset-2 group-[&:not([data-active]):hover]:bg-[var(--surface)] group-data-[active]:bg-[var(--orange)]
-						group-data-[active]:text-[var(--bg)]"
+						group-focus-visible:ring-1 group-focus-visible:ring-orange-500
+						group-focus-visible:ring-offset-2 group-[&:not([data-active]):hover]:bg-[var(--surface)] group-data-[active]:bg-orange-500
+						group-data-[active]:text-gray-950"
 					>
 						{id}
 					</div>

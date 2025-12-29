@@ -61,13 +61,13 @@
 							"grid h-6 w-6 place-items-center rounded-full border shadow-sm",
 							"hover:bg-[var(--surface)] data-[disabled=true]:bg-[var(--border)]",
 							item.checked
-								? "border-[var(--orange)] bg-[var(--orange)]"
+								? "border-orange-500 bg-orange-500"
 								: "border-[var(--border)] bg-[var(--surface)]",
 						]}
 					>
 						{#if item.checked}
 							<div
-								class={["h-3 w-3 rounded-full", item.checked && "bg-[var(--bg)]"]}
+								class={["h-3 w-3 rounded-full", item.checked && "bg-gray-950"]}
 								aria-hidden="true"
 							></div>
 						{/if}

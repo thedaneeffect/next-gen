@@ -36,7 +36,7 @@
 				{#if collapsible.open}
 					<div
 						{...collapsible.content}
-						class="mx-auto flex w-[calc(100%-32px)] flex-col gap-2 rounded-b-xl bg-[var(--bg)] p-4 text-[var(--text-subtle)]"
+						class="mx-auto flex w-[calc(100%-32px)] flex-col gap-2 rounded-b-xl bg-[var(--background)] p-4 text-[var(--text-subtle)]"
 						transition:slide
 					>
 						<span>melt-ui/melt-ui</span>

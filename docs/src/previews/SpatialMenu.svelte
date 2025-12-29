@@ -51,7 +51,7 @@
 		{...spatialMenu.root}
 	>
 		<label
-			class="w-64 border-b-2 border-[var(--border)] transition focus-within:border-[var(--orange)]"
+			class="w-64 border-b-2 border-[var(--border)] transition focus-within:border-orange-500"
 		>
 			<input
 				class="w-full bg-transparent text-[var(--text)] !outline-none"
@@ -92,7 +92,7 @@
 							<div
 								class={[
 									"relative overflow-hidden rounded-md outline-1 outline-offset-1 transition-all",
-									item.highlighted ? "outline-[var(--orange)]" : "!outline-transparent",
+									item.highlighted ? "outline-orange-500" : "!outline-transparent",
 									item.disabled ? "opacity-50" : "",
 								]}
 							>
@@ -122,7 +122,7 @@
 							<span
 								class={[
 									"text-center text-xs font-medium transition",
-									item.highlighted ? "text-[var(--orange)]" : "text-[var(--text)]",
+									item.highlighted ? "text-orange-500" : "text-[var(--text)]",
 								]}>{movie.title}</span
 							>
 						</div>

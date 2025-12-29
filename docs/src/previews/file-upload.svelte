@@ -63,10 +63,10 @@
 				flex-col items-center justify-center gap-4
 				rounded-xl border-2 border-dashed border-[var(--border)] bg-[var(--surface)]
 				p-6 text-center transition-colors hover:bg-[var(--surface-hover)]"
-			class:!border-[var(--orange)]={fileUpload.isDragging}
+			class:!border-orange-500={fileUpload.isDragging}
 		>
 			{#if fileUpload.isDragging}
-				<p class="font-medium text-[var(--orange)]">Drop files here</p>
+				<p class="font-medium text-orange-500">Drop files here</p>
 			{:else}
 				<div class="pointer-events-none flex flex-col items-center gap-2 text-[var(--text)]">
 					<UploadIcon class="text-4xl" />

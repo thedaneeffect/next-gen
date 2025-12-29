@@ -35,7 +35,7 @@
 			aria-label="toggle favourite"
 		>
 			<PhHeartFill
-				class="absolute left-1/2 top-1/2 z-10 origin-center -translate-x-1/2 -translate-y-1/2 text-[var(--orange)]"
+				class="absolute left-1/2 top-1/2 z-10 origin-center -translate-x-1/2 -translate-y-1/2 text-orange-500"
 				style="scale: {absScale}"
 			/>
 			<PhHeartBold

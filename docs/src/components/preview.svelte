@@ -58,7 +58,7 @@
 
 <div
 	class="not-content relative grid min-h-[500px] place-items-center overflow-clip rounded-2xl
-	border border-[var(--border-subtle)] bg-[var(--bg-hard)] {className}"
+	border border-[var(--border-subtle)] bg-[var(--surface)] {className}"
 >
 	<div class="w-full min-w-0 overflow-clip p-4">
 		{@render children()}
@@ -66,8 +66,8 @@
 
 	{#if !open && values}
 		<button
-			class="absolute bottom-4 left-4 z-10 cursor-pointer rounded-lg bg-[var(--gray)] px-2 py-1
-			text-sm text-[var(--bg)] transition hover:bg-[var(--surface-active)] active:bg-[var(--surface-hover)]"
+			class="absolute bottom-4 left-4 z-10 cursor-pointer rounded-lg bg-gray-400 px-2 py-1
+			text-sm text-gray-950 transition hover:bg-[var(--surface-active)] active:bg-[var(--surface-hover)]"
 			onclick={() => (open = !open)}
 			in:fix={(el) => fade(el, { delay: 300, duration: 200 })}
 			out:fade={{ duration: 100 }}
@@ -86,8 +86,8 @@
 			<div class="flex items-center justify-between">
 				<p class="text-xl font-bold text-[var(--text)]">Props</p>
 				<button
-					class="cursor-pointer rounded-lg bg-[var(--gray)] px-2 py-1 text-sm
-					text-[var(--bg)] transition hover:bg-[var(--surface-active)] active:bg-[var(--surface-hover)]"
+					class="cursor-pointer rounded-lg bg-gray-400 px-2 py-1 text-sm
+					text-gray-950 transition hover:bg-[var(--surface-active)] active:bg-[var(--surface-hover)]"
 					onclick={() => (open = !open)}
 				>
 					Close

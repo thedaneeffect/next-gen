@@ -97,12 +97,12 @@ const sections: Section[] = [
 							// @ts-ignore
 							section.stuff.map((entry) => (
 								<li class="relative !mt-8 list-none py-0 pl-6">
-									<div class="absolute left-0 top-0 h-full w-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700/50" />
+									<div class="absolute left-0 top-0 h-full w-1.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700/50" />
 									<h4 class="flex items-baseline gap-2 !text-lg">
-										<span class="bg-accent-200/50 dark:bg-accent-950 dark:text-accent-200 rounded-lg px-2 py-0.5 font-mono font-normal">
+										<span class="bg-orange-200/50 dark:bg-orange-950 dark:text-orange-200 rounded-lg px-2 py-0.5 font-mono font-normal">
 											{entry.name}
 										</span>
-										<span class="font-light italic text-gray-400">
+										<span class="font-light italic text-stone-400">
 											{"optional" in entry && entry.optional ? "(optional)" : ""}
 										</span>
 									</h4>
@@ -117,7 +117,7 @@ const sections: Section[] = [
 										)}
 									</div>
 									{"defaultValue" in entry && entry.defaultValue && (
-										<div class="dark:text-gray-300">
+										<div class="dark:text-stone-300">
 											<i>Default:</i> <ThemedCode code={entry.defaultValue} inline />
 										</div>
 									)}

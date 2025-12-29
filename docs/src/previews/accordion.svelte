@@ -58,7 +58,7 @@
 						{...item.trigger}
 						class={[
 							"flex flex-1 cursor-pointer items-center justify-between bg-[var(--surface)] px-5 py-5 text-base font-medium leading-none text-[var(--text)] outline-none transition-colors",
-							"outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[var(--orange)]",
+							"outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-orange-500",
 							!item.isDisabled &&
 								"hover:bg-[var(--surface-hover)] active:bg-[var(--surface-active)]",
 							"disabled:cursor-not-allowed disabled:opacity-50",
@@ -74,7 +74,7 @@
 				{#if item.isExpanded}
 					<div
 						{...item.content}
-						class="content overflow-hidden bg-[var(--bg)] p-4 text-sm text-[var(--text-subtle)]"
+						class="content overflow-hidden bg-[var(--background)] p-4 text-sm text-[var(--text-subtle)]"
 						transition:slide={{ duration: 250 }}
 					>
 						<div class="p-2">

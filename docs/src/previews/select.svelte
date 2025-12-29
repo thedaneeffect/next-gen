@@ -66,7 +66,7 @@
 				>
 					<span>{option.label}</span>
 					{#if select.isSelected(option.value)}
-						<Check class="font-bold text-[var(--orange)]" />
+						<Check class="font-bold text-orange-500" />
 					{/if}
 				</div>
 			{/each}

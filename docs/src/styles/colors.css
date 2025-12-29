@@ -1,99 +1,68 @@
 /* ===========================================
- * Melt UI Color Primitives
- * Based on Gruvbox palette
+ * Tailwind Gruvbox Edition - Semantic Tokens
+ * Optional convenience aliases
+ * Uses Tailwind-compatible naming (50-950)
  * =========================================== */
 
 :root {
-	/* -----------------------------------------
-	 * Backgrounds (dark → light)
-	 * ----------------------------------------- */
-	--bg-hard: #1d2021;
-	--bg: #282828;
-	--bg-soft: #32302f;
-	--bg1: #3c3836;
-	--bg2: #504945;
-	--bg3: #665c54;
-	--bg4: #7c6f64;
-
-	/* -----------------------------------------
-	 * Foregrounds (light → dark)
-	 * ----------------------------------------- */
-	--fg: #fbf1c7;
-	--fg1: #ebdbb2;
-	--fg2: #d5c4a1;
-	--fg3: #bdae93;
-	--fg4: #a89984;
-
-	/* -----------------------------------------
-	 * Gray (neutral middle)
-	 * ----------------------------------------- */
-	--gray: #928374;
-
-	/* -----------------------------------------
-	 * Accent Colors - Bright (dark mode primary)
-	 * ----------------------------------------- */
-	--red: #fb4934;
-	--green: #b8bb26;
-	--yellow: #fabd2f;
-	--blue: #83a598;
-	--purple: #d3869b;
-	--aqua: #8ec07c;
-	--orange: #fe8019;
-
-	/* -----------------------------------------
-	 * Accent Colors - Dim (light mode / emphasis)
-	 * ----------------------------------------- */
-	--red-dim: #cc241d;
-	--green-dim: #98971a;
-	--yellow-dim: #d79921;
-	--blue-dim: #458588;
-	--purple-dim: #b16286;
-	--aqua-dim: #689d6a;
-	--orange-dim: #d65d0e;
-
-	/* -----------------------------------------
-	 * Accent Colors - Subtle (15% mix with bg)
-	 * For subtle backgrounds
-	 * ----------------------------------------- */
-	--red-subtle: #47302a;
-	--green-subtle: #3d3b2b;
-	--yellow-subtle: #453c2c;
-	--blue-subtle: #353937;
-	--purple-subtle: #3f3537;
-	--aqua-subtle: #363c34;
-	--orange-subtle: #473529;
-
-	/* -----------------------------------------
-	 * Accent Colors - Muted (40% mix with bg)
-	 * For borders, separators
-	 * ----------------------------------------- */
-	--red-muted: #7a392e;
-	--green-muted: #5f5e2f;
-	--yellow-muted: #775e31;
-	--blue-muted: #4b5752;
-	--purple-muted: #684c53;
-	--aqua-muted: #4f6048;
-	--orange-muted: #7a4929;
-
 	/* =========================================
-	 * Theme-Aware Semantic Tokens (Dark Mode)
+	 * Semantic Tokens
+	 * Optional convenience aliases - use these or raw Tailwind colors
 	 * ========================================= */
 
+	/* Backgrounds */
+	--background: var(--stone-950);
+	--background-elevated: var(--stone-900);
+	--background-overlay: var(--stone-800);
+
 	/* Surfaces - for cards, dialogs, popovers */
-	--surface: var(--bg1);
-	--surface-hover: var(--bg2);
-	--surface-active: var(--bg3);
+	--surface: var(--stone-800);
+	--surface-hover: var(--stone-700);
+	--surface-active: var(--stone-600);
 
 	/* Text hierarchy */
-	--text: var(--fg1);
-	--text-muted: var(--fg4);
-	--text-subtle: var(--fg3);
+	--text: var(--stone-50);
+	--text-muted: var(--stone-400);
+	--text-subtle: var(--stone-300);
 
 	/* Borders */
-	--border: var(--bg4);
-	--border-subtle: var(--bg3);
+	--border: var(--stone-700);
+	--border-subtle: var(--stone-800);
 
 	/* Input fields */
-	--input-bg: var(--bg2);
-	--input-border: var(--bg4);
+	--input-bg: var(--stone-900);
+	--input-border: var(--stone-700);
+	--input-focus: var(--orange-500);
+
+	/* Primary action (Orange) */
+	--primary: var(--orange-500);
+	--primary-hover: var(--orange-600);
+	--primary-active: var(--orange-700);
+	--primary-text: var(--stone-950);
+
+	/* Destructive action (Red) */
+	--destructive: var(--red-500);
+	--destructive-hover: var(--red-600);
+	--destructive-text: var(--stone-950);
+
+	/* Success (Green) */
+	--success: var(--green-500);
+	--success-bg: var(--green-200);
+	--success-text: var(--green-700);
+
+	/* Warning (Yellow) */
+	--warning: var(--yellow-500);
+	--warning-bg: var(--yellow-200);
+	--warning-text: var(--yellow-800);
+
+	/* Info (Blue) */
+	--info: var(--blue-500);
+	--info-bg: var(--blue-200);
+	--info-text: var(--blue-700);
+
+	/* Shadows */
+	--shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+	--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.4);
 }

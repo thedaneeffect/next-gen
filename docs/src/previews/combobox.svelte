@@ -89,7 +89,7 @@
 			<AlphabetJapanese class="abs-y-center absolute left-3 shrink-0" />
 			<input
 				{...combobox.input}
-				class="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] py-2 pl-9 text-left
+				class="w-full rounded-xl border border-[var(--border)] bg-gray-950 py-2 pl-9 text-left
 					disabled:cursor-not-allowed disabled:opacity-50"
 				type="text"
 			/>
@@ -125,7 +125,7 @@
 				>
 					<span>{option}</span>
 					{#if combobox.isSelected(option)}
-						<Check class="font-bold text-[var(--orange)]" />
+						<Check class="font-bold text-orange-500" />
 					{/if}
 				</div>
 			{:else}

@@ -96,16 +96,13 @@
 					<div class="absolute bottom-4 right-4 h-[4px] w-[30px] overflow-hidden rounded-full">
 						<Progress value={toast.percentage}>
 							{#snippet children(progress)}
-								<div
-									{...progress.root}
-									class="relative h-full w-full overflow-hidden bg-[var(--bg)]"
-								>
+								<div {...progress.root} class="relative h-full w-full overflow-hidden bg-gray-950">
 									<div
 										{...progress.progress}
 										class="h-full w-full -translate-x-[var(--progress)]"
-										class:bg-[var(--green)]={toast.data.variant === "success"}
-										class:bg-[var(--orange)]={toast.data.variant === "warning"}
-										class:bg-[var(--red)]={toast.data.variant === "error"}
+										class:bg-green-500={toast.data.variant === "success"}
+										class:bg-orange-500={toast.data.variant === "warning"}
+										class:bg-red-500={toast.data.variant === "error"}
 									></div>
 								</div>
 							{/snippet}
