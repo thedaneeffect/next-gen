@@ -741,7 +741,6 @@ export class ContextMenu {
 					if (this.scrollBehavior === "close") {
 						this.close();
 					} else {
-						console.log(e);
 						e.preventDefault();
 					}
 					return;
@@ -751,11 +750,9 @@ export class ContextMenu {
 				const scrollableEl = findScrollableAncestor(target, menuContent);
 
 				if (!scrollableEl) {
-					console.log(e);
 					// Can't scroll - prevent page scroll
 					e.preventDefault();
 				} else {
-					console.log(scrollableEl.scrollTop);
 					// Can scroll - close submenus of the scrolled menu
 					if (menuContent === this.#contentEl) {
 						for (const child of this.#children) {

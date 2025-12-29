@@ -193,7 +193,7 @@
 	<!-- Main Menu Content -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content max-h-64 min-w-44 overflow-y-auto rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
+		class="menu-content max-h-53"
 		{...menu.content}
 	>
 		<button class="menu-item" {...undoItem.attrs}>
@@ -270,10 +270,7 @@
 		<hr class="separator" {...menu.separator} />
 
 		<span class="menu-label">Danger Zone</span>
-		<button
-			class="menu-item text-red-500 data-[highlighted]:bg-red-500/10"
-			{...deleteFileItem.attrs}
-		>
+		<button class="menu-item !text-red-500 data-[highlighted]:!bg-red-900/50" {...deleteFileItem.attrs}>
 			Delete File
 			<span class="shortcut">&#8984;&#9003;</span>
 		</button>
@@ -282,10 +279,7 @@
 	<!-- ===================================================================== -->
 	<!-- Paste Special Submenu -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content min-w-40 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
-		{...pasteSpecialSubmenu.content}
-	>
+	<div class="menu-content" {...pasteSpecialSubmenu.content}>
 		<button class="menu-item" {...pastePlainTextItem.attrs}>Paste as Plain Text</button>
 		<button class="menu-item" {...pasteAsQuoteItem.attrs}>Paste as Quote</button>
 		<button class="menu-item" {...pasteMatchStyleItem.attrs}>Paste and Match Style</button>
@@ -295,7 +289,7 @@
 	<!-- Find & Replace Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-36 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
+		class="menu-content"
 		{...findReplaceSubmenu.content}
 	>
 		<button class="menu-item" {...findItem.attrs}>
@@ -318,7 +312,7 @@
 	<!-- Transform Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content max-h-40 min-w-40 overflow-y-auto rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
+		class="menu-content"
 		{...transformSubmenu.content}
 	>
 		<button class="menu-item" {...uppercaseItem.attrs}>UPPERCASE</button>
@@ -346,7 +340,7 @@
 	<!-- Sort Lines Submenu (nested in Transform) -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-28 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
+		class="menu-content"
 		{...sortLinesSubmenu.content}
 	>
 		<button class="menu-item" {...sortAZItem.attrs}>A → Z</button>
@@ -358,7 +352,7 @@
 	<!-- Insert Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-36 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
+		class="menu-content"
 		{...insertSubmenu.content}
 	>
 		<button class="menu-item" {...insertDateTimeItem.attrs}>Date & Time</button>
@@ -377,7 +371,7 @@
 	<!-- Snippet Submenu (nested in Insert) -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content max-h-32 min-w-36 overflow-y-auto rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
+		class="menu-content"
 		{...snippetSubmenu.content}
 	>
 		<button class="menu-item" {...loremIpsumItem.attrs}>Lorem Ipsum</button>
@@ -394,7 +388,7 @@
 	<!-- Share Submenu -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-32 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
+		class="menu-content"
 		{...shareSubmenu.content}
 	>
 		<button class="menu-item" {...copyLinkItem.attrs}>Copy Link</button>
@@ -414,7 +408,7 @@
 	<!-- Social Submenu (nested in Share) -->
 	<!-- ===================================================================== -->
 	<div
-		class="menu-content min-w-28 rounded-sm border border-stone-700 bg-stone-800 p-0.5 shadow-lg outline-none"
+		class="menu-content"
 		{...socialSubmenu.content}
 	>
 		<button class="menu-item" {...twitterItem.attrs}>Twitter</button>
@@ -433,6 +427,11 @@
 		--submenu-offset-x: 0px;
 		--submenu-offset-y: -3px; /* padding (2px) + border (1px) */
 
+		width:fit-content;
+		background: var(--color-stone-800);
+		border:1px solid var(--color-stone-700);
+		border-radius:var(--radius-sm);
+		outline:none;
 		position: fixed;
 		opacity: 0;
 		transform: scale(0.95);

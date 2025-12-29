@@ -127,11 +127,10 @@
 		>
 			<div class="group py-1" style="padding-left: {depth * 1}rem">
 				<div
-					class="{item.selected
-						? 'bg-orange-500/50'
-						: 'group-hover:bg-stone-500/50 group-active:bg-stone-600/50'}
+					class="{item.selected ? '!bg-orange-500 !text-white' : ''}
 				flex h-full w-full items-center gap-2 rounded-xl px-3
-				py-1 text-stone-200 ring-orange-500 transition"
+				py-1 text-stone-200 ring-orange-400 ring-offset-1 ring-offset-stone-900 transition
+				group-hover:bg-stone-700 group-active:bg-stone-600"
 				>
 					{@render treeItemIcon(item)}
 					<span class="select-none">

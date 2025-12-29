@@ -78,7 +78,7 @@
 
 	{#if values}
 		<div
-			class="bg-[var(--surface)]/80 absolute bottom-2 left-2 top-2 z-50 w-[200px] rounded-xl border
+			class="bg-[var(--surface)] absolute bottom-2 left-2 top-2 z-50 w-[200px] rounded-xl border
 			border-[var(--border-subtle)] p-3 shadow-xl backdrop-blur-xl"
 			data-preview
 			data-open={open}
