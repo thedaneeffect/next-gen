@@ -192,10 +192,7 @@
 	<!-- ===================================================================== -->
 	<!-- Main Menu Content -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content max-h-53"
-		{...menu.content}
-	>
+	<div class="menu-content max-h-53" {...menu.content}>
 		<button class="menu-item" {...undoItem.attrs}>
 			Undo
 			<span class="shortcut">&#8984;Z</span>
@@ -270,7 +267,10 @@
 		<hr class="separator" {...menu.separator} />
 
 		<span class="menu-label">Danger Zone</span>
-		<button class="menu-item !text-red-500 data-[highlighted]:!bg-red-900/50" {...deleteFileItem.attrs}>
+		<button
+			class="menu-item !text-red-500 data-[highlighted]:!bg-red-900/50"
+			{...deleteFileItem.attrs}
+		>
 			Delete File
 			<span class="shortcut">&#8984;&#9003;</span>
 		</button>
@@ -288,10 +288,7 @@
 	<!-- ===================================================================== -->
 	<!-- Find & Replace Submenu -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content"
-		{...findReplaceSubmenu.content}
-	>
+	<div class="menu-content" {...findReplaceSubmenu.content}>
 		<button class="menu-item" {...findItem.attrs}>
 			Find
 			<span class="shortcut">&#8984;F</span>
@@ -311,10 +308,7 @@
 	<!-- ===================================================================== -->
 	<!-- Transform Submenu -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content"
-		{...transformSubmenu.content}
-	>
+	<div class="menu-content" {...transformSubmenu.content}>
 		<button class="menu-item" {...uppercaseItem.attrs}>UPPERCASE</button>
 		<button class="menu-item" {...lowercaseItem.attrs}>lowercase</button>
 		<button class="menu-item" {...titleCaseItem.attrs}>Title Case</button>
@@ -339,10 +333,7 @@
 	<!-- ===================================================================== -->
 	<!-- Sort Lines Submenu (nested in Transform) -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content"
-		{...sortLinesSubmenu.content}
-	>
+	<div class="menu-content" {...sortLinesSubmenu.content}>
 		<button class="menu-item" {...sortAZItem.attrs}>A → Z</button>
 		<button class="menu-item" {...sortZAItem.attrs}>Z → A</button>
 		<button class="menu-item" {...sortByLengthItem.attrs}>By Length</button>
@@ -351,10 +342,7 @@
 	<!-- ===================================================================== -->
 	<!-- Insert Submenu -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content"
-		{...insertSubmenu.content}
-	>
+	<div class="menu-content" {...insertSubmenu.content}>
 		<button class="menu-item" {...insertDateTimeItem.attrs}>Date & Time</button>
 		<button class="menu-item" {...insertFilePathItem.attrs}>File Path</button>
 		<button class="menu-item" {...insertUUIDItem.attrs}>UUID</button>
@@ -370,10 +358,7 @@
 	<!-- ===================================================================== -->
 	<!-- Snippet Submenu (nested in Insert) -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content"
-		{...snippetSubmenu.content}
-	>
+	<div class="menu-content" {...snippetSubmenu.content}>
 		<button class="menu-item" {...loremIpsumItem.attrs}>Lorem Ipsum</button>
 		<button class="menu-item" {...mitLicenseItem.attrs}>MIT License</button>
 		<button class="menu-item" {...apacheLicenseItem.attrs}>Apache License</button>
@@ -387,10 +372,7 @@
 	<!-- ===================================================================== -->
 	<!-- Share Submenu -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content"
-		{...shareSubmenu.content}
-	>
+	<div class="menu-content" {...shareSubmenu.content}>
 		<button class="menu-item" {...copyLinkItem.attrs}>Copy Link</button>
 		<button class="menu-item" {...emailItem.attrs}>Email</button>
 		<button class="menu-item" {...messagesItem.attrs}>Messages</button>
@@ -407,10 +389,7 @@
 	<!-- ===================================================================== -->
 	<!-- Social Submenu (nested in Share) -->
 	<!-- ===================================================================== -->
-	<div
-		class="menu-content"
-		{...socialSubmenu.content}
-	>
+	<div class="menu-content" {...socialSubmenu.content}>
 		<button class="menu-item" {...twitterItem.attrs}>Twitter</button>
 		<button class="menu-item" {...linkedinItem.attrs}>LinkedIn</button>
 		<button class="menu-item" {...mastodonItem.attrs}>Mastodon</button>
@@ -427,11 +406,11 @@
 		--submenu-offset-x: 0px;
 		--submenu-offset-y: -3px; /* padding (2px) + border (1px) */
 
-		width:fit-content;
+		width: fit-content;
 		background: var(--color-stone-800);
-		border:1px solid var(--color-stone-700);
-		border-radius:var(--radius-sm);
-		outline:none;
+		border: 1px solid var(--color-stone-700);
+		border-radius: var(--radius-sm);
+		outline: none;
 		position: fixed;
 		opacity: 0;
 		transform: scale(0.95);
@@ -497,16 +476,12 @@
 		color: rgb(231 229 228); /* text-stone-200 */
 	}
 
-	.menu-item:hover {
-		background-color: rgb(120 113 108 / 0.5); /* hover:bg-stone-500/50 */
+	.menu-item[data-highlighted] {
+		background-color: rgb(120 113 108 / 0.5); /* bg-stone-500/50 */
 	}
 
 	.menu-item:active {
 		background-color: rgb(87 83 78 / 0.5); /* active:bg-stone-600/50 */
-	}
-
-	.menu-item[data-highlighted] {
-		background-color: rgb(120 113 108 / 0.5); /* bg-stone-500/50 */
 	}
 
 	.menu-item[data-disabled] {
