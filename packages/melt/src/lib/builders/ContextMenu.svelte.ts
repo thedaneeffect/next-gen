@@ -1294,8 +1294,19 @@ export class ContextMenuSub {
 	// Trigger element management
 	// -------------------------------------------------------------------------
 
+	#triggerDetach: (() => void) | void | null = null;
+
 	setTriggerEl(el: HTMLElement | null) {
-		// No-op: refs are now managed automatically via attachments
+		// Clean up previous trigger
+		if (this.#triggerDetach) {
+			this.#triggerDetach();
+			this.#triggerDetach = null;
+		}
+
+		// Attach new trigger
+		if (el) {
+			this.#triggerDetach = this.refs.attach("trigger")(el);
+		}
 	}
 
 	get contentSide(): "left" | "right" {
