@@ -159,6 +159,7 @@ export class Dialog {
 			on(node, "click", (e) => {
 				if (e.target === node && this.closeOnOutsideClick) {
 					this.open = false;
+					e.stopPropagation();
 				}
 			}),
 
