@@ -3,6 +3,7 @@ import type { MaybeGetter } from "$lib/types";
 import { dataAttr } from "$lib/utils/attribute";
 import { extract } from "$lib/utils/extract";
 import { createBuilderMetadata } from "$lib/utils/identifiers";
+import { useScrollLock } from "$lib/utils/scroll-lock.svelte";
 import { on } from "svelte/events";
 import { createAttachmentKey, type Attachment } from "svelte/attachments";
 import type { HTMLAttributes } from "svelte/elements";
@@ -145,16 +146,7 @@ export class Dialog {
 		});
 
 		// Prevent body scroll when open
-		$effect(() => {
-			if (!this.open || this.scrollBehavior !== "prevent") return;
-
-			const originalOverflow = document.body.style.overflow;
-			document.body.style.overflow = "hidden";
-
-			return () => {
-				document.body.style.overflow = originalOverflow;
-			};
-		});
+		useScrollLock(this.open && this.scrollBehavior === "prevent");
 
 		// Focus management - return focus to trigger on close
 		$effect(() => {
