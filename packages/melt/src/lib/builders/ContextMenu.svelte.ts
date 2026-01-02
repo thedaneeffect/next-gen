@@ -593,9 +593,6 @@ export class ContextMenu {
 	// Trigger
 	// -------------------------------------------------------------------------
 
-	#triggerAttachmentKey = createAttachmentKey();
-	#triggerAttachment: Attachment<HTMLElement> = this.refs.attach("trigger");
-
 	get trigger() {
 		return {
 			[dataAttrs.trigger]: "",
@@ -605,7 +602,7 @@ export class ContextMenu {
 				this.#virtualAnchor = createVirtualAnchor(e.clientX, e.clientY);
 				this.open = true;
 			},
-			[this.#triggerAttachmentKey]: this.#triggerAttachment,
+			[this.refs.key]: this.refs.attach("trigger"),
 		} as const satisfies HTMLAttributes<HTMLElement>;
 	}
 
@@ -615,8 +612,6 @@ export class ContextMenu {
 
 	#contentAttachmentKey = createAttachmentKey();
 	#contentAttachment: Attachment<HTMLElement> = (node) => {
-		const detachRef = this.refs.attach("content")(node);
-
 		// Floating UI positioning
 		$effect(() => {
 			if (!this.open || !this.#virtualAnchor || !this.refs.get("content")) return;
@@ -829,7 +824,6 @@ export class ContextMenu {
 
 		return () => {
 			offs.forEach((off) => off());
-			detachRef?.();
 		};
 	};
 
@@ -892,6 +886,7 @@ export class ContextMenu {
 				this.#scheduleClose();
 			},
 			[this.#contentAttachmentKey]: this.#contentAttachment,
+			[this.refs.key]: this.refs.attach("content"),
 		} as const satisfies HTMLAttributes<HTMLElement>;
 	}
 
@@ -1346,8 +1341,6 @@ export class ContextMenuSub {
 
 	#contentAttachmentKey = createAttachmentKey();
 	#contentAttachment: Attachment<HTMLElement> = (node) => {
-		const detachRef = this.refs.attach("content")(node);
-
 		// Floating UI positioning
 		$effect(() => {
 			if (!this.open || !this.refs.get("trigger") || !this.refs.get("content")) return;
@@ -1403,9 +1396,7 @@ export class ContextMenuSub {
 			}
 		});
 
-		return () => {
-			detachRef?.();
-		};
+		return;
 	};
 
 	get content() {
@@ -1444,6 +1435,7 @@ export class ContextMenuSub {
 				this.scheduleClose();
 			},
 			[this.#contentAttachmentKey]: this.#contentAttachment,
+			[this.refs.key]: this.refs.attach("content"),
 		} as const satisfies HTMLAttributes<HTMLElement>;
 	}
 
