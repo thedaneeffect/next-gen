@@ -1558,8 +1558,8 @@
         "description": ""
       },
       {
-        "name": "triggerEl",
-        "type": "HTMLElement | null",
+        "name": "refs",
+        "type": "{\n  get: (\n    key: \"trigger\" | \"content\" | \"title\" | \"description\" | \"close\",\n  ) => HTMLElement | undefined\n  attach: (\n    key: \"trigger\" | \"content\" | \"title\" | \"description\" | \"close\",\n  ) => Attachment<HTMLElement>\n  key: any\n}",
         "description": ""
       },
       {
@@ -1569,13 +1569,13 @@
       },
       {
         "name": "trigger",
-        "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-dialog-trigger\": \"\"\n  readonly \"aria-haspopup\": \"dialog\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-controls\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
+        "type": "{\n  readonly [x: number]: Attachment<HTMLElement>\n  readonly \"data-melt-dialog-trigger\": \"\"\n  readonly \"aria-haspopup\": \"dialog\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-controls\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
         "description": "The spread attributes for the trigger button."
       },
       {
         "name": "content",
-        "type": "{\n  readonly [x: symbol]: Attachment<HTMLDialogElement>\n  readonly \"data-melt-dialog-content\": \"\"\n  readonly id: string\n  readonly role: \"dialog\"\n  readonly \"aria-modal\": true\n  readonly \"aria-labelledby\": string\n  readonly \"aria-describedby\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n}",
-        "description": "The spread attributes for the dialog content element.\nShould be used on a `<dialog>` element."
+        "type": "{\n  readonly [x: number]: Attachment<HTMLDialogElement>\n  readonly \"data-melt-dialog-content\": \"\"\n  readonly id: string\n  readonly role: \"dialog\"\n  readonly \"aria-modal\": true\n  readonly \"aria-labelledby\": string\n  readonly \"aria-describedby\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n}",
+        "description": ""
       },
       {
         "name": "close",
@@ -1743,6 +1743,11 @@
       {
         "name": "ids",
         "type": "{\n  item: string\n  trigger: string\n  content: string\n  separator: string\n  label: string\n  \"sub-trigger\": string\n  \"sub-content\": string\n}",
+        "description": ""
+      },
+      {
+        "name": "refs",
+        "type": "any",
         "description": ""
       },
       {
@@ -2192,8 +2197,8 @@
         "description": ""
       },
       {
-        "name": "triggerEl",
-        "type": "HTMLElement | null",
+        "name": "refs",
+        "type": "{\n  get: (\n    key: \"trigger\" | \"content\" | \"title\" | \"description\" | \"cancel\" | \"action\",\n  ) => HTMLElement | undefined\n  attach: (\n    key: \"trigger\" | \"content\" | \"title\" | \"description\" | \"cancel\" | \"action\",\n  ) => Attachment<HTMLElement>\n  key: any\n}",
         "description": ""
       },
       {
@@ -2203,12 +2208,12 @@
       },
       {
         "name": "trigger",
-        "type": "{\n  readonly [x: symbol]: Attachment<HTMLElement>\n  readonly \"data-melt-alert-dialog-trigger\": \"\"\n  readonly \"aria-haspopup\": \"dialog\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-controls\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
+        "type": "{\n  readonly [x: number]: Attachment<HTMLElement>\n  readonly \"data-melt-alert-dialog-trigger\": \"\"\n  readonly \"aria-haspopup\": \"dialog\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-controls\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n  readonly onclick: () => void\n}",
         "description": "The spread attributes for the trigger button."
       },
       {
         "name": "content",
-        "type": "{\n  readonly [x: symbol]: Attachment<HTMLDialogElement>\n  readonly \"data-melt-alert-dialog-content\": \"\"\n  readonly id: string\n  readonly role: \"alertdialog\"\n  readonly \"aria-modal\": true\n  readonly \"aria-labelledby\": string\n  readonly \"aria-describedby\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n}",
+        "type": "{\n  readonly [x: number]: Attachment<HTMLDialogElement>\n  readonly \"data-melt-alert-dialog-content\": \"\"\n  readonly id: string\n  readonly role: \"alertdialog\"\n  readonly \"aria-modal\": true\n  readonly \"aria-labelledby\": string\n  readonly \"aria-describedby\": string\n  readonly \"data-state\": \"open\" | \"closed\"\n}",
         "description": "The spread attributes for the alert dialog content element.\nShould be used on a `<dialog>` element."
       },
       {

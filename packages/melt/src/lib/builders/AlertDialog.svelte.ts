@@ -7,7 +7,7 @@ import { on } from "svelte/events";
 import { createAttachmentKey, type Attachment } from "svelte/attachments";
 import type { HTMLAttributes } from "svelte/elements";
 
-const { dataAttrs, createIds } = createBuilderMetadata("alert-dialog", [
+const { dataAttrs, createIds, createReferences } = createBuilderMetadata("alert-dialog", [
 	"trigger",
 	"content",
 	"cancel",
@@ -68,7 +68,7 @@ export class AlertDialog {
 	/* State */
 	#open: Synced<boolean>;
 	ids = $state(createIds());
-	triggerEl: HTMLElement | null = $state(null);
+	refs = createReferences();
 
 	constructor(props: AlertDialogProps = {}) {
 		this.#props = props;
@@ -90,17 +90,6 @@ export class AlertDialog {
 		this.#open.current = value;
 	}
 
-	/* Trigger attachment */
-	#triggerAttachmentKey = createAttachmentKey();
-	#triggerAttachment: Attachment<HTMLElement> = (node) => {
-		this.triggerEl = node;
-		return () => {
-			if (this.triggerEl === node) {
-				this.triggerEl = null;
-			}
-		};
-	};
-
 	/**
 	 * The spread attributes for the trigger button.
 	 */
@@ -114,7 +103,7 @@ export class AlertDialog {
 			onclick: () => {
 				this.open = true;
 			},
-			[this.#triggerAttachmentKey]: this.#triggerAttachment,
+			[this.refs.key]: this.refs.attach("trigger"),
 		} as const satisfies HTMLAttributes<HTMLButtonElement>;
 	}
 
@@ -142,7 +131,7 @@ export class AlertDialog {
 			if (this.open) return;
 
 			// Dialog just closed, return focus to trigger
-			this.triggerEl?.focus();
+			this.refs.get("trigger")?.focus();
 		});
 
 		// Event listeners
@@ -182,6 +171,7 @@ export class AlertDialog {
 			"aria-describedby": this.ids.description,
 			"data-state": this.open ? "open" : "closed",
 			[this.#contentAttachmentKey]: this.#contentAttachment,
+			[this.refs.key]: this.refs.attach("content"),
 		} as const satisfies HTMLAttributes<HTMLDialogElement>;
 	}
 

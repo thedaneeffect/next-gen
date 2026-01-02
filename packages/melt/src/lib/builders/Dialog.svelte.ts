@@ -8,7 +8,7 @@ import { on } from "svelte/events";
 import { createAttachmentKey, type Attachment } from "svelte/attachments";
 import type { HTMLAttributes } from "svelte/elements";
 
-const { dataAttrs, createIds } = createBuilderMetadata("dialog", [
+const { dataAttrs, createIds, createReferences } = createBuilderMetadata("dialog", [
 	"trigger",
 	"content",
 	"close",
@@ -79,7 +79,7 @@ export class Dialog {
 	/* State */
 	#open: Synced<boolean>;
 	ids = $state(createIds());
-	triggerEl: HTMLElement | null = $state(null);
+	refs = createReferences();
 
 	constructor(props: DialogProps = {}) {
 		this.#props = props;
@@ -101,17 +101,6 @@ export class Dialog {
 		this.#open.current = value;
 	}
 
-	/* Trigger attachment */
-	#triggerAttachmentKey = createAttachmentKey();
-	#triggerAttachment: Attachment<HTMLElement> = (node) => {
-		this.triggerEl = node;
-		return () => {
-			if (this.triggerEl === node) {
-				this.triggerEl = null;
-			}
-		};
-	};
-
 	/**
 	 * The spread attributes for the trigger button.
 	 */
@@ -125,7 +114,7 @@ export class Dialog {
 			onclick: () => {
 				this.open = true;
 			},
-			[this.#triggerAttachmentKey]: this.#triggerAttachment,
+			[this.refs.key]: this.refs.attach("trigger"),
 		} as const satisfies HTMLAttributes<HTMLButtonElement>;
 	}
 
@@ -153,7 +142,7 @@ export class Dialog {
 			if (this.open) return;
 
 			// Dialog just closed, return focus to trigger
-			this.triggerEl?.focus();
+			this.refs.get("trigger")?.focus();
 		});
 
 		// Event listeners
@@ -186,10 +175,6 @@ export class Dialog {
 		};
 	};
 
-	/**
-	 * The spread attributes for the dialog content element.
-	 * Should be used on a `<dialog>` element.
-	 */
 	get content() {
 		return {
 			[dataAttrs.content]: "",
@@ -200,6 +185,7 @@ export class Dialog {
 			"aria-describedby": this.ids.description,
 			"data-state": this.open ? "open" : "closed",
 			[this.#contentAttachmentKey]: this.#contentAttachment,
+			[this.refs.key]: this.refs.attach("content"),
 		} as const satisfies HTMLAttributes<HTMLDialogElement>;
 	}
 
