@@ -14,7 +14,7 @@ import { createAttachmentKey, type Attachment } from "svelte/attachments";
 import type { HTMLAttributes } from "svelte/elements";
 import { on } from "svelte/events";
 
-const { dataAttrs, createIds } = createBuilderMetadata("context-menu", [
+const { dataAttrs, createIds, createReferences } = createBuilderMetadata("context-menu", [
 	"trigger",
 	"content",
 	"item",
@@ -303,9 +303,8 @@ export class ContextMenu {
 	/* State */
 	#open: Synced<boolean>;
 	ids = $state(createIds());
+	refs = createReferences();
 	#virtualAnchor: VirtualElement | null = $state(null);
-	#contentEl: HTMLElement | null = $state(null);
-	#triggerEl: HTMLElement | null = $state(null);
 	#children = new Set<ContextMenuSub>();
 	#closeTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -533,8 +532,9 @@ export class ContextMenu {
 			this.#clearAutoOpenTimeout();
 			this.#hasEnteredContent = false;
 			this.#pointerMoveAccumulator = 0;
-			if (this.#contentEl) {
-				this.#contentEl.scrollTop = 0;
+			const contentEl = this.refs.get("content");
+			if (contentEl) {
+				contentEl.scrollTop = 0;
 			}
 		}
 	}
@@ -594,14 +594,7 @@ export class ContextMenu {
 	// -------------------------------------------------------------------------
 
 	#triggerAttachmentKey = createAttachmentKey();
-	#triggerAttachment: Attachment<HTMLElement> = (node) => {
-		this.#triggerEl = node;
-		return () => {
-			if (this.#triggerEl === node) {
-				this.#triggerEl = null;
-			}
-		};
-	};
+	#triggerAttachment: Attachment<HTMLElement> = this.refs.attach("trigger");
 
 	get trigger() {
 		return {
@@ -622,15 +615,15 @@ export class ContextMenu {
 
 	#contentAttachmentKey = createAttachmentKey();
 	#contentAttachment: Attachment<HTMLElement> = (node) => {
-		this.#contentEl = node;
+		const detachRef = this.refs.attach("content")(node);
 
 		// Floating UI positioning
 		$effect(() => {
-			if (!this.open || !this.#virtualAnchor || !this.#contentEl) return;
+			if (!this.open || !this.#virtualAnchor || !this.refs.get("content")) return;
 
 			useFloating({
 				node: () => this.#virtualAnchor!,
-				floating: () => this.#contentEl!,
+				floating: () => this.refs.get("content")!,
 				config: () => ({
 					computePosition: {
 						placement: "bottom-start",
@@ -695,8 +688,9 @@ export class ContextMenu {
 				if (this.#pointerMoveAccumulator < POINTER_MOVE_THRESHOLD) return;
 				this.#pointerMoveAccumulator = 0;
 
-				if (!this.#contentEl) return;
-				const rect = this.#contentEl.getBoundingClientRect();
+				const contentEl = this.refs.get("content");
+				if (!contentEl) return;
+				const rect = contentEl.getBoundingClientRect();
 
 				// Check if outside grace area AND moving away
 				const outsideLeft = e.clientX < rect.left - MENU_GRACE_AREA;
@@ -732,8 +726,8 @@ export class ContextMenu {
 				// the cursor will not match the target until the mouse moves again.
 
 				// Find which menu content (main or submenu) contains the target
-				const menuContent = this.#contentEl?.contains(target)
-					? this.#contentEl
+				const menuContent = this.refs.get("content")?.contains(target)
+					? this.refs.get("content")
 					: this.#findSubmenuContent(target);
 
 				if (!menuContent) {
@@ -754,7 +748,7 @@ export class ContextMenu {
 					e.preventDefault();
 				} else {
 					// Can scroll - close submenus of the scrolled menu
-					if (menuContent === this.#contentEl) {
+					if (menuContent === this.refs.get("content")) {
 						for (const child of this.#children) {
 							if (child.open) child.open = false;
 						}
@@ -783,8 +777,8 @@ export class ContextMenu {
 			const handleTouchMove = (e: TouchEvent) => {
 				const target = e.target as HTMLElement;
 
-				const menuContent = this.#contentEl?.contains(target)
-					? this.#contentEl
+				const menuContent = this.refs.get("content")?.contains(target)
+					? this.refs.get("content")
 					: this.#findSubmenuContent(target);
 
 				if (!menuContent) {
@@ -827,17 +821,15 @@ export class ContextMenu {
 			on(document, "pointerdown", (e) => {
 				if (!this.open || !this.closeOnOutsideClick) return;
 				const target = e.target as Node;
-				if (!this.#contentEl?.contains(target) && !this.#isInsideSubmenu(target)) {
+				if (!this.refs.get("content")?.contains(target) && !this.#isInsideSubmenu(target)) {
 					this.close();
 				}
 			}),
 		];
 
 		return () => {
-			if (this.#contentEl === node) {
-				this.#contentEl = null;
-			}
 			offs.forEach((off) => off());
+			detachRef?.();
 		};
 	};
 
@@ -885,14 +877,15 @@ export class ContextMenu {
 				this.#hasEnteredContent = true;
 				this.#clearCloseTimeout();
 				this.#graceIntent = null;
-				this.#contentEl?.focus();
+				this.refs.get("content")?.focus();
 			},
 			onpointerleave: () => {
 				this.#nav.highlightedEl = null;
 				if (!this.closeOnPointerLeave) return;
 				const openChild = [...this.#children].find((child) => child.open);
-				if (openChild && this.#contentEl) {
-					const area = computeConvexHullFromElements([this.#contentEl]);
+				const contentEl = this.refs.get("content");
+				if (openChild && contentEl) {
+					const area = computeConvexHullFromElements([contentEl]);
 					const side = openChild.contentSide;
 					this.#graceIntent = { area, side };
 				}
@@ -937,8 +930,7 @@ export class ContextMenuSub {
 	#parent: ContextMenu | ContextMenuSub;
 	#props: ContextMenuSubProps;
 	#open: Synced<boolean>;
-	#contentEl: HTMLElement | null = $state(null);
-	#triggerEl: HTMLElement | null = $state(null);
+	refs = createReferences();
 	#children = new Set<ContextMenuSub>();
 	#openTimeout: ReturnType<typeof setTimeout> | null = null;
 	#closeTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -1167,8 +1159,9 @@ export class ContextMenuSub {
 			this.#nav.reset();
 			this.#graceIntent = null;
 			this.#clearAutoOpenTimeout();
-			if (this.#contentEl) {
-				this.#contentEl.scrollTop = 0;
+			const contentEl = this.refs.get("content");
+			if (contentEl) {
+				contentEl.scrollTop = 0;
 			}
 		}
 	}
@@ -1201,12 +1194,12 @@ export class ContextMenuSub {
 	}
 
 	focusContent() {
-		this.#contentEl?.focus();
+		this.refs.get("content")?.focus();
 	}
 
 	containsTarget(target: Node): boolean {
-		if (this.#contentEl?.contains(target)) return true;
-		if (this.#triggerEl?.contains(target)) return true;
+		if (this.refs.get("content")?.contains(target)) return true;
+		if (this.refs.get("trigger")?.contains(target)) return true;
 		for (const child of this.#children) {
 			if (child.containsTarget(target)) return true;
 		}
@@ -1214,7 +1207,8 @@ export class ContextMenuSub {
 	}
 
 	findContentContaining(target: Node): HTMLElement | null {
-		if (this.#contentEl?.contains(target)) return this.#contentEl;
+		const contentEl = this.refs.get("content");
+		if (contentEl?.contains(target)) return contentEl;
 		for (const child of this.#children) {
 			const el = child.findContentContaining(target);
 			if (el) return el;
@@ -1223,7 +1217,7 @@ export class ContextMenuSub {
 	}
 
 	findSubmenuContaining(target: Node): ContextMenuSub | null {
-		if (this.#contentEl?.contains(target)) return this;
+		if (this.refs.get("content")?.contains(target)) return this;
 		for (const child of this.#children) {
 			const sub = child.findSubmenuContaining(target);
 			if (sub) return sub;
@@ -1287,8 +1281,10 @@ export class ContextMenuSub {
 	}
 
 	buildGraceIntent() {
-		if (this.open && this.#triggerEl && this.#contentEl) {
-			const area = computeConvexHullFromElements([this.#triggerEl, this.#contentEl]);
+		const triggerEl = this.refs.get("trigger");
+		const contentEl = this.refs.get("content");
+		if (this.open && triggerEl && contentEl) {
+			const area = computeConvexHullFromElements([triggerEl, contentEl]);
 			const side = this.contentSide;
 			this.#graceIntent = { area, side };
 		}
@@ -1299,11 +1295,11 @@ export class ContextMenuSub {
 	// -------------------------------------------------------------------------
 
 	setTriggerEl(el: HTMLElement | null) {
-		this.#triggerEl = el;
+		// No-op: refs are now managed automatically via attachments
 	}
 
 	get contentSide(): "left" | "right" {
-		const side = this.#contentEl?.dataset.side;
+		const side = this.refs.get("content")?.dataset.side;
 		return side === "left" ? "left" : "right";
 	}
 
@@ -1339,20 +1335,20 @@ export class ContextMenuSub {
 
 	#contentAttachmentKey = createAttachmentKey();
 	#contentAttachment: Attachment<HTMLElement> = (node) => {
-		this.#contentEl = node;
+		const detachRef = this.refs.attach("content")(node);
 
 		// Floating UI positioning
 		$effect(() => {
-			if (!this.open || !this.#triggerEl || !this.#contentEl) return;
+			if (!this.open || !this.refs.get("trigger") || !this.refs.get("content")) return;
 
 			// Read offset from CSS custom properties (expects px values)
-			const style = getComputedStyle(this.#contentEl);
+			const style = getComputedStyle(this.refs.get("content")!);
 			const offsetX = parseFloat(style.getPropertyValue("--submenu-offset-x")) || 0;
 			const offsetY = parseFloat(style.getPropertyValue("--submenu-offset-y")) || 0;
 
 			useFloating({
-				node: () => this.#triggerEl!,
-				floating: () => this.#contentEl!,
+				node: () => this.refs.get("trigger")!,
+				floating: () => this.refs.get("content")!,
 				config: () => ({
 					computePosition: {
 						placement: "right-start",
@@ -1397,9 +1393,7 @@ export class ContextMenuSub {
 		});
 
 		return () => {
-			if (this.#contentEl === node) {
-				this.#contentEl = null;
-			}
+			detachRef?.();
 		};
 	};
 
@@ -1423,14 +1417,16 @@ export class ContextMenuSub {
 			onpointerenter: () => {
 				this.clearTimeouts();
 				this.#graceIntent = null;
-				this.#contentEl?.focus();
+				this.refs.get("content")?.focus();
 			},
 			onpointerleave: () => {
 				this.#nav.highlightedEl = null;
 				if (!this.#getRootMenu().closeOnPointerLeave) return;
 				const openChild = [...this.#children].find((child) => child.open);
-				if (openChild && this.#triggerEl && this.#contentEl) {
-					const area = computeConvexHullFromElements([this.#triggerEl, this.#contentEl]);
+				const triggerEl = this.refs.get("trigger");
+				const contentEl = this.refs.get("content");
+				if (openChild && triggerEl && contentEl) {
+					const area = computeConvexHullFromElements([triggerEl, contentEl]);
 					const side = openChild.contentSide;
 					this.#graceIntent = { area, side };
 				}
