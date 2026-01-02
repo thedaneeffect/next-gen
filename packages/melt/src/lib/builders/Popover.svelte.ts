@@ -20,7 +20,7 @@ import { on } from "svelte/events";
 import * as focusTrap from "focus-trap"; // ESM
 import { untrack } from "svelte";
 
-const { dataAttrs, dataSelectors } = createBuilderMetadata("popover", [
+const { dataAttrs, dataSelectors, createReferences } = createBuilderMetadata("popover", [
 	"trigger",
 	"content",
 	"arrow",
@@ -177,16 +177,16 @@ export class BasePopover {
 
 	focus = $derived.by(() => ({
 		onOpen: extract(this.#props.focus?.onOpen, `#${this.ids.popover}`),
-		onClose: extract(this.#props.focus?.onClose, this.triggerEl),
+		onClose: extract(this.#props.focus?.onClose, this.refs.get("trigger")),
 		trap: extract(this.#props.focus?.trap, false),
 	}));
 
 	/* State */
 	ids = $state({ popover: createId() });
+	refs = createReferences();
 	invokerRect = $state<ElementRects["reference"]>();
 	availableWidth = $state<number>();
 	availableHeight = $state<number>();
-	triggerEl: HTMLElement | null = $state(null);
 	#open!: Synced<boolean>;
 
 	constructor(props: PopoverProps = {}) {
@@ -229,7 +229,7 @@ export class BasePopover {
 			},
 
 			onfocusout: async (event: FocusEvent) => {
-				if (!this.triggerEl) return;
+				if (!this.refs.get("trigger")) return;
 				await new Promise((r) => setTimeout(r, 0));
 
 				const contentEl = document.getElementById(this.ids.popover);
@@ -245,7 +245,7 @@ export class BasePopover {
 				if (
 					!targetElement ||
 					contentEl?.contains(targetElement) ||
-					this.triggerEl?.contains(targetElement) ||
+					this.refs.get("trigger")?.contains(targetElement) ||
 					!this.#shouldClose(targetElement)
 				) {
 					return;
@@ -267,13 +267,9 @@ export class BasePopover {
 
 	#triggerAttachmentKey = createAttachmentKey();
 	#triggerAttachment: Attachment<HTMLElement> = (node) => {
-		if (untrack(() => this.triggerEl)) return;
+		if (untrack(() => this.refs.get("trigger"))) return;
 
-		this.triggerEl = node;
-		return () => {
-			if (this.triggerEl !== node) return;
-			this.triggerEl = null;
-		};
+		return this.refs.attach("trigger")(node);
 	};
 
 	/** The trigger that toggles the value. */
@@ -283,7 +279,7 @@ export class BasePopover {
 			popovertarget: this.ids.popover,
 			onclick: (e: Event) => {
 				e.preventDefault();
-				this.triggerEl = e.currentTarget as HTMLElement;
+				// Note: refs.attach() handles the element storage automatically via attachment
 				this.open = !this.open;
 			},
 			...this.sharedProps,
@@ -402,7 +398,7 @@ export class BasePopover {
 
 		$effect(() => {
 			const contentEl = document.getElementById(this.ids.popover);
-			const triggerEl = this.triggerEl;
+			const triggerEl = this.refs.get("trigger");
 			if (!isHtmlElement(contentEl) || !isHtmlElement(triggerEl) || !this.open) {
 				return;
 			}
@@ -436,7 +432,7 @@ export class BasePopover {
 				if (!this.open) return; // Exit early if not open
 
 				const contentEl = document.getElementById(this.ids.popover);
-				const triggerEl = this.triggerEl;
+				const triggerEl = this.refs.get("trigger");
 
 				if (!contentEl || !triggerEl) return; // Exit if elements are missing
 

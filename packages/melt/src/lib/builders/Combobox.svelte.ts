@@ -239,14 +239,7 @@ export class Combobox<T, Multiple extends boolean = false> extends BasePopover {
 	}
 
 	#inputAttachment = {
-		[createAttachmentKey()]: (node) => {
-			this.triggerEl = node;
-			return () => {
-				if (this.triggerEl === node) {
-					this.triggerEl = null;
-				}
-			};
-		},
+		[createAttachmentKey()]: this.refs.attach("trigger"),
 	} as const satisfies HTMLAttributes<HTMLElement>;
 
 	get input() {

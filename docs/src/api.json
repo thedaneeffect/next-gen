@@ -1747,7 +1747,7 @@
       },
       {
         "name": "refs",
-        "type": "any",
+        "type": "{\n  get: (\n    key:\n      | \"item\"\n      | \"trigger\"\n      | \"content\"\n      | \"separator\"\n      | \"label\"\n      | \"sub-trigger\"\n      | \"sub-content\",\n  ) => HTMLElement | undefined\n  attach: (\n    key:\n      | \"item\"\n      | \"trigger\"\n      | \"content\"\n      | \"separator\"\n      | \"label\"\n      | \"sub-trigger\"\n      | \"sub-content\",\n  ) => Attachment<HTMLElement>\n  key: any\n}",
         "description": ""
       },
       {

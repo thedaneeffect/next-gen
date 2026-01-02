@@ -238,14 +238,7 @@ export class Select<T, Multiple extends boolean = false> extends BasePopover {
 	}
 
 	#triggerAttachment = {
-		[createAttachmentKey()]: (node) => {
-			this.triggerEl = node;
-			return () => {
-				if (this.triggerEl === node) {
-					this.triggerEl = null;
-				}
-			};
-		},
+		[createAttachmentKey()]: this.refs.attach("trigger"),
 	} as const satisfies HTMLAttributes<HTMLElement>;
 
 	get trigger() {
